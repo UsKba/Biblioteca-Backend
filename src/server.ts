@@ -1,3 +1,6 @@
-import app from './App';
+import server from './app';
 
-app.listen(3333);
+server.listen(3333);
+
+// http://localhost:3333/
+// Json Viewer
