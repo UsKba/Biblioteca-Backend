@@ -1,0 +1,15 @@
+Criar docker container:
+docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
+=> listar containers em execucao:
+docker ps
+
+docker start sb_database
+docker stop sb_database
+
+
+npx prisma migrate save --experimental
+npx prisma migrate up --experimental
+npx prisma studio --experimental
+npx prisma introspect
+npx prisma generate
