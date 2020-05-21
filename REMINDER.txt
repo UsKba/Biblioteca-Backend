@@ -8,8 +8,23 @@ docker start sb_database
 docker stop sb_database
 
 
+
+prisma
+
+npx prisma init
+
+.env
+DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
+
+
+FAZER MIGRACAO
 npx prisma migrate save --experimental
+
+UPAR PRO DB
 npx prisma migrate up --experimental
+
+
 npx prisma studio --experimental
 npx prisma introspect
+
 npx prisma generate

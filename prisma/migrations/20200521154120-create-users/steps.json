@@ -30,24 +30,6 @@
     {
       "tag": "CreateField",
       "model": "User",
-      "field": "email",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "email"
-        },
-        "directive": "unique"
-      }
-    },
-    {
-      "tag": "CreateField",
-      "model": "User",
       "field": "id",
       "type": "Int",
       "arity": "Required"
@@ -93,7 +75,7 @@
       "model": "User",
       "field": "name",
       "type": "String",
-      "arity": "Optional"
+      "arity": "Required"
     }
   ]
 }
