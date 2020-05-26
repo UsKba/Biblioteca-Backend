@@ -76,6 +76,13 @@
       "field": "name",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "age",
+      "type": "Int",
+      "arity": "Required"
     }
   ]
 }

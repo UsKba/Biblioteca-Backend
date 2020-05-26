@@ -8,7 +8,6 @@ docker start sb_database
 docker stop sb_database
 
 
-
 prisma
 
 npx prisma init

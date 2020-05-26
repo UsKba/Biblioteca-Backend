@@ -3,5 +3,4 @@
 # Prisma Migrate lockfile v1
 # Read more about conflict resolution here: TODO
 
-20200521154120-create-users
-20200521154823-add-age-user
+20200526140439-create-user
