@@ -1,6 +1,6 @@
-# IF THERE'S A GIT CONFLICT IN THIS FILE, DON'T SOLVE IT MANUALLY!
-# INSTEAD EXECUTE `prisma migrate fix`
 # Prisma Migrate lockfile v1
-# Read more about conflict resolution here: TODO
 
 20200526140439-create-user
+20200528133754-user-books-ammout-add
+20200528134545-user-books-ammount-add
+20200528140251-add-column-test-touser

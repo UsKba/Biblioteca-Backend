@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -12,5 +12,4 @@ model User {
   name String
   age  Int
   booksAmmount Int @default(0)
-  test Int @default(0)
 }

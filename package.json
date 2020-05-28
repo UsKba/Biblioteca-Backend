@@ -13,7 +13,7 @@
     "posttest": "NODE_ENV=test sequelize db:migrate:undo:all"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-beta.5",
+    "@prisma/client": "^2.0.0-beta.6",
     "@types/yup": "^0.29.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
