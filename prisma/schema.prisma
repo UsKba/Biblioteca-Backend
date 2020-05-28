@@ -10,7 +10,4 @@ datasource db {
 model User {
   id   Int    @default(autoincrement()) @id
   name String
-  age  Int
-  booksAmmount Int @default(0)
-  test Int @default(0)
 }

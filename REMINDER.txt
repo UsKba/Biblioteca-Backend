@@ -22,8 +22,9 @@ npx prisma migrate save --experimental
 UPAR PRO DB
 npx prisma migrate up --experimental
 
+ATUALIZAR TYPESCRIPT MODEL (CASO NN RECONHECA DE PRIMEIRA FECHE O ARQUIVO E ABRA DENOVO OU RELOAD VS)
+npx prisma generate
+
 
 npx prisma studio --experimental
 npx prisma introspect
-
-npx prisma generate

@@ -1,6 +1,4 @@
 # Prisma Migrate lockfile v1
 
-20200526140439-create-user
-20200528133754-user-books-ammout-add
-20200528134545-user-books-ammount-add
-20200528140251-add-column-test-touser
+20200528141703-create-users
+20200528141758-add-column-test2to-user
