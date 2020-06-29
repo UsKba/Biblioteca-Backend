@@ -9,6 +9,6 @@ routes.get('/', (request, response) => {
 
 routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
-routes.put('/users', UserController.update);
+// routes.put('/users', UserController.update);
 
 export default routes;

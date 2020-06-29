@@ -15,7 +15,7 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
-    this.server.use(routeValidation);
+    // this.server.use(routeValidation);
   }
 
   routes() {

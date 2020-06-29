@@ -1,11 +1,11 @@
 # TODO
 
 ## 1° Etapa
-- [ ] Revisar o código
-- [ ] Model User (Prisma)
-- [ ] Rever as validacões (Yup)
-- [ ] Fazer o CRUD de User
+- [x] Revisar o código
 - [ ] Ver os testes
+- [ ] Fazer o CRUD de User
+- [ ] Rever as validacões (Yup)
+- [x] Model User (Prisma)
 
 
 ## 2° Etapa

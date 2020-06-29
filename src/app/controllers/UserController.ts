@@ -4,9 +4,18 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 interface Body {
-  name: string;
-  age: number;
-  id: number;
+  enrollment: number;
+  password: string;
+}
+
+function makeSuapRequest(params: Body) {
+  // FAZER A REQUISICAO
+
+  return {
+    name: 'Idaslon',
+    email: 'Lonlon@gmail.com',
+    ...params,
+  };
 }
 
 class UserController {
@@ -17,20 +26,10 @@ class UserController {
   }
 
   async store(request: Request, response: Response) {
+    const data = makeSuapRequest(request.body);
+
     const user = await prisma.user.create({
-      data: request.body,
-    });
-
-    // Retornar para verificar
-    return response.json(user);
-  }
-
-  async update(request: Request, response: Response) {
-    const { id, ...dataToUpdate }: Body = request.body;
-
-    const user = await prisma.user.update({
-      data: dataToUpdate,
-      where: { id },
+      data,
     });
 
     return response.json(user);
@@ -38,7 +37,3 @@ class UserController {
 }
 
 export default new UserController();
-
-// TODO
-
-// Testes
