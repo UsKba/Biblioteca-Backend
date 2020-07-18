@@ -1,7 +1,8 @@
-import request from 'supertest';
 import { PrismaClient } from '@prisma/client';
+import request from 'supertest';
 
-import App from '../src/App';
+import App from '~/App';
+
 import { generateUser } from './factory';
 
 const prisma = new PrismaClient();

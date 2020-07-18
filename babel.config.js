@@ -1,4 +1,3 @@
-// babel.config.js
 module.exports = {
   presets: [
     [
@@ -11,4 +10,17 @@ module.exports = {
     ],
     '@babel/preset-typescript',
   ],
+  plugins: [
+    ['module-resolver', {
+      alias: {
+        '~': './src'
+      }
+    }]
+  ],
+  ignore: [
+    '**/*/.test.ts',
+    '**/*/.test.js',
+    './src/types',
+    '**/*.d.ts'
+  ]
 };

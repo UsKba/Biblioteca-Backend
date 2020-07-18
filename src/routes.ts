@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import UserController from '../app/controllers/UserController';
-import { validateUserStore } from '../app/schemasValidations/User';
+
+import UserController from '~/app/controllers/UserController';
+
+import { validateUserStore } from '~/app/validations/user';
 
 const routes = Router();
 

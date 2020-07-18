@@ -17,7 +17,8 @@ web-report/
 
 .env
 dist/
+tmp/
 
 # Ignore test-related files
-/coverage.data
-/coverage/
+**/coverage.data
+**/coverage/

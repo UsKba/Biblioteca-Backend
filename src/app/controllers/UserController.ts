@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -41,8 +42,6 @@ class UserController {
     const user = await prisma.user.create({
       data,
     });
-
-    console.log('user', user);
 
     return response.json(user);
   }

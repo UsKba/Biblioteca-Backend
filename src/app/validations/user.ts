@@ -1,7 +1,8 @@
-import * as Yup from 'yup';
 import { Request, Response, NextFunction } from 'express';
 
-import { validateSchema } from '../../utils/yup';
+import * as Yup from 'yup';
+
+import { validateSchema } from '~/app/utils/yup';
 
 const UserStoreSchema = Yup.object().shape({
   enrollment: Yup.number().required(),
