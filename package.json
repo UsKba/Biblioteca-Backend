@@ -1,10 +1,9 @@
 {
-  "name": "node-typescript-advanced-template",
-  "version": "1.1.1",
+  "name": "biblioteca-backend",
+  "version": "1.0.0",
   "main": "src/server.ts",
-  "repository": "https://github.com/DestroyeerU/node-typescript-advanced-template.git",
+  "repository": "https://github.com/UsKba/Biblioteca-Backend.git",
   "author": "DestroyeerU <destroyeeru18@gmail.com>",
-  "license": "MIT",
   "scripts": {
     "build": "babel src --extensions .js,.ts --out-dir dist --copy-files --no-copy-ignored",
     "start": "node ./dist/server.js",
