@@ -1,8 +1,6 @@
 import express, { Express } from 'express';
 import routes from './routes';
 
-import routeValidation from '~/app/middlewares/routeValidation';
-
 class App {
   server: Express;
 
@@ -15,7 +13,6 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
-    // this.server.use(routeValidation);
   }
 
   routes() {

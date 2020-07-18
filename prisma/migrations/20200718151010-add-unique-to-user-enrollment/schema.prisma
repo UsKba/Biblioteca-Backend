@@ -4,12 +4,12 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
   id         Int @default(autoincrement()) @id
-  enrollment String @unique
+  enrollment Int @unique
   password   String
   name       String
   email      String

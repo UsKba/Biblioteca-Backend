@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import UserController from '../app/controllers/UserController';
+import { validateUserStore } from '../app/schemasValidations/User';
 
 const routes = Router();
 
@@ -8,7 +9,8 @@ routes.get('/', (request, response) => {
 });
 
 routes.get('/users', UserController.index);
-routes.post('/users', UserController.store);
-// routes.put('/users', UserController.update);
+routes.get('/users/:id', UserController.show);
+routes.post('/users', validateUserStore, UserController.store);
+routes.put('/users', UserController.update);
 
 export default routes;

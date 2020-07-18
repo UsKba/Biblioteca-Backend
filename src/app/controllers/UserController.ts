@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 interface Body {
-  enrollment: number;
+  enrollment: string;
   password: string;
 }
 
@@ -25,11 +25,34 @@ class UserController {
     return response.json(users);
   }
 
+  async show(request: Request, response: Response) {
+    const { id } = request.params;
+
+    const user = await prisma.user.findOne({
+      where: { id: Number(id) },
+    });
+
+    return response.json(user);
+  }
+
   async store(request: Request, response: Response) {
     const data = makeSuapRequest(request.body);
 
     const user = await prisma.user.create({
       data,
+    });
+
+    console.log('user', user);
+
+    return response.json(user);
+  }
+
+  async update(request: Request, response: Response) {
+    const { enrollment, ...dataToUpdate }: Body = request.body;
+
+    const user = await prisma.user.update({
+      data: dataToUpdate,
+      where: { enrollment },
     });
 
     return response.json(user);

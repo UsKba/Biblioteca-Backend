@@ -1,17 +1,19 @@
 import * as Yup from 'yup';
+import { Request, Response, NextFunction } from 'express';
+
+import { validateSchema } from '../../utils/yup';
 
 const UserStoreSchema = Yup.object().shape({
-  name: Yup.string().required(),
-  age: Yup.number().required(),
+  enrollment: Yup.number().required(),
+  password: Yup.string().required(),
 });
 
-const UserUpdateSchema = Yup.object().shape({
-  id: Yup.number().required(),
-  name: Yup.string(),
-  age: Yup.number(),
-});
+export async function validateUserStore(request: Request, response: Response, next: NextFunction) {
+  const error = await validateSchema(UserStoreSchema, request.body);
 
-export default {
-  UserStoreSchema,
-  UserUpdateSchema,
-};
+  if (error) {
+    return response.status(400).json(error);
+  }
+
+  return next();
+}
