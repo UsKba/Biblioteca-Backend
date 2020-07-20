@@ -33,6 +33,10 @@ class UserController {
       where: { id: Number(id) },
     });
 
+    if (user === null) {
+      return response.status(400).json({ error: 'User not found.' });
+    }
+
     return response.json(user);
   }
 
@@ -42,6 +46,8 @@ class UserController {
     const user = await prisma.user.create({
       data,
     });
+
+    console.log('user', user);
 
     return response.json(user);
   }
