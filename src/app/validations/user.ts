@@ -17,10 +17,6 @@ const UserSchema = Yup.object().shape({
   password: Yup.string().required(),
 });
 
-const UserShowSchema = Yup.object().shape({
-  id: Yup.number().required(),
-});
-
 export async function validateUserStore(request: Request, response: Response, next: NextFunction) {
   const error = await validateSchema(UserSchema, request.body);
 
@@ -46,16 +42,6 @@ export async function validateUserUpdate(request: Request, response: Response, n
 
   if (user === null) {
     return response.status(400).json({ error: 'User not found.' });
-  }
-
-  return next();
-}
-
-export async function validateUserShow(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(UserShowSchema, request.params);
-
-  if (error) {
-    return response.status(400).json(error);
   }
 
   return next();

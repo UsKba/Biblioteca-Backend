@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 
-import { PrismaClient } from '@prisma/client';
+import { RequestBody, RequestParamsId } from '~/types';
 
-const prisma = new PrismaClient();
+import prisma from '~/prisma';
 
 interface Body {
   enrollment: string;
   password: string;
 }
+
+type UpdateRequest = RequestBody<Body>;
 
 function makeSuapRequest(params: Body) {
   // FAZER A REQUISICAO
@@ -26,7 +28,7 @@ class UserController {
     return response.json(users);
   }
 
-  async show(request: Request, response: Response) {
+  async show(request: RequestParamsId, response: Response) {
     const { id } = request.params;
 
     const user = await prisma.user.findOne({
@@ -52,8 +54,8 @@ class UserController {
     return response.json(user);
   }
 
-  async update(request: Request, response: Response) {
-    const { enrollment, ...dataToUpdate }: Body = request.body;
+  async update(request: UpdateRequest, response: Response) {
+    const { enrollment, ...dataToUpdate } = request.body;
 
     const user = await prisma.user.update({
       data: dataToUpdate,

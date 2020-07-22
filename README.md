@@ -6,7 +6,8 @@
 - [x] Ver os testes
 - [x] Fazer o CRUD de User
 - [x] Rever as validacões (Yup)
-- [ ] Login
+- [x] Login
+- [x] CRUD Salas
 
 
 ## 2° Etapa
@@ -14,3 +15,20 @@
 - [ ] Fazer o modelo (último) criar as tabelas
 - [ ] Ver rotas com o frontend
 - [ ] Coming soon ...
+
+
+
+{
+
+    BANCO DE DADOS DA SALA
+
+    Número da sala
+    Status
+
+
+
+    Aluno Responsavel
+    Alunos
+    Horários
+
+}

@@ -1,5 +1,5 @@
 const authConfig = {
-  secret: 'aspdjadhsadosdj]sdphsadphsad]',
+  secret: process.env.SECRET || '',
 };
 
 export default authConfig;

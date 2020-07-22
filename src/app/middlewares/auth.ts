@@ -15,6 +15,7 @@ export default async (req: AuthRequest, res: Response, next: NextFunction) => {
     return res.status(400).json({ error: 'Token not provided.' });
   }
 
+  // Bearer YOUR_TOKEN
   const [, token] = authHeader.split(' ');
   const tokenDecoded = await decodeToken(token);
 
