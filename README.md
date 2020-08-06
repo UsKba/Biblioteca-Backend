@@ -18,24 +18,21 @@
 - [ ] Coming soon ...
 
 
+## Regras de Negócio
 
-PI-Biblioteca
-
-Armazenar
-
-
-
-{
-
-    BANCO DE DADOS DA SALA
-
-    Número da sala
-    Status
+### Aluno
+- [ ] Um aluno pode ter vários amigos
+- [ ] Um aluno pode ser amigo de várias pessoas
 
 
+### Sala
+- [ ]  A Sala pode ser Reservada várias vezes
+- [ ]  A Sala não pode ser reservada em dois horários iguais na mesma data
 
-    Aluno Responsavel
-    Alunos
-    Horários
+### Reserva
+- [ ]  Necessita de ao menos 3 alunos para a reserva
+- [ ]  As matriculas dos alunos devem ser distintas
 
-}
+
+## Problemas + Soluções
+- [ ]  Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
