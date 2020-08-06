@@ -14,7 +14,14 @@
 - [ ] Fazer a estrutura do Banco de Dados (Modelo descritivo)
 - [ ] Fazer o modelo (último) criar as tabelas
 - [ ] Ver rotas com o frontend
+- [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
+
+
+
+PI-Biblioteca
+
+Armazenar
 
 
 

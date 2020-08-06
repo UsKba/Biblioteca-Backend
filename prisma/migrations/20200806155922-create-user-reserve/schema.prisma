@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRISMA_URL")
+  url = "***"
 }
 
 model User {
@@ -51,4 +51,3 @@ model UserReserve {
   reserve   Reserve @relation(fields: [reserveId], references: [id])
   reserveId Int
 }
-

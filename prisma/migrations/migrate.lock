@@ -4,3 +4,6 @@
 20200718151010-add-unique-to-user-enrollment
 20200718152908-change-user-enrollment-to-string
 20200722142040-create-room
+20200806155841-create-schedule
+20200806155902-create-reserve
+20200806155922-create-user-reserve
