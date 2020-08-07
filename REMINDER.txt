@@ -28,3 +28,15 @@ npx prisma generate
 
 npx prisma studio --experimental
 npx prisma introspect
+
+sudo docker run --name postgresLibrary -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+//criar o conteiner postgres
+
+sudo docker ps -a
+//mostrar todos conteiners do computador
+
+sudo docker ps
+//mostrar conteiners em execucao
+
+sudo docker start postgresLibrary
+//startar o container

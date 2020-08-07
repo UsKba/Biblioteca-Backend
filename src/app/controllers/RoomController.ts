@@ -6,19 +6,25 @@ import prisma from '~/prisma';
 
 interface Room {
   initials: string;
-  status: number;
 }
 
+type StoreRequest = RequestBody<Room>;
 type UpdateRequest = RequestBodyParamsId<Room>;
 
-type StoreRequest = RequestBody<Room>;
+const roomStatusConfig = {
+  available: 1,
+  unavailable: 2,
+  emUso: 3,
+};
 
 class RoomController {
   async store(request: StoreRequest, response: Response) {
-    const data: Room = request.body;
+    const { initials } = request.body;
 
     const room = await prisma.room.create({
-      data,
+      data: {
+        initials,
+      },
     });
 
     return response.json(room);

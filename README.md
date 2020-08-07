@@ -11,8 +11,9 @@
 
 
 ## 2° Etapa
-- [ ] Fazer a estrutura do Banco de Dados (Modelo descritivo)
-- [ ] Fazer o modelo (último) criar as tabelas
+- [x] Fazer a estrutura do Banco de Dados (Modelo descritivo)
+- [x] Fazer o modelo (último) criar as tabelas
+- [ ] Iniciar a reserva de sala
 - [ ] Ver rotas com o frontend
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
@@ -36,3 +37,4 @@
 
 ## Problemas + Soluções
 - [ ]  Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
+

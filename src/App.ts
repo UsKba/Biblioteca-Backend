@@ -2,6 +2,8 @@ import './bootstrap';
 
 import express, { Express } from 'express';
 
+import cors from 'cors';
+
 import routes from './routes';
 
 class App {
@@ -16,6 +18,7 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
+    this.server.use(cors());
   }
 
   routes() {

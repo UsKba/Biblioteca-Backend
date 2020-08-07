@@ -8,6 +8,7 @@ import authMiddleware from '~/app/middlewares/auth';
 
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 
+import ReserveController from './app/controllers/ReserveController';
 import { validateParamsId } from './app/validations';
 
 const routes = Router();
@@ -30,6 +31,8 @@ routes.put('/room/:id', validateParamsId, RoomController.update);
 // Privada
 
 routes.use(authMiddleware);
+
+routes.post('/reserve', ReserveController.store);
 
 export default routes;
 
