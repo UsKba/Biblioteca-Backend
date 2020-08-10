@@ -14,7 +14,7 @@ import { validateParamsId } from './app/validations';
 const routes = Router();
 
 routes.get('/', (request, response) => {
-  return response.json({});
+  return response.json({ ok: true });
 });
 
 routes.post('/sessions', SessionController.store);
@@ -24,9 +24,10 @@ routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users', validateUserUpdate, UserController.update);
 
-routes.post('/room', RoomController.store);
-routes.get('/room', RoomController.index);
-routes.put('/room/:id', validateParamsId, RoomController.update);
+routes.post('/rooms', RoomController.store);
+routes.get('/rooms', RoomController.index);
+routes.put('/rooms/:id', validateParamsId, RoomController.update);
+routes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 
 // Privada
 
@@ -35,7 +36,3 @@ routes.use(authMiddleware);
 routes.post('/reserve', ReserveController.store);
 
 export default routes;
-
-// CRUD de Rooms
-// Validacoes em todas as rotas
-// Lembrae de fazer o `show`

@@ -15,8 +15,8 @@ function makeSuapRequest(params: Body) {
   // FAZER A REQUISICAO
 
   return {
-    name: 'Idaslon',
-    email: 'Lonlon@gmail.com',
+    name: 'KADUU',
+    email: 'kads@gmail.com',
     ...params,
   };
 }
@@ -36,7 +36,7 @@ class UserController {
     });
 
     if (user === null) {
-      return response.status(400).json({ error: 'User not found.' });
+      return response.status(400).json({ error: 'Usuário não encontrado' });
     }
 
     return response.json(user);
@@ -49,13 +49,19 @@ class UserController {
       data,
     });
 
-    console.log('user', user);
-
     return response.json(user);
   }
 
   async update(request: UpdateRequest, response: Response) {
     const { enrollment, ...dataToUpdate } = request.body;
+
+    const userExists = await prisma.user.findOne({
+      where: { enrollment },
+    });
+
+    if (userExists === null) {
+      return response.status(400).json({ error: 'Usuário não encontrado' });
+    }
 
     const user = await prisma.user.update({
       data: dataToUpdate,

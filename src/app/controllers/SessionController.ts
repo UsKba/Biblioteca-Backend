@@ -20,7 +20,7 @@ class SessionController {
     const user = await prisma.user.findOne({ where: { enrollment } });
 
     if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+      return res.status(400).json({ error: 'Matrícula ou senha inválidas' });
     }
 
     // const samePassword = await comparePassword(password, user.password);
