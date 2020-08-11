@@ -16,11 +16,11 @@ interface UpdateRoom {
 type StoreRequest = RequestBody<StoreRoom>;
 type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
 
-const roomStatusConfig = {
-  available: 1,
-  unavailable: 2,
-  emUso: 3,
-};
+// const roomStatusConfig = {
+//   available: 1,
+//   unavailable: 2,
+//   emUso: 3,
+// };
 
 class RoomController {
   async store(request: StoreRequest, response: Response) {

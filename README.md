@@ -14,7 +14,8 @@
 - [x] Fazer a estrutura do Banco de Dados (Modelo descritivo)
 - [x] Fazer o modelo (último) criar as tabelas
 - [x] Ver rotas com o frontend
-- [ ] Mudar as mensagens para portugues
+- [x] Mudar as mensagens para portugues
+- [ ] Faker em testes
 - [ ] Iniciar a reserva de sala
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
@@ -31,9 +32,22 @@
 - [x] Não pode existir duas salas com a mesma sigla
 
 
+### Horário
+- [ ] Não pode ser alocado dois horários no mesmo intervalo de tempo
+
+  Levando como base `07:00 - 08:00`
+  - [ ] 09:00 - 08:00 -> X
+
+  - [ ] 07:30 - 08:00 -> X
+  - [ ] 07:59 - 09:00 -> X
+
+  - [ ] 08:00 - 09:00 -> Y
+
+
 ### Reserva
 - [ ]  A Sala da reserva pode ser Reservada várias vezes
-- [ ]  A Sala da reserva não pode ser reservada em dois horários iguais na mesma data
+- [ ]  A Sala da reserva não pode ser reservada em dois horários iguais na
+mesma data
 
 - [ ]  Necessita de ao menos 3 alunos para a reserva
 - [ ]  As matriculas dos alunos devem ser distintas
@@ -41,3 +55,7 @@
 
 ## Problemas + Soluções
 - [ ]  Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
+
+
+## Problemas + Ver Depois
+- [ ]  Precisa apagar um horario? Ou so vai precisar atualiza-lo?
