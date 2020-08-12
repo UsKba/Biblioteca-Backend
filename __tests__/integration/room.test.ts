@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { generateRoom } from './factory';
+import { generateRoom } from '../factory';
 
 describe('Room Store', () => {
   beforeEach(async () => {

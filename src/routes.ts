@@ -33,6 +33,7 @@ routes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 routes.post('/schedules', ScheduleController.store);
 routes.get('/schedules', ScheduleController.index);
 routes.put('/schedules/:id', validateParamsId, ScheduleController.update);
+routes.delete('/schedules/', ScheduleController.delete);
 
 // Privada
 

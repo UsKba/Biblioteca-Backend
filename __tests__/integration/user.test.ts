@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import App from '~/App';
 
-import { generateUser } from './factory';
+import { generateUser } from '../factory';
 
 const prisma = new PrismaClient();
 

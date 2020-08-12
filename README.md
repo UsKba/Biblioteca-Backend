@@ -33,15 +33,16 @@
 
 
 ### Horário
-- [ ] Não pode ser alocado dois horários no mesmo intervalo de tempo
+- [x] A hora final nao pode ser antes da de inicio
+- [x] Não pode ser alocado dois horários dentro do mesmo intervalo de tempo
 
   Levando como base `07:00 - 08:00`
-  - [ ] 09:00 - 08:00 -> X
+  - [x] 09:00 - 08:00 -> X
 
-  - [ ] 07:30 - 08:00 -> X
-  - [ ] 07:59 - 09:00 -> X
+  - [x] 07:30 - 08:00 -> X
+  - [x] 07:59 - 09:00 -> X
 
-  - [ ] 08:00 - 09:00 -> Y
+  - [x] 08:00 - 09:00 -> Y
 
 
 ### Reserva

@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { generateSchedule } from './factory';
+import { generateSchedule } from '../factory';
 
 describe('Schedule Store', () => {
   beforeEach(async () => {
@@ -18,6 +18,34 @@ describe('Schedule Store', () => {
     expect(response.status).toBe(200);
     expect(response.body.initialHour).toBe(schedule.initialHour);
     expect(response.body.endHour).toBe(schedule.endHour);
+  });
+
+  it('should not be able to create a schedule with `endHour` before `initialHour`', async () => {
+    const schedule = generateSchedule({
+      initialHour: '07:00',
+      endHour: '06:00',
+    });
+
+    const response = await request(App).post('/schedules').send(schedule);
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a schedule inside a interval that already exists', async () => {
+    const schedule1 = generateSchedule({
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const schedule2 = generateSchedule({
+      initialHour: '07:30',
+      endHour: '08:30',
+    });
+
+    await request(App).post('/schedules').send(schedule1);
+    const response = await request(App).post('/schedules').send(schedule2);
+
+    expect(response.status).toBe(400);
   });
 });
 
@@ -40,8 +68,8 @@ describe('Schedule Index', () => {
   });
 
   it('should be able to index many schedules', async () => {
-    const schedule1 = generateSchedule();
-    const schedule2 = generateSchedule();
+    const schedule1 = generateSchedule({ initialHour: '06:00', endHour: '07:00' });
+    const schedule2 = generateSchedule({ initialHour: '07:00', endHour: '08:00' });
 
     await request(App).post('/schedules').send(schedule1);
     await request(App).post('/schedules').send(schedule2);
