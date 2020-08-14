@@ -39,6 +39,7 @@ routes.delete('/schedules/', ScheduleController.delete);
 
 routes.use(authMiddleware);
 
-routes.post('/reserve', ReserveController.store);
+routes.get('/reserves', ReserveController.index);
+routes.post('/reserves', ReserveController.store);
 
 export default routes;
