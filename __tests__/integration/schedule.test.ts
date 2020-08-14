@@ -99,11 +99,57 @@ describe('Schedule Update', () => {
     const { id } = storeResponse.body;
 
     const updateResponse = await request(App).put(`/schedules/${id}`).send({
+      initialHour: '07:00',
       endHour: '09:00',
     });
 
     expect(updateResponse.body.id).toBe(id);
     expect(updateResponse.body.initialHour).toBe('07:00');
     expect(updateResponse.body.endHour).toBe('09:00');
+  });
+
+  it('should not be able to update a schedule with an id that not exists', async () => {
+    const response = await request(App).put('/schedules/1').send({});
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule with `endHour` before `initialHour`', async () => {
+    const schedule = generateSchedule();
+
+    const response = await request(App).post('/schedules').send(schedule);
+
+    const { id } = response.body;
+
+    const updateResponse = await request(App).put(`/schedules/${id}`).send({
+      initialHour: '06:00',
+      endHour: '05:00',
+    });
+
+    expect(updateResponse.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule inside a interval that already exists', async () => {
+    const schedule1 = generateSchedule({
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const schedule2 = generateSchedule({
+      initialHour: '08:00',
+      endHour: '09:00',
+    });
+
+    await request(App).post('/schedules').send(schedule2);
+    const response = await request(App).post('/schedules').send(schedule1);
+
+    const { id } = response.body;
+
+    const update = await request(App).put(`/schedules/${id}`).send({
+      initialHour: '8:00',
+      endHour: '09:00',
+    });
+
+    expect(update.status).toBe(400);
   });
 });

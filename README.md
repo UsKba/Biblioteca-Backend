@@ -15,10 +15,13 @@
 - [x] Fazer o modelo (último) criar as tabelas
 - [x] Ver rotas com o frontend
 - [x] Mudar as mensagens para portugues
-- [ ] Faker em testes
 - [ ] Iniciar a reserva de sala
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
+
+## Coisas pra fazer depois
+- [ ] Faker em testes
+- [ ] Terminar testes em schules (yup)
 
 
 ## Regras de Negócio
