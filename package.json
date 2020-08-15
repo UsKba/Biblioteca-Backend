@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --extensions .js,.ts --out-dir dist --copy-files --no-copy-ignored",
-    "start": "node ./dist/server.js",
+    "start": "NODE_ENV=PRODUCTION node ./dist/server.js",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
     "migrate:reset": "dotenv -e .env -- prisma migrate down `20200629145634-create-user` --experimental",
     "migrate:reset:test": "dotenv -e .env.test -- prisma migrate down `20200629145634-create-user` --experimental",
