@@ -1,3 +1,13 @@
+import { setSeconds, setMilliseconds } from 'date-fns';
+
+export function resetSecondsAndMiliseconds(value: number | string | Date) {
+  const date = new Date(value);
+
+  const targetDate = setSeconds(setMilliseconds(date, 0), 0);
+
+  return targetDate;
+}
+
 export function splitSingleDate(dateStr: string) {
   const [hours, minutes] = dateStr.split(':');
 

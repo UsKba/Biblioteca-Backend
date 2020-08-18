@@ -10,7 +10,7 @@ const nodeModeEnv: NodeEnv = {
   DEVELOPMENT: '.env.development',
 };
 
-const targetMode = process.env.NODE_ENV || 'development';
+const targetMode = process.env.NODE_ENV || 'DEVELOPMENT';
 
 config({
   path: nodeModeEnv[targetMode],

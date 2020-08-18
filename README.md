@@ -27,6 +27,7 @@
 ## Regras de Negócio
 
 ### Aluno
+- [ ] Matricula unica
 - [ ] Um aluno pode ter vários amigos
 - [ ] Um aluno pode ser amigo de várias pessoas
 
@@ -49,12 +50,17 @@
 
 
 ### Reserva
-- [ ]  A Sala da reserva pode ser Reservada várias vezes
-- [ ]  A Sala da reserva não pode ser reservada em dois horários iguais na
+- [x] Nao se pode cadastrar reserva em uma data anterior a hj
+- [x] Nao se pode cadastrar reserva em uma um horario que não existe
+- [x] Nao se pode cadastrar reserva em uma uma sala que não existe
+
+- [x]  A Sala da reserva pode ser Reservada várias vezes
+- [x]  A Sala da reserva não pode ser reservada em dois horários iguais na
 mesma data
 
-- [ ]  Necessita de ao menos 3 alunos para a reserva
+- [x]  Necessita de ao menos 3 alunos para a reserva
 - [ ]  As matriculas dos alunos devem ser distintas
+- [x]  Os Alunos da reserva devem existir
 
 
 ## Problemas + Soluções
