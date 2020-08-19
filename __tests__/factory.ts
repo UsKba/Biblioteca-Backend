@@ -1,6 +1,7 @@
 interface GenerateUserParams {
+  name?: string;
+  email?: string;
   enrollment?: string;
-  password?: string;
 }
 
 interface GenerateRoomParams {
@@ -14,8 +15,9 @@ interface GenerateScheduleParams {
 
 export function generateUser(params?: GenerateUserParams) {
   return {
+    name: 'Kalon',
+    email: 'kalon@gmail.com',
     enrollment: '20181104010048',
-    password: 'MyPass',
     ...params,
   };
 }

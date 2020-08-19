@@ -115,7 +115,7 @@ class ScheduleController {
     return response.json(newSchudule);
   }
 
-  async delete(req: Request, res: Response) {
+  async deleteAll(req: Request, res: Response) {
     await prisma.schedule.deleteMany({});
 
     return res.json({ ok: true });

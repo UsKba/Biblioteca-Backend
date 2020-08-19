@@ -6,12 +6,14 @@ import { validateSchema } from '~/app/utils/yup';
 
 interface Body {
   enrollment: string;
-  password: string;
+  name: string;
+  email: string;
 }
 
 const UserSchema = Yup.object().shape({
-  enrollment: Yup.number().required(),
-  password: Yup.string().required(),
+  name: Yup.string().required('O nome é requerido'),
+  email: Yup.string().email('Email inválido').required('O email é requerido'),
+  enrollment: Yup.number().required('A matrícula é requerida'),
 });
 
 export async function validateUserStore(request: Request, response: Response, next: NextFunction) {

@@ -14,16 +14,14 @@ function assertIsHourValid(hour: string) {
 }
 
 const scheduleSchema = Yup.object().shape({
-  initialHour: Yup.string().test('is-hour-valid', 'Hora inválida', (value) => assertIsHourValid(value)), // mesmo
-  endHour: Yup.string().test('is-hour-valid', 'Hora inválida', assertIsHourValid), // mesmo
+  initialHour: Yup.string()
+    .required('Hora inicial é requerida')
+    .test('is-hour-valid', 'Hora inválida', (value) => assertIsHourValid(value)), // mesmo
+  endHour: Yup.string().required('Hora final é requerida').test('is-hour-valid', 'Hora inválida', assertIsHourValid), // mesmo
 });
-
-// 07:00
 
 export async function validateScheduleStore(request: Request, response: Response, next: NextFunction) {
   const error = await validateSchema(scheduleSchema, request.body);
-
-  // if ('')
 
   if (error) {
     return response.status(400).json(error);

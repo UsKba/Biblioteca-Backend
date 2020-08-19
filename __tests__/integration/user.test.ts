@@ -60,12 +60,12 @@ describe('User Update', () => {
 
   it('should be able to update all users', async () => {
     const user = generateUser({
-      password: 'Pass',
+      name: 'Kalon',
     });
 
     const changedUser = {
       ...user,
-      password: 'JustAPassword',
+      name: 'LonKa',
     };
 
     await request(App).post('/users').send(user);

@@ -4,22 +4,20 @@ import { RequestBody, RequestParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
-interface Body {
+interface StoreBody {
+  name: string;
+  email: string;
   enrollment: string;
-  password: string;
 }
 
-type UpdateRequest = RequestBody<Body>;
-
-function makeSuapRequest(params: Body) {
-  // FAZER A REQUISICAO
-
-  return {
-    name: 'KADUU',
-    email: 'kads@gmail.com',
-    ...params,
-  };
+interface UpdateBody {
+  enrollment: string;
+  name?: string;
+  email?: string;
 }
+
+type StoreRequest = RequestBody<StoreBody>;
+type UpdateRequest = RequestBody<UpdateBody>;
 
 class UserController {
   async index(request: Request, response: Response) {
@@ -42,11 +40,23 @@ class UserController {
     return response.json(user);
   }
 
-  async store(request: Request, response: Response) {
-    const data = makeSuapRequest(request.body);
+  async store(request: StoreRequest, response: Response) {
+    const { enrollment, email, name } = request.body;
+
+    const enrollmentExists = await prisma.user.findOne({
+      where: { enrollment },
+    });
+
+    if (enrollmentExists) {
+      return response.status(400).json({ error: 'matricula já está cadastrada' });
+    }
 
     const user = await prisma.user.create({
-      data,
+      data: {
+        enrollment,
+        email,
+        name,
+      },
     });
 
     return response.json(user);

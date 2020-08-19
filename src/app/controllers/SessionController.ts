@@ -8,25 +8,19 @@ import prisma from '~/prisma';
 
 interface StoreBody {
   enrollment: string;
-  password: string;
 }
 
 type StoreRequest = RequestBody<StoreBody>;
 
 class SessionController {
   async store(req: StoreRequest, res: Response) {
-    const { password, enrollment } = req.body;
+    const { enrollment } = req.body;
 
     const user = await prisma.user.findOne({ where: { enrollment } });
 
     if (!user) {
-      return res.status(400).json({ error: 'Matrícula ou senha inválidas' });
+      return res.status(400).json({ error: 'Matrícula não encontrada' });
     }
-
-    // const samePassword = await comparePassword(password, user.password);
-    // if (!samePassword) {
-    //   return res.status(401).json({ error: 'Wrong email or password' });
-    // }
 
     return res.json({
       user: {
