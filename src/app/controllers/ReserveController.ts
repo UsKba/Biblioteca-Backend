@@ -75,6 +75,45 @@ async function assertUsersExists(classmatesIDs: number[]) {
   return true;
 }
 
+function assertIdsAreDiferent(classmatesIDs: number[]) {
+  const isIdsUnique = assertUniqueIds(classmatesIDs);
+
+  if (!isIdsUnique) {
+    // return response.status(400).json({ error: 'Não pode repetir o mesmo usuário' });
+
+    throw new Error('Não pode repetir o mesmo usuário');
+  }
+}
+
+async function assertUsersExistsOnDatabase(classmatesIDs: number[]) {
+  const usersExists = await assertUsersExists(classmatesIDs);
+  if (!usersExists) {
+    throw new Error(`Todos os usuários devem ser cadastrados`);
+  }
+}
+
+async function assertRoomsExist(roomId: number) {
+  const roomExists = await prisma.room.findOne({
+    where: { id: roomId },
+  });
+  if (!roomExists) {
+    throw new Error(`Sala não encontrada`);
+  }
+}
+
+async function assertIfReserveExists(scheduleId: number, roomId: number, targetDate: Date) {
+  const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, date: targetDate } });
+  if (reserveExistsArray.length > 0) {
+    throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse horário`);
+  }
+}
+
+function assertIfHaveTreeClassmates(classmatesIDs: number[]) {
+  if (classmatesIDs.length < 3) {
+    throw new Error(`São necessários ao menos 3 alunos`);
+  }
+}
+
 class ReserveController {
   async index(request: Request, response: Response) {
     const reserve = await prisma.reserve.findMany({});
@@ -98,40 +137,20 @@ class ReserveController {
       return response.status(400).json({ error: 'Não se pode reservar sala no final de semana' });
     }
 
-    const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, date: targetDate } });
-
-    if (reserveExistsArray.length > 0) {
-      return response
-        .status(400)
-        .json({ error: 'Não é possível realizar a reserva pois esta sala já está reservada nesse horário' });
-    }
-
     const { isDateBefore, reserveDate } = assertScheduleIsNotBefore(month, day, hours, minutes);
 
     if (isDateBefore) {
       return response.status(400).json({ error: 'A Data não pode ser anterior a atual' });
     }
 
-    const roomExists = await prisma.room.findOne({
-      where: { id: roomId },
-    });
-
-    if (!roomExists) {
-      return response.status(400).json({ error: 'Sala não encontrada' });
-    }
-
-    if (classmatesIDs.length < 3) {
-      return response.status(400).json({ error: 'São necessários ao menos 3 alunos' });
-    }
-
-    const isIdsUnique = assertUniqueIds(classmatesIDs);
-    if (!isIdsUnique) {
-      return response.status(400).json({ error: 'Não pode repetir o mesmo usuário' });
-    }
-
-    const usersExists = await assertUsersExists(classmatesIDs);
-    if (!usersExists) {
-      return response.status(400).json({ error: `Todos os usuários devdem ser cadastrados` });
+    try {
+      assertIfHaveTreeClassmates(classmatesIDs);
+      assertIdsAreDiferent(classmatesIDs);
+      await assertIfReserveExists(scheduleId, roomId, targetDate);
+      await assertUsersExistsOnDatabase(classmatesIDs);
+      await assertRoomsExist(roomId);
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     const reserve = await prisma.reserve.create({
