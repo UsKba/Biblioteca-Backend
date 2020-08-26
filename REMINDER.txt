@@ -40,3 +40,93 @@ sudo docker ps
 
 sudo docker start postgresLibrary
 //startar o container
+
+
+
+==================================== HEROKU ===================================
+
+1. Enter https://dashboard.heroku.com/apps
+2. Create a new App
+
+3.
+heroku git:remote -a PROJECT_NAME
+
+4.
+git remote // Verificar se aparece heroku
+git push heroku master
+
+
+
+=== Setup Postgres ===
+-> Va para `resources` no heroku
+-> Pesquise `Postgres` e adicione
+-> Click em Postgres
+-> copie `URI` e cole no seu .env
+
+git add .
+git ci "Postgres URI changed on .env"
+git push heroku master
+
+-> Click em `Open App` e copie a URL
+
+-> Click em `More` e `Run console` e digite `bash`
+-> Rode as migrações do banco de dados (yarn migrate:production)
+
+==> PRONTO <==
+
+
+=== Lembretes ===
+
+O heroku usa o comando `start` para rodar o app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    for (let i = 0; i < classmatesIDs.length; i += 1) {
+      const targetClassmate = classmatesIDs[i];
+
+      const userReserves = await prisma.userReserve.findMany({
+        where: {
+          userId: targetClassmate,
+        },
+      });
+
+      for (let j = 0; j < userReserves.length; j += 1) {
+        const targetUserReserve = userReserves[j];
+
+        const targetReserve = await prisma.reserve.findOne({
+          where: { id: targetUserReserve.reserveId,  },
+        });
+
+        // targetReserve?.date.getHours()
+
+
+        const schedule = targetReserve!.date.getHours();
+        const nowSchedule = reserveDate.getHours();
+
+        if( nowSchedule
+          )
+
+        // reserveConfig.turns.morning
+      }
+    }

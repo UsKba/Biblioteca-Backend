@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 
 import { isBefore } from 'date-fns';
 
+import reserveConfig from '~/config/reserve';
+
 import { RequestBody } from '~/types';
 
 import prisma from '~/prisma';
@@ -62,7 +64,6 @@ async function assertUsersExists(classmatesIDs: number[]) {
   for (let i = 0; i < classmatesIDs.length; i += 1) {
     const classmateId = classmatesIDs[i];
 
-    // eslint-disable-next-line no-await-in-loop
     const userExists = await prisma.user.findOne({
       where: { id: classmateId },
     });
@@ -79,14 +80,13 @@ function assertIdsAreDiferent(classmatesIDs: number[]) {
   const isIdsUnique = assertUniqueIds(classmatesIDs);
 
   if (!isIdsUnique) {
-    // return response.status(400).json({ error: 'Não pode repetir o mesmo usuário' });
-
     throw new Error('Não pode repetir o mesmo usuário');
   }
 }
 
 async function assertUsersExistsOnDatabase(classmatesIDs: number[]) {
   const usersExists = await assertUsersExists(classmatesIDs);
+
   if (!usersExists) {
     throw new Error(`Todos os usuários devem ser cadastrados`);
   }
@@ -96,6 +96,7 @@ async function assertRoomsExist(roomId: number) {
   const roomExists = await prisma.room.findOne({
     where: { id: roomId },
   });
+
   if (!roomExists) {
     throw new Error(`Sala não encontrada`);
   }
@@ -103,14 +104,17 @@ async function assertRoomsExist(roomId: number) {
 
 async function assertIfReserveExists(scheduleId: number, roomId: number, targetDate: Date) {
   const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, date: targetDate } });
+
   if (reserveExistsArray.length > 0) {
     throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse horário`);
   }
 }
 
 function assertIfHaveTreeClassmates(classmatesIDs: number[]) {
-  if (classmatesIDs.length < 3) {
-    throw new Error(`São necessários ao menos 3 alunos`);
+  const { minClassmatesPerRoom } = reserveConfig;
+
+  if (classmatesIDs.length < minClassmatesPerRoom) {
+    throw new Error(`São necessários ao menos ${minClassmatesPerRoom} alunos`);
   }
 }
 
@@ -123,11 +127,15 @@ class ReserveController {
   async store(request: StoreRequest, response: Response) {
     const { roomId, scheduleId, month, day, classmatesIDs } = request.body;
 
+    // teste de horário
+
     const schedule = await prisma.schedule.findOne({ where: { id: scheduleId } });
 
     if (!schedule) {
       return response.status(400).json({ error: 'Horário não existe' });
     }
+
+    // teste de final de semana
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
 
@@ -136,6 +144,8 @@ class ReserveController {
     if (targetDate.getDay() === 0 || targetDate.getDay() === 6) {
       return response.status(400).json({ error: 'Não se pode reservar sala no final de semana' });
     }
+
+    // teste dia anterior
 
     const { isDateBefore, reserveDate } = assertScheduleIsNotBefore(month, day, hours, minutes);
 
@@ -163,7 +173,6 @@ class ReserveController {
     });
 
     for (let i = 0; i < classmatesIDs.length; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
       await prisma.userReserve.create({
         data: {
           reserve: { connect: { id: reserve.id } },

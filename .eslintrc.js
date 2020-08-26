@@ -40,6 +40,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/camelcase': 'off',
 
+    'no-await-in-loop': 'off',
+
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

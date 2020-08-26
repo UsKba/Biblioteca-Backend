@@ -20,6 +20,14 @@
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
 
+## Coisas fazendo hoje
+- [ ] Limite de reservas diárias por aluno
+- [ ] Testes em reservas
+- [ ] Organizar ReserveController
+
+- [ ] Salvar dias e horarios de funcionameto
+
+
 ## Coisas pra fazer depois
 - [ ] Faker em testes
 - [ ] Terminar testes em schules (yup)
@@ -71,14 +79,16 @@
 - [x]  A Sala da reserva não pode ser reservada em dois horários iguais na
 mesma data, na mesma sala, no mesmo horario
 
+- [x] Final de semana
+
 - [ ] Limite de reservas diárias por aluno
 
-- [x] Final de semana
 
 ### campus
 
 ## Problemas + Soluções
 - [ ]  Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
+- [ ]  Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
 
 
 ## Problemas + Ver Depois

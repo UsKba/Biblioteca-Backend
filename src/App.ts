@@ -27,6 +27,3 @@ class App {
 }
 
 export default new App().server;
-// Kaduco19
-// caduco2003@gmail.com
-// Co-authored-by: Kaduco19 <caduco2003@gmail.com>"

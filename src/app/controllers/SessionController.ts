@@ -7,6 +7,8 @@ import { RequestBody } from '~/types';
 import prisma from '~/prisma';
 
 interface StoreBody {
+  name: string;
+  email: string;
   enrollment: string;
 }
 
@@ -14,22 +16,22 @@ type StoreRequest = RequestBody<StoreBody>;
 
 class SessionController {
   async store(req: StoreRequest, res: Response) {
-    const { enrollment } = req.body;
+    const { enrollment, name, email } = req.body;
 
-    const user = await prisma.user.findOne({ where: { enrollment } });
+    let user = await prisma.user.findOne({ where: { enrollment } });
 
     if (!user) {
-      return res.status(400).json({ error: 'Matrícula não encontrada' });
+      user = await prisma.user.create({
+        data: {
+          enrollment,
+          email,
+          name,
+        },
+      });
     }
 
     return res.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        enrollment: user.enrollment,
-        email: user.email,
-      },
-
+      user,
       token: encodeToken(user),
     });
   }
