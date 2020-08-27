@@ -21,6 +21,9 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
+- [ ] Ver como separar testes em varios arquivos
+- [ ] Pegar o year em ReserveController
+
 - [ ] Limite de reservas diárias por aluno
 - [ ] Testes em reservas
 - [ ] Organizar ReserveController
@@ -33,6 +36,7 @@
 - [ ] Terminar testes em schules (yup)
 - [ ] Terminar testes em reservas (yup)
 - [ ] Rever testes em usuários (yup)
+- [ ] Refatorar generateDate (tests - factory)
 
 
 ## Regras de Negócio
@@ -67,18 +71,14 @@
 ### Reserva
 - [x] Nao se pode cadastrar reserva em uma data anterior a hj
 - [x] Nao se pode cadastrar reserva em uma um horario que não existe
+- [x] A Sala da reserva pode ser Reservada várias vezes
 - [x] Nao se pode cadastrar reserva em uma uma sala que não existe
-
-- [x]  A Sala da reserva pode ser Reservada várias vezes
-
-- [x]  Necessita de ao menos 3 alunos para a reserva
-- [x]  As matriculas dos alunos devem ser distintas
-- [x]  Os Alunos da reserva devem existir
-
-- [x]  A Sala da reserva não pode ser reservada caso ja tenha sido na mesma data
-- [x]  A Sala da reserva não pode ser reservada em dois horários iguais na
+- [x] Necessita de ao menos 3 alunos para a reserva
+- [x] As matriculas dos alunos devem ser distintas
+- [x] Os Alunos da reserva devem existir
+- [x] A Sala da reserva não pode ser reservada caso ja tenha sido na mesma data
+- [x] A Sala da reserva não pode ser reservada em dois horários iguais na
 mesma data, na mesma sala, no mesmo horario
-
 - [x] Final de semana
 
 - [ ] Limite de reservas diárias por aluno

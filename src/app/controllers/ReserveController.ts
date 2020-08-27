@@ -23,9 +23,9 @@ type StoreRequest = RequestBody<StoreReserve>;
 function converDate(month: number, day: number, hours: number, minutes: number) {
   const now = new Date();
 
-  const targetMonth = month - 1; // Jan is month 0
+  // const targetMonth = month - 1; // Jan is month 0
 
-  const targetDate = new Date(now.getFullYear(), targetMonth, day, hours, minutes, 0, 0);
+  const targetDate = new Date(now.getFullYear(), month, day, hours, minutes, 0, 0);
 
   return targetDate;
 }

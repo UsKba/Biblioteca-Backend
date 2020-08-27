@@ -6,12 +6,10 @@ interface GenerateUserParams {
   enrollment?: string;
 }
 
-interface GenerateReserveParams {
-  roomId?: number;
-  scheduleId?: number;
-  month?: number;
-  day?: number;
-  classmatesIDs?: number[];
+interface GenerateDateParams {
+  sumYear?: number;
+  sumMonth?: number;
+  sumDay?: number;
 }
 
 interface GenerateRoomParams {
@@ -32,14 +30,29 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-export function generateReserve(params?: GenerateReserveParams) {
+export function generateDate(params?: GenerateDateParams) {
+  const now = new Date();
+
+  const dayWithSum = Number(params?.sumDay || 0);
+
+  let targetDay = now.getDay() + dayWithSum;
+
+  if (targetDay === 0) {
+    // sunday to monday
+
+    targetDay = now.getUTCDate() + dayWithSum + 1;
+  } else if (targetDay === 6) {
+    // saturday to monday
+
+    targetDay = now.getUTCDate() + dayWithSum + 2;
+  } else {
+    targetDay = now.getUTCDate() + dayWithSum;
+  }
+
   return {
-    roomId: 2,
-    scheduleId: 2,
-    month: 10,
-    day: 12,
-    classmatesIDs: [1, 2, 3],
-    ...params,
+    year: now.getFullYear() + Number(params?.sumYear || 0),
+    month: now.getMonth() + Number(params?.sumMonth || 0),
+    day: targetDay,
   };
 }
 
