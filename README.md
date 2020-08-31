@@ -21,11 +21,11 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-- [ ] Ver como separar testes em varios arquivos
-- [ ] Pegar o year em ReserveController
+- [x] Pegar o year em ReserveController
+- [x] Testes em reservas
+- [x] Ver como separar testes em varios arquivos
 
 - [ ] Limite de reservas diárias por aluno
-- [ ] Testes em reservas
 - [ ] Organizar ReserveController
 
 - [ ] Salvar dias e horarios de funcionameto

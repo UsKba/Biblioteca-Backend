@@ -15,31 +15,27 @@ interface StoreReserve {
   scheduleId: number;
   day: number;
   month: number;
+  year: number;
   classmatesIDs: number[];
 }
 
 type StoreRequest = RequestBody<StoreReserve>;
 
-function converDate(month: number, day: number, hours: number, minutes: number) {
-  const now = new Date();
-
+function converDate(year: number, month: number, day: number, hours: number, minutes: number) {
   // const targetMonth = month - 1; // Jan is month 0
 
-  const targetDate = new Date(now.getFullYear(), month, day, hours, minutes, 0, 0);
+  const targetDate = new Date(year, month, day, hours, minutes, 0, 0);
 
   return targetDate;
 }
 
-function assertScheduleIsNotBefore(month: number, day: number, hours: number, minutes: number) {
+function assertScheduleIsNotBefore(year: number, month: number, day: number, hours: number, minutes: number) {
   const now = new Date();
-  const reserveDate = converDate(month, day, hours, minutes);
+  const reserveDate = converDate(year, month, day, hours, minutes);
 
   const isDateBefore = isBefore(reserveDate, now);
 
-  return {
-    isDateBefore,
-    reserveDate,
-  };
+  return isDateBefore;
 }
 
 function assertUniqueIds(classmatesIDs: number[]) {
@@ -102,8 +98,8 @@ async function assertRoomsExist(roomId: number) {
   }
 }
 
-async function assertIfReserveExists(scheduleId: number, roomId: number, targetDate: Date) {
-  const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, date: targetDate } });
+async function assertIfReserveExists(scheduleId: number, roomId: number, year: number, month: number, day: number) {
+  const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, year, month, day } });
 
   if (reserveExistsArray.length > 0) {
     throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse horário`);
@@ -125,7 +121,7 @@ class ReserveController {
   }
 
   async store(request: StoreRequest, response: Response) {
-    const { roomId, scheduleId, month, day, classmatesIDs } = request.body;
+    const { roomId, scheduleId, year, month, day, classmatesIDs } = request.body;
 
     // teste de horário
 
@@ -139,7 +135,7 @@ class ReserveController {
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
 
-    const targetDate = converDate(month, day, hours, minutes);
+    const targetDate = converDate(year, month, day, hours, minutes);
 
     if (targetDate.getDay() === 0 || targetDate.getDay() === 6) {
       return response.status(400).json({ error: 'Não se pode reservar sala no final de semana' });
@@ -147,7 +143,7 @@ class ReserveController {
 
     // teste dia anterior
 
-    const { isDateBefore, reserveDate } = assertScheduleIsNotBefore(month, day, hours, minutes);
+    const isDateBefore = assertScheduleIsNotBefore(year, month, day, hours, minutes);
 
     if (isDateBefore) {
       return response.status(400).json({ error: 'A Data não pode ser anterior a atual' });
@@ -156,7 +152,7 @@ class ReserveController {
     try {
       assertIfHaveTreeClassmates(classmatesIDs);
       assertIdsAreDiferent(classmatesIDs);
-      await assertIfReserveExists(scheduleId, roomId, targetDate);
+      await assertIfReserveExists(scheduleId, roomId, year, month, day);
       await assertUsersExistsOnDatabase(classmatesIDs);
       await assertRoomsExist(roomId);
     } catch (e) {
@@ -165,8 +161,9 @@ class ReserveController {
 
     const reserve = await prisma.reserve.create({
       data: {
-        date: reserveDate, // dia
-
+        year,
+        month,
+        day,
         room: { connect: { id: roomId } },
         schedule: { connect: { id: scheduleId } },
       },

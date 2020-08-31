@@ -1,0 +1,95 @@
+import request from 'supertest';
+
+import App from '~/App';
+import prisma from '~/prisma';
+
+import { generateUser } from '../factory';
+
+describe('User store', () => {
+  beforeEach(async () => {
+    await prisma.user.deleteMany({});
+  });
+
+  it('should be able to register an user', async () => {
+    const user = generateUser();
+
+    const response = await request(App).post('/users').send(user);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+  });
+
+  it('should not be able to register with invalid enrollment', async () => {
+    const user = generateUser({
+      enrollment: 'asdsaddeféofj',
+    });
+
+    const response = await request(App).post('/users').send(user);
+
+    expect(response.status).toBe(400);
+  });
+});
+
+describe('User index', () => {
+  beforeEach(async () => {
+    await prisma.user.deleteMany({});
+  });
+
+  it('should be able list all users', async () => {
+    const user1 = generateUser();
+    const user2 = generateUser({
+      enrollment: '20181104010049',
+    });
+
+    await request(App).post('/users').send(user1);
+    await request(App).post('/users').send(user2);
+
+    const response = await request(App).get('/users');
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+  });
+});
+
+describe('User Update', () => {
+  beforeEach(async () => {
+    await prisma.user.deleteMany({});
+  });
+
+  it('should be able to update all users', async () => {
+    const user = generateUser({
+      name: 'Kalon',
+    });
+
+    const changedUser = {
+      ...user,
+      name: 'LonKa',
+    };
+
+    await request(App).post('/users').send(user);
+
+    const response = await request(App).put('/users').send(changedUser);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+  });
+});
+
+describe('User show', () => {
+  beforeEach(async () => {
+    await prisma.user.deleteMany({});
+  });
+
+  it('should be able show one user', async () => {
+    const user = generateUser();
+
+    const userResponse = await request(App).post('/users').send(user);
+
+    const { id } = userResponse.body;
+
+    const response = await request(App).get(`/users/${id}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.enrollment).toBe('20181104010048');
+  });
+});

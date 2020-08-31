@@ -9,6 +9,7 @@ import UserController from '~/app/controllers/UserController';
 import authMiddleware from '~/app/middlewares/auth';
 
 import { validateParamsId } from '~/app/validations';
+import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
 import { validateSessionStore } from '~/app/validations/session';
@@ -44,7 +45,7 @@ routes.delete('/schedules/', ScheduleController.deleteAll);
 routes.use(authMiddleware);
 
 routes.get('/reserves', ReserveController.index);
-routes.post('/reserves', ReserveController.store);
+routes.post('/reserves', validateReserveStore, ReserveController.store);
 routes.delete('/reserves', ReserveController.deleteAll);
 
 routes.get('/userReserves', UserReserverController.index);
