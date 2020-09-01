@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { generateSchedule } from '../factory';
+import { generateSchedule, createSchedule } from '../factory';
 
 describe('Schedule Store', () => {
   beforeEach(async () => {
@@ -47,6 +47,28 @@ describe('Schedule Store', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should not be able to create a schedule with invalid hour ', async () => {
+    const schedule = generateSchedule({
+      initialHour: '96:00',
+      endHour: '97:00',
+    });
+
+    const response = await request(App).post('/schedules').send(schedule);
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a schedule with invalid initialHour or endHour', async () => {
+    const schedule = generateSchedule({
+      initialHour: 'aaa',
+      endHour: 'bbb',
+    });
+
+    const response = await request(App).post('/schedules').send(schedule);
+
+    expect(response.status).toBe(400);
+  });
 });
 
 describe('Schedule Index', () => {
@@ -55,9 +77,8 @@ describe('Schedule Index', () => {
   });
 
   it('should be able to index one schedule', async () => {
-    const schedule = generateSchedule();
+    const schedule = await createSchedule();
 
-    await request(App).post('/schedules').send(schedule);
     const response = await request(App).get('/schedules');
 
     expect(response.status).toBe(200);
@@ -68,11 +89,9 @@ describe('Schedule Index', () => {
   });
 
   it('should be able to index many schedules', async () => {
-    const schedule1 = generateSchedule({ initialHour: '06:00', endHour: '07:00' });
-    const schedule2 = generateSchedule({ initialHour: '07:00', endHour: '08:00' });
+    const schedule1 = await createSchedule({ initialHour: '06:00', endHour: '07:00' });
+    const schedule2 = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
 
-    await request(App).post('/schedules').send(schedule1);
-    await request(App).post('/schedules').send(schedule2);
     const response = await request(App).get('/schedules');
 
     expect(response.status).toBe(200);
@@ -92,36 +111,31 @@ describe('Schedule Update', () => {
   });
 
   it('should be able to update a schedule', async () => {
-    const schedule = generateSchedule({ initialHour: '07:00', endHour: '08:00' });
+    const schedule = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
 
-    const storeResponse = await request(App).post('/schedules').send(schedule);
-
-    const { id } = storeResponse.body;
-
-    const updateResponse = await request(App).put(`/schedules/${id}`).send({
+    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
       initialHour: '07:00',
       endHour: '09:00',
     });
 
-    expect(updateResponse.body.id).toBe(id);
+    expect(updateResponse.body.id).toBe(schedule.id);
     expect(updateResponse.body.initialHour).toBe('07:00');
     expect(updateResponse.body.endHour).toBe('09:00');
   });
 
   it('should not be able to update a schedule with an id that not exists', async () => {
-    const response = await request(App).put('/schedules/1').send({});
+    const schedule = await createSchedule();
+    const nextScheduleId = schedule.id + 1;
+
+    const response = await request(App).put(`/schedules/${nextScheduleId}`).send({});
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to update a schedule with `endHour` before `initialHour`', async () => {
-    const schedule = generateSchedule();
+    const schedule = await createSchedule();
 
-    const response = await request(App).post('/schedules').send(schedule);
-
-    const { id } = response.body;
-
-    const updateResponse = await request(App).put(`/schedules/${id}`).send({
+    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
       initialHour: '06:00',
       endHour: '05:00',
     });
@@ -130,23 +144,18 @@ describe('Schedule Update', () => {
   });
 
   it('should not be able to update a schedule inside a interval that already exists', async () => {
-    const schedule1 = generateSchedule({
+    const schedule1 = await createSchedule({
       initialHour: '07:00',
       endHour: '08:00',
     });
 
-    const schedule2 = generateSchedule({
+    await createSchedule({
       initialHour: '08:00',
       endHour: '09:00',
     });
 
-    await request(App).post('/schedules').send(schedule2);
-    const response = await request(App).post('/schedules').send(schedule1);
-
-    const { id } = response.body;
-
-    const update = await request(App).put(`/schedules/${id}`).send({
-      initialHour: '8:00',
+    const update = await request(App).put(`/schedules/${schedule1.id}`).send({
+      initialHour: '08:00',
       endHour: '09:00',
     });
 

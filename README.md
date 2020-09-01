@@ -42,6 +42,7 @@
 
 - [ ] Refatorar generateDate (tests - factory)
 
+- [ ] Ver 'Deletar' horario
 
 ## Regras de Negócio
 
