@@ -4,14 +4,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRISMA_URL")
+  url = "***"
 }
 
 model User {
   id          Int           @default(autoincrement()) @id
   enrollment  String        @unique
   name        String
-  email       String        @unique
+  email       String
   UserReserve UserReserve[]
 }
 

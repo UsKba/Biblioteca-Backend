@@ -25,6 +25,8 @@
 - [x] Testes em reservas
 - [x] Ver como separar testes em varios arquivos
 
+- [ ] should not be able to update the enrollment
+
 - [ ] Organizar o ReserveController
 - [ ] Limite de reservas diárias por aluno
 
@@ -43,6 +45,7 @@
 - [ ] Refatorar generateDate (tests - factory)
 
 - [ ] Ver 'Deletar' horario
+- [ ] Ver 'Deletar' user
 
 ## Regras de Negócio
 

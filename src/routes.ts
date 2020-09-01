@@ -28,7 +28,7 @@ routes.post('/sessions', validateSessionStore, SessionController.store);
 routes.get('/users', UserController.index);
 routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
-routes.put('/users', validateUserUpdate, UserController.update);
+routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
 
 routes.post('/rooms', validateRoomStore, RoomController.store);
 routes.get('/rooms', RoomController.index);

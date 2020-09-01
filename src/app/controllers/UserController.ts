@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { RequestBody, RequestParamsId } from '~/types';
+import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
@@ -11,13 +11,12 @@ interface StoreBody {
 }
 
 interface UpdateBody {
-  enrollment: string;
   name?: string;
   email?: string;
 }
 
 type StoreRequest = RequestBody<StoreBody>;
-type UpdateRequest = RequestBody<UpdateBody>;
+type UpdateRequest = RequestBodyParamsId<UpdateBody>;
 
 class UserController {
   async index(request: Request, response: Response) {
@@ -51,6 +50,14 @@ class UserController {
       return response.status(400).json({ error: 'matricula já está cadastrada' });
     }
 
+    const emailExists = await prisma.user.findOne({
+      where: { email },
+    });
+
+    if (emailExists) {
+      return response.status(400).json({ error: 'email já cadastrado' });
+    }
+
     const user = await prisma.user.create({
       data: {
         enrollment,
@@ -63,20 +70,36 @@ class UserController {
   }
 
   async update(request: UpdateRequest, response: Response) {
-    const { enrollment, ...dataToUpdate } = request.body;
+    const { id } = request.params;
+    const { name, email } = request.body;
 
-    const userExists = await prisma.user.findOne({
-      where: { enrollment },
+    const userIdExists = await prisma.user.findOne({
+      where: { id: Number(id) },
     });
 
-    if (userExists === null) {
+    if (userIdExists === null) {
       return response.status(400).json({ error: 'Usuário não encontrado' });
     }
 
+    if (email) {
+      const emailExists = await prisma.user.findOne({
+        where: { email },
+      });
+
+      if (emailExists) {
+        return response.status(400).json({ error: 'email já cadastrado' });
+      }
+    }
+
     const user = await prisma.user.update({
-      data: dataToUpdate,
-      where: { enrollment },
+      data: {
+        name,
+        email,
+      },
+      where: { id: Number(id) },
     });
+
+    console.log('user', user);
 
     return response.json(user);
   }
