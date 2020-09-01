@@ -10,7 +10,7 @@ import authMiddleware from '~/app/middlewares/auth';
 
 import { validateParamsId } from '~/app/validations';
 import { validateReserveStore } from '~/app/validations/reserve';
-import { validateRoomStore } from '~/app/validations/room';
+import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
 import { validateSessionStore } from '~/app/validations/session';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
@@ -32,7 +32,7 @@ routes.put('/users', validateUserUpdate, UserController.update);
 
 routes.post('/rooms', validateRoomStore, RoomController.store);
 routes.get('/rooms', RoomController.index);
-routes.put('/rooms/:id', validateParamsId, RoomController.update);
+routes.put('/rooms/:id', validateParamsId, validateRoomUpdate, RoomController.update);
 routes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 
 routes.post('/schedules', validateScheduleStore, ScheduleController.store);

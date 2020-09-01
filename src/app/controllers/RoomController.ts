@@ -23,6 +23,12 @@ type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
 // };
 
 class RoomController {
+  async index(request: Request, response: Response) {
+    const rooms = await prisma.room.findMany({});
+
+    return response.json(rooms);
+  }
+
   async store(request: StoreRequest, response: Response) {
     const { initials } = request.body;
 
@@ -41,12 +47,6 @@ class RoomController {
     });
 
     return response.json(newRoom);
-  }
-
-  async index(request: Request, response: Response) {
-    const rooms = await prisma.room.findMany({});
-
-    return response.json(rooms);
   }
 
   async update(request: UpdateRequest, response: Response) {

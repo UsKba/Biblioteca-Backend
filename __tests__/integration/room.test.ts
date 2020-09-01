@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { generateRoom } from '../factory';
+import { generateRoom, createRoom } from '../factory';
 
 describe('Room Store', () => {
   beforeEach(async () => {
@@ -20,9 +20,17 @@ describe('Room Store', () => {
   });
 
   it('should not be able to create any room with the same initial', async () => {
-    const room = generateRoom();
+    const room = await createRoom();
 
-    await request(App).post('/rooms').send(room);
+    const response = await request(App).post('/rooms').send({
+      initials: room.initials,
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to store the room if the available is wrong ', async () => {
+    const room = generateRoom({ available: 'a' });
     const response = await request(App).post('/rooms').send(room);
 
     expect(response.status).toBe(400);
@@ -73,12 +81,8 @@ describe('Room Update', () => {
   });
 
   it('should not be able to update a room with id that not exists', async () => {
-    const room = generateRoom();
-
-    const storeResponse = await request(App).post('/rooms').send(room);
-
-    const { id } = storeResponse.body;
-    const nextRoomId = Number(id) + 1;
+    const room = await createRoom();
+    const nextRoomId = room.id + 1;
 
     const response = await request(App).put(`/rooms/${nextRoomId}`).send({
       available: false,
@@ -88,13 +92,9 @@ describe('Room Update', () => {
   });
 
   it('should be able to update the `available` of a room', async () => {
-    const room = generateRoom();
+    const room = await createRoom();
 
-    const storeResponse = await request(App).post('/rooms').send(room);
-
-    const { id } = storeResponse.body;
-
-    const response = await request(App).put(`/rooms/${id}`).send({
+    const response = await request(App).put(`/rooms/${room.id}`).send({
       available: false,
     });
 
@@ -103,13 +103,9 @@ describe('Room Update', () => {
   });
 
   it('should be able to update the `initials` of a room to another', async () => {
-    const room = generateRoom({ initials: 'F1-1' });
+    const room = await createRoom({ initials: 'F1-1' });
 
-    const storeResponse = await request(App).post('/rooms').send(room);
-
-    const { id } = storeResponse.body;
-
-    const response = await request(App).put(`/rooms/${id}`).send({
+    const response = await request(App).put(`/rooms/${room.id}`).send({
       initials: 'F1-2',
     });
 
@@ -118,16 +114,21 @@ describe('Room Update', () => {
   });
 
   it('should not be able to update the `initials` of a room to another that already exists', async () => {
-    const room1 = generateRoom({ initials: 'F1-1' });
-    const room2 = generateRoom({ initials: 'F1-2' });
+    await createRoom({ initials: 'F1-1' });
+    const room2 = await createRoom({ initials: 'F1-2' });
 
-    await request(App).post('/rooms').send(room1);
-    const storeResponse = await request(App).post('/rooms').send(room2);
-
-    const { id } = storeResponse.body;
-
-    const response = await request(App).put(`/rooms/${id}`).send({
+    const response = await request(App).put(`/rooms/${room2.id}`).send({
       initials: 'F1-1',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update the room if the available is incorrect ', async () => {
+    const room = await createRoom();
+
+    const response = await request(App).put(`/rooms/${room.id}`).send({
+      available: 'a',
     });
 
     expect(response.status).toBe(400);
@@ -146,12 +147,8 @@ describe('Room Delete', () => {
   });
 
   it('should not be able to delete a room with id that not exists', async () => {
-    const room = generateRoom();
-
-    const storeResponse = await request(App).post('/rooms').send(room);
-
-    const { id } = storeResponse.body;
-    const nextRoomId = Number(id) + 1;
+    const room = await createRoom();
+    const nextRoomId = room.id + 1;
 
     const response = await request(App).delete(`/rooms/${nextRoomId}`);
 
@@ -159,15 +156,11 @@ describe('Room Delete', () => {
   });
 
   it('should be able to delete a room', async () => {
-    const room = generateRoom();
+    const room = await createRoom();
 
-    const storeResponse = await request(App).post('/rooms').send(room);
-
-    const { id } = storeResponse.body;
-
-    const response = await request(App).delete(`/rooms/${id}`);
+    const response = await request(App).delete(`/rooms/${room.id}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.id).toBe(id);
+    expect(response.body.id).toBe(room.id);
   });
 });

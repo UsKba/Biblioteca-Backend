@@ -4,12 +4,28 @@ import * as Yup from 'yup';
 
 import { validateSchema } from '~/app/utils/yup';
 
-const RoomSchema = Yup.object().shape({
+const RoomStoreSchema = Yup.object().shape({
   initials: Yup.string().required('A sigla é requerida'),
+  available: Yup.boolean(),
+});
+
+const RoomUpdateSchema = Yup.object().shape({
+  initials: Yup.string(),
+  available: Yup.boolean(),
 });
 
 export async function validateRoomStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(RoomSchema, request.body);
+  const error = await validateSchema(RoomStoreSchema, request.body);
+
+  if (error) {
+    return response.status(400).json(error);
+  }
+
+  return next();
+}
+
+export async function validateRoomUpdate(request: Request, response: Response, next: NextFunction) {
+  const error = await validateSchema(RoomUpdateSchema, request.body);
 
   if (error) {
     return response.status(400).json(error);

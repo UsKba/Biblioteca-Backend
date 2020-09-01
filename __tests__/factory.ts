@@ -14,6 +14,7 @@ interface GenerateDateParams {
 
 interface GenerateRoomParams {
   initials?: string;
+  available?: boolean | any;
 }
 
 interface GenerateScheduleParams {
@@ -59,6 +60,7 @@ export function generateDate(params?: GenerateDateParams) {
 export function generateRoom(params?: GenerateRoomParams) {
   return {
     initials: 'F1-1',
+    available: true,
     ...params,
   };
 }

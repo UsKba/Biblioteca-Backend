@@ -25,17 +25,21 @@
 - [x] Testes em reservas
 - [x] Ver como separar testes em varios arquivos
 
+- [ ] Organizar o ReserveController
 - [ ] Limite de reservas diárias por aluno
-- [ ] Organizar ReserveController
 
 - [ ] Salvar dias e horarios de funcionameto
 
 
 ## Coisas pra fazer depois
 - [ ] Faker em testes
+
+
 - [ ] Terminar testes em schules (yup)
 - [ ] Terminar testes em reservas (yup)
 - [ ] Rever testes em usuários (yup)
+
+
 - [ ] Refatorar generateDate (tests - factory)
 
 
