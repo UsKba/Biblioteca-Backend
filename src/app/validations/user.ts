@@ -13,7 +13,13 @@ const UserStoreSchema = Yup.object().shape({
 const UserUpdateSchema = Yup.object().shape({
   name: Yup.string(),
   email: Yup.string(),
-  // enrollment: Yup.number().required('A matrícula é requerida'),
+  enrollment: Yup.number().test(
+    'should not pass enrollment',
+    'Você não pode atualizar a matrícula',
+    (enrollment?: string) => {
+      return enrollment === undefined;
+    }
+  ),
 });
 
 export async function validateUserStore(request: Request, response: Response, next: NextFunction) {

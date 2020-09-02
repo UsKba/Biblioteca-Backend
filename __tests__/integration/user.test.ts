@@ -120,15 +120,15 @@ describe('User Update', () => {
     expect(response.status).toBe(400);
   });
 
-  // it('should not be able to update the enrollment', async () => {
-  //   const { id } = await createUser({ enrollment: '20181104010048' });
+  it('should not be able to update the enrollment', async () => {
+    const { id } = await createUser({ enrollment: '20181104010048' });
 
-  //   const response = await request(App).put(`/users/${id}`).send({
-  //     enrollement: '20181104010049',
-  //   });
+    const response = await request(App).put(`/users/${id}`).send({
+      enrollment: '20181104010049',
+    });
 
-  //   expect(response.status).toBe(400);
-  // });
+    expect(response.status).toBe(400);
+  });
 });
 
 describe('User show', () => {
@@ -137,9 +137,9 @@ describe('User show', () => {
   });
 
   it('should be able show one user', async () => {
-    const user = await createUser({ enrollment: '20181104010048' });
+    const { id } = await createUser({ enrollment: '20181104010048' });
 
-    const response = await request(App).get(`/users/${user.id}`);
+    const response = await request(App).get(`/users/${id}`);
 
     expect(response.status).toBe(200);
     expect(response.body.enrollment).toBe('20181104010048');

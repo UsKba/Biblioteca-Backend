@@ -1,25 +1,25 @@
 import prisma from '~/prisma';
 
 interface GenerateUserParams {
-  name?: string;
-  email?: string;
-  enrollment?: string;
+  name?: string | any;
+  email?: string | any;
+  enrollment?: string | any;
 }
 
 interface GenerateDateParams {
-  sumYear?: number;
-  sumMonth?: number;
-  sumDay?: number;
+  sumYear?: number | any;
+  sumMonth?: number | any;
+  sumDay?: number | any;
 }
 
 interface GenerateRoomParams {
-  initials?: string;
+  initials?: string | any;
   available?: boolean | any;
 }
 
 interface GenerateScheduleParams {
-  initialHour?: string;
-  endHour?: string;
+  initialHour?: string | any;
+  endHour?: string | any;
 }
 
 export function generateUser(params?: GenerateUserParams) {

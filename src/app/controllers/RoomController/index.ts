@@ -16,11 +16,22 @@ interface UpdateRoom {
 type StoreRequest = RequestBody<StoreRoom>;
 type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
 
-// const roomStatusConfig = {
-//   available: 1,
-//   unavailable: 2,
-//   emUso: 3,
-// };
+async function assertInitialsNotExists(initials: string) {
+  const room = await prisma.room.findOne({
+    where: { initials },
+  });
+
+  if (room !== null) {
+    throw new Error('Já existe sala com essa sigla');
+  }
+}
+async function assertRoomIdExists(id: number) {
+  const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
+
+  if (!roomExists) {
+    throw new Error('Sala não encontrada');
+  }
+}
 
 class RoomController {
   async index(request: Request, response: Response) {
@@ -32,12 +43,10 @@ class RoomController {
   async store(request: StoreRequest, response: Response) {
     const { initials } = request.body;
 
-    const room = await prisma.room.findOne({
-      where: { initials },
-    });
-
-    if (room !== null) {
-      return response.status(400).json({ error: 'Já existe sala com essa sigla' });
+    try {
+      await assertInitialsNotExists(initials);
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     const newRoom = await prisma.room.create({
@@ -53,10 +62,10 @@ class RoomController {
     const { id } = request.params;
     const { available, initials } = request.body;
 
-    const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
-
-    if (roomExists === null) {
-      return response.status(400).json({ error: 'Sala não encontrada' });
+    try {
+      await assertRoomIdExists(Number(id));
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     if (initials) {

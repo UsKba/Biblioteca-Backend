@@ -4,6 +4,8 @@ import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
+import { assertEnrollmentNotExists, assertEmailNotExists, assertIdExists } from './tradingRules';
+
 interface StoreBody {
   name: string;
   email: string;
@@ -42,20 +44,11 @@ class UserController {
   async store(request: StoreRequest, response: Response) {
     const { enrollment, email, name } = request.body;
 
-    const enrollmentExists = await prisma.user.findOne({
-      where: { enrollment },
-    });
-
-    if (enrollmentExists) {
-      return response.status(400).json({ error: 'matricula já está cadastrada' });
-    }
-
-    const emailExists = await prisma.user.findOne({
-      where: { email },
-    });
-
-    if (emailExists) {
-      return response.status(400).json({ error: 'email já cadastrado' });
+    try {
+      await assertEnrollmentNotExists(enrollment);
+      await assertEmailNotExists(email);
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     const user = await prisma.user.create({
@@ -73,22 +66,11 @@ class UserController {
     const { id } = request.params;
     const { name, email } = request.body;
 
-    const userIdExists = await prisma.user.findOne({
-      where: { id: Number(id) },
-    });
-
-    if (userIdExists === null) {
-      return response.status(400).json({ error: 'Usuário não encontrado' });
-    }
-
-    if (email) {
-      const emailExists = await prisma.user.findOne({
-        where: { email },
-      });
-
-      if (emailExists) {
-        return response.status(400).json({ error: 'email já cadastrado' });
-      }
+    try {
+      await assertIdExists(Number(id));
+      if (email) await assertEmailNotExists(email);
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     const user = await prisma.user.update({
@@ -98,8 +80,6 @@ class UserController {
       },
       where: { id: Number(id) },
     });
-
-    console.log('user', user);
 
     return response.json(user);
   }

@@ -24,10 +24,9 @@
 - [x] Pegar o year em ReserveController
 - [x] Testes em reservas
 - [x] Ver como separar testes em varios arquivos
+- [x] should not be able to update the enrollment
 
-- [ ] should not be able to update the enrollment
-
-- [ ] Organizar o ReserveController
+- [ ] Organizar os controllers
 - [ ] Limite de reservas diárias por aluno
 
 - [ ] Salvar dias e horarios de funcionameto
