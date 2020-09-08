@@ -5,6 +5,7 @@ import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import SessionController from '~/app/controllers/SessionController';
 import UserController from '~/app/controllers/UserController';
+import UserReserverController from '~/app/controllers/UserReserverController';
 
 import authMiddleware from '~/app/middlewares/auth';
 
@@ -14,8 +15,6 @@ import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
 import { validateSessionStore } from '~/app/validations/session';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
-
-import UserReserverController from './app/controllers/UserReserverController';
 
 const routes = Router();
 
