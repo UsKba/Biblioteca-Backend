@@ -9,6 +9,7 @@ export async function assertInitialsNotExists(initials: string) {
     throw new Error('Já existe sala com essa sigla');
   }
 }
+
 export async function assertRoomIdExists(id: number) {
   const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
 

@@ -1,45 +1,13 @@
 import { isBefore } from 'date-fns';
 
+import { haveDuplicates } from '~/app/utils/array';
+import { splitSingleDate } from '~/app/utils/date';
+
 import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
 
-export function converDate(year: number, month: number, day: number, hours: number, minutes: number) {
-  // const targetMonth = month - 1; // Jan is month 0
-
-  const targetDate = new Date(year, month, day, hours, minutes, 0, 0);
-
-  return targetDate;
-}
-
-export function assertScheduleIsNotBefore(year: number, month: number, day: number, hours: number, minutes: number) {
-  const now = new Date();
-  const reserveDate = converDate(year, month, day, hours, minutes);
-
-  const isDateBefore = isBefore(reserveDate, now);
-
-  return isDateBefore;
-}
-
-export function assertUniqueIds(classmatesIDs: number[]) {
-  const iDs = [] as number[];
-
-  for (let i = 0; i < classmatesIDs.length; i += 1) {
-    const idExists = iDs.findIndex((element) => element === classmatesIDs[i]);
-
-    if (idExists !== -1) {
-      // existe em Ids
-
-      return false;
-    }
-
-    iDs.push(classmatesIDs[i]);
-  }
-
-  return true;
-}
-
-export async function assertUsersExists(classmatesIDs: number[]) {
+export async function checkUsersExists(classmatesIDs: number[]) {
   for (let i = 0; i < classmatesIDs.length; i += 1) {
     const classmateId = classmatesIDs[i];
 
@@ -56,28 +24,18 @@ export async function assertUsersExists(classmatesIDs: number[]) {
 }
 
 export function assertIdsAreDiferent(classmatesIDs: number[]) {
-  const isIdsUnique = assertUniqueIds(classmatesIDs);
+  const haveIdsDuplicated = haveDuplicates(classmatesIDs);
 
-  if (!isIdsUnique) {
+  if (haveIdsDuplicated) {
     throw new Error('Não pode repetir o mesmo usuário');
   }
 }
 
 export async function assertUsersExistsOnDatabase(classmatesIDs: number[]) {
-  const usersExists = await assertUsersExists(classmatesIDs);
+  const usersExists = await checkUsersExists(classmatesIDs);
 
   if (!usersExists) {
     throw new Error(`Todos os usuários devem ser cadastrados`);
-  }
-}
-
-export async function assertRoomsExist(roomId: number) {
-  const roomExists = await prisma.room.findOne({
-    where: { id: roomId },
-  });
-
-  if (!roomExists) {
-    throw new Error(`Sala não encontrada`);
   }
 }
 
@@ -95,10 +53,31 @@ export async function assertIfReserveExists(
   }
 }
 
-export function assertIfHaveTreeClassmates(classmatesIDs: number[]) {
+export function assertIfHaveEnoughClassmates(classmatesIDs: number[]) {
   const { minClassmatesPerRoom } = reserveConfig;
 
   if (classmatesIDs.length < minClassmatesPerRoom) {
     throw new Error(`São necessários ao menos ${minClassmatesPerRoom} alunos`);
+  }
+}
+
+export function assertIfTheReserveIsNotOnWeekend(initialHour: string, year: number, month: number, day: number) {
+  const [hours, minutes] = splitSingleDate(initialHour);
+
+  const targetDate = new Date(year, month, day, hours, minutes);
+
+  if (targetDate.getDay() === 0 || targetDate.getDay() === 6) {
+    throw new Error('Não se pode reservar sala no final de semana');
+  }
+}
+
+export function assertIfTheReserveIsNotBefore(initialHour: string, year: number, month: number, day: number) {
+  const [hours, minutes] = splitSingleDate(initialHour);
+
+  const now = new Date();
+  const reserveDate = new Date(year, month, day, hours, minutes);
+
+  if (isBefore(reserveDate, now)) {
+    throw new Error('A Data não pode ser anterior a atual');
   }
 }

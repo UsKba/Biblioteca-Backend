@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import faker from 'faker';
+
 import prisma from '~/prisma';
 
 interface GenerateUserParams {
@@ -24,8 +27,8 @@ interface GenerateScheduleParams {
 
 export function generateUser(params?: GenerateUserParams) {
   return {
-    name: 'Kalon',
-    email: 'kalon@gmail.com',
+    name: faker.name.findName(),
+    email: faker.internet.email(),
     enrollment: '20181104010048',
     ...params,
   };
