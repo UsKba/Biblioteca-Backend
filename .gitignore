@@ -15,10 +15,13 @@ web-report/
 
 *.log
 
-.env
+# .env
 dist/
 tmp/
 
 # Ignore test-related files
 **/coverage.data
 **/coverage/
+
+
+.vscode

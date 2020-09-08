@@ -3,3 +3,13 @@
 20200629145634-create-user
 20200718151010-add-unique-to-user-enrollment
 20200718152908-change-user-enrollment-to-string
+20200722142040-create-room
+20200806155841-create-schedule
+20200806155902-create-reserve
+20200806155922-create-user-reserve
+20200807154248-remove-status-and-add-available-on-room
+20200819150513-remove-password-on-user
+20200831150055-chage-date-to-day-month-year-on-reserve
+20200901155548
+20200901155602
+20200901160220-add-unique-to-email-on-user

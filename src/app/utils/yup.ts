@@ -6,6 +6,6 @@ export async function validateSchema(schema: Yup.ObjectSchema, params: any) {
 
     return undefined;
   } catch (err) {
-    return { errors: err.errors };
+    return { error: err.errors[0] };
   }
 }
