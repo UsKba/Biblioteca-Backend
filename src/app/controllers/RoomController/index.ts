@@ -4,6 +4,8 @@ import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
+import { assertInitialsNotExists, assertRoomIdExists } from './tradingRules';
+
 interface StoreRoom {
   initials: string;
 }
@@ -15,23 +17,6 @@ interface UpdateRoom {
 
 type StoreRequest = RequestBody<StoreRoom>;
 type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
-
-async function assertInitialsNotExists(initials: string) {
-  const room = await prisma.room.findOne({
-    where: { initials },
-  });
-
-  if (room !== null) {
-    throw new Error('Já existe sala com essa sigla');
-  }
-}
-async function assertRoomIdExists(id: number) {
-  const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
-
-  if (!roomExists) {
-    throw new Error('Sala não encontrada');
-  }
-}
 
 class RoomController {
   async index(request: Request, response: Response) {
@@ -64,18 +49,11 @@ class RoomController {
 
     try {
       await assertRoomIdExists(Number(id));
+      if (initials) {
+        await assertInitialsNotExists(initials);
+      }
     } catch (e) {
       return response.status(400).json({ error: e.message });
-    }
-
-    if (initials) {
-      const roomWithSameInitials = await prisma.room.findOne({
-        where: { initials },
-      });
-
-      if (roomWithSameInitials !== null) {
-        return response.status(400).json({ error: 'Já existe sala com essa sigla' });
-      }
     }
 
     const room = await prisma.room.update({
@@ -90,25 +68,19 @@ class RoomController {
   }
 
   async delete(request: RequestParamsId, response: Response) {
-    const { id } = request.params;
+    const id = Number(request.params.id);
 
-    const room = await prisma.room.findOne({
-      where: { id: Number(id) },
-    });
-
-    if (room === null) {
-      return response.status(400).json({ error: 'Sala não encontrada' });
+    try {
+      await assertRoomIdExists(id);
+    } catch (e) {
+      return response.status(400).json({ error: e.message });
     }
 
     await prisma.room.delete({
-      where: {
-        id: Number(id),
-      },
+      where: { id },
     });
 
-    return response.json({
-      id: Number(id),
-    });
+    return response.json({ id });
   }
 }
 

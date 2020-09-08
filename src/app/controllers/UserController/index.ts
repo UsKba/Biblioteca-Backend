@@ -63,11 +63,11 @@ class UserController {
   }
 
   async update(request: UpdateRequest, response: Response) {
-    const { id } = request.params;
+    const id = Number(request.params.id);
     const { name, email } = request.body;
 
     try {
-      await assertIdExists(Number(id));
+      await assertIdExists(id);
       if (email) await assertEmailNotExists(email);
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -78,7 +78,7 @@ class UserController {
         name,
         email,
       },
-      where: { id: Number(id) },
+      where: { id },
     });
 
     return response.json(user);

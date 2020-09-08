@@ -78,14 +78,11 @@ class ScheduleController {
   }
 
   async update(request: UpdateRequest, response: Response) {
-    const { id } = request.params;
+    const id = Number(request.params.id);
     const { initialHour, endHour } = request.body;
 
-    // 07:00 - 08:00
-    // 09:00 - 10:00
-
     const schedule = await prisma.schedule.findOne({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     if (schedule === null) {
@@ -98,7 +95,7 @@ class ScheduleController {
       return response.status(400).json({ error: 'A hora final não pode ser antes da de inicio' });
     }
 
-    const scheduleAreRigth = await areSchedulesOverlapping(initialDate, endDate, Number(id));
+    const scheduleAreRigth = await areSchedulesOverlapping(initialDate, endDate, id);
 
     if (scheduleAreRigth === true) {
       return response.status(400).json({ error: 'Não é possível colocar dois horários no mesmo intervalo' });
@@ -109,7 +106,7 @@ class ScheduleController {
         initialHour,
         endHour,
       },
-      where: { id: Number(id) },
+      where: { id },
     });
 
     return response.json(newSchudule);
