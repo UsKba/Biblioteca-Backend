@@ -26,19 +26,17 @@
 - [x] Ver como separar testes em varios arquivos
 - [x] should not be able to update the enrollment
 
-- [ ] Organizar os controllers
-- [ ] Limite de reservas diárias por aluno
+- [x] Organizar os controllers
+- [ ] Limite de reservas por turno por aluno
 
 - [ ] Salvar dias e horarios de funcionameto
 
 
 ## Coisas pra fazer depois
-- [ ] Faker em testes
-
-
-- [ ] Terminar testes em schules (yup)
-- [ ] Terminar testes em reservas (yup)
-- [ ] Rever testes em usuários (yup)
+- [x] Faker em testes
+- [x] Terminar testes em schules (yup)
+- [x] Terminar testes em reservas (yup)
+- [x] Rever testes em usuários (yup)
 
 
 - [ ] Refatorar generateDate (tests - factory)
@@ -50,10 +48,14 @@
 
 ### Aluno
 - [x] Matricula unica
+- [x] Email unico?
+
+
+### Amigo
+
+##### Falar com os kra
 - [ ] Um aluno pode ter vários amigos
 - [ ] Um aluno pode ser amigo de várias pessoas
-
-- [ ] Email unico?
 
 
 ### Sala

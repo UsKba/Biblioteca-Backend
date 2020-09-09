@@ -29,14 +29,14 @@ routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
 
-routes.post('/rooms', validateRoomStore, RoomController.store);
 routes.get('/rooms', RoomController.index);
+routes.post('/rooms', validateRoomStore, RoomController.store);
 routes.put('/rooms/:id', validateParamsId, validateRoomUpdate, RoomController.update);
 routes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 
-routes.post('/schedules', validateScheduleStore, ScheduleController.store);
 routes.get('/schedules', ScheduleController.index);
-routes.put('/schedules/:id', validateScheduleUpdate, validateParamsId, ScheduleController.update);
+routes.post('/schedules', validateScheduleStore, ScheduleController.store);
+routes.put('/schedules/:id', validateParamsId, validateScheduleUpdate, ScheduleController.update);
 routes.delete('/schedules/', ScheduleController.deleteAll);
 
 // Privada
