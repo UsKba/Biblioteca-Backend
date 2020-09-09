@@ -4,11 +4,11 @@ import { promisify } from 'util';
 import authConfig from '~/config/auth';
 
 interface TokenObject {
-  enrollment: string;
+  id: number;
 }
 
 export function encodeToken(objectToEncode: TokenObject) {
-  return jwt.sign({ enrollment: objectToEncode.enrollment }, authConfig.secret);
+  return jwt.sign({ id: objectToEncode.id }, authConfig.secret);
 }
 
 export async function decodeToken(token: string) {

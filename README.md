@@ -29,6 +29,10 @@
 - [x] Organizar os controllers
 - [ ] Limite de reservas por turno por aluno
 
+- [ ] Testes em Invites
+- [ ] Testes em InvitesConfirmation
+- [ ] Precisa garantir o userId em InviteConfirmationController
+
 - [ ] Salvar dias e horarios de funcionameto
 
 
@@ -43,6 +47,8 @@
 
 - [ ] Ver 'Deletar' horario
 - [ ] Ver 'Deletar' user
+- [ ] Passar os nomes dos modelos para o plural
+- [ ] Garantir que o email não existe na session
 
 ## Regras de Negócio
 

@@ -4,7 +4,7 @@ import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
-import { assertEnrollmentNotExists, assertEmailNotExists, assertIdExists } from './tradingRules';
+import { assertEnrollmentNotExists, assertEmailNotExists, assertUserIdExists } from './tradingRules';
 
 interface StoreBody {
   name: string;
@@ -67,7 +67,7 @@ class UserController {
     const { name, email } = request.body;
 
     try {
-      await assertIdExists(id);
+      await assertUserIdExists(id);
       if (email) await assertEmailNotExists(email);
     } catch (e) {
       return response.status(400).json({ error: e.message });

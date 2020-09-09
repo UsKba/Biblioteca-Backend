@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import FriendController from '~/app/controllers/FriendController';
+import InviteConfirmationController from '~/app/controllers/InviteConfirmationController';
+import InviteController from '~/app/controllers/InviteController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
@@ -49,5 +52,13 @@ routes.delete('/reserves', ReserveController.deleteAll);
 
 routes.get('/userReserves', UserReserverController.index);
 routes.delete('/userReserves', UserReserverController.deleteAll);
+
+routes.get('/friends', FriendController.index);
+
+routes.get('/invites', InviteController.index);
+routes.post('/invites', InviteController.store);
+routes.delete('/invites/:id', InviteController.delete);
+
+routes.post('/invites/confirmation', InviteConfirmationController.store);
 
 export default routes;

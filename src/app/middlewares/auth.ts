@@ -5,7 +5,7 @@ import prisma from '~/prisma';
 import { decodeToken } from '../utils/auth';
 
 interface AuthRequest extends Request {
-  userEnrollment?: string;
+  userId?: number;
 }
 
 export default async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -23,13 +23,13 @@ export default async (req: AuthRequest, res: Response, next: NextFunction) => {
     return res.status(400).json({ error: 'Token Invalido' });
   }
 
-  const { enrollment } = tokenDecoded;
-  const user = await prisma.user.findOne({ where: { enrollment } });
+  const { id } = tokenDecoded;
+  const user = await prisma.user.findOne({ where: { id } });
 
   if (!user) {
     return res.status(401).json({ error: 'Usuário não encontrado' });
   }
 
-  req.userEnrollment = tokenDecoded.enrollment;
+  req.userId = tokenDecoded.id;
   return next();
 };

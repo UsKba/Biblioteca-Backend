@@ -20,7 +20,7 @@ export async function assertEnrollmentNotExists(enrollment: string) {
   }
 }
 
-export async function assertIdExists(id: number) {
+export async function assertUserIdExists(id: number) {
   const userId = await prisma.user.findOne({
     where: { id },
   });
