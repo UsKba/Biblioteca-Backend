@@ -1,13 +1,13 @@
 import request from 'supertest';
 
 import App from '~/App';
-import prisma from '~/prisma';
 
 import { generateRoom, createRoom } from '../factory';
+import { cleanDatabase } from '../utils';
 
 describe('Room Store', () => {
   beforeEach(async () => {
-    await prisma.room.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to create a room', async () => {
@@ -39,7 +39,7 @@ describe('Room Store', () => {
 
 describe('Room Index', () => {
   beforeEach(async () => {
-    await prisma.room.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to index the 1 room', async () => {
@@ -69,7 +69,7 @@ describe('Room Index', () => {
 
 describe('Room Update', () => {
   beforeEach(async () => {
-    await prisma.room.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should not be able to update a room with incorrect id format', async () => {
@@ -137,7 +137,7 @@ describe('Room Update', () => {
 
 describe('Room Delete', () => {
   beforeEach(async () => {
-    await prisma.room.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should not be able to delete a room with incorrect id format', async () => {

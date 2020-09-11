@@ -3,18 +3,13 @@ import request from 'supertest';
 import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
-import prisma from '~/prisma';
 
 import { createUser, createRoom, createSchedule, generateDate } from '../factory';
+import { cleanDatabase } from '../utils';
 
 describe('Reserve Store', () => {
   beforeEach(async () => {
-    await prisma.userReserve.deleteMany({});
-    await prisma.user.deleteMany({});
-    await prisma.reserve.deleteMany({});
-
-    await prisma.room.deleteMany({});
-    await prisma.schedule.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to create a reserve', async () => {
@@ -115,7 +110,7 @@ describe('Reserve Store', () => {
     const schedule = await createSchedule();
 
     const tomorrowDate = generateDate({ sumDay: 1 });
-    const afterTomorrowDate = generateDate({ sumDay: 2 });
+    const afterTomorrowDate = generateDate({ sumDay: 4 });
 
     const reserve1 = {
       roomId: room.id,
@@ -300,7 +295,7 @@ describe('Reserve Store', () => {
     expect(response2.status).toBe(400);
   });
 
-  it('should not be able to create 2 or more reserves on the same room at the same time ', async () => {
+  it('should not be able to create a reserve on weekend', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });

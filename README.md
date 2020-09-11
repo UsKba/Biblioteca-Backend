@@ -41,9 +41,7 @@
 - [x] Terminar testes em schules (yup)
 - [x] Terminar testes em reservas (yup)
 - [x] Rever testes em usuários (yup)
-
-
-- [ ] Refatorar generateDate (tests - factory)
+- [x] Refatorar generateDate (tests - factory)
 
 - [ ] Ver 'Deletar' horario
 - [ ] Ver 'Deletar' user

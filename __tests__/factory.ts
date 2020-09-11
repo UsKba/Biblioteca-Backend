@@ -37,26 +37,24 @@ export function generateUser(params?: GenerateUserParams) {
 export function generateDate(params?: GenerateDateParams) {
   const now = new Date();
 
-  const dayWithSum = Number(params?.sumDay || 0);
+  const newYear = now.getFullYear() + Number(params?.sumYear || 0);
+  const newMonth = now.getMonth() + Number(params?.sumMonth || 0);
+  const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
-  let targetDay = now.getDay() + dayWithSum;
+  const newDate = new Date(newYear, newMonth, newDay);
+  const weekDay = newDate.getDay();
+  let newWeekDay = newDate.getUTCDate();
 
-  if (targetDay === 0) {
-    // sunday to monday
-
-    targetDay = now.getUTCDate() + dayWithSum + 1;
-  } else if (targetDay === 6) {
-    // saturday to monday
-
-    targetDay = now.getUTCDate() + dayWithSum + 2;
-  } else {
-    targetDay = now.getUTCDate() + dayWithSum;
+  if (weekDay === 0) {
+    newWeekDay = newDate.getUTCDate() + 1;
+  } else if (weekDay === 6) {
+    newWeekDay = newDate.getUTCDate() + 2;
   }
 
   return {
     year: now.getFullYear() + Number(params?.sumYear || 0),
     month: now.getMonth() + Number(params?.sumMonth || 0),
-    day: targetDay,
+    day: newWeekDay,
   };
 }
 

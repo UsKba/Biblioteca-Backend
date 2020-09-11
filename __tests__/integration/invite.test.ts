@@ -1,16 +1,15 @@
 import request from 'supertest';
 
-import App from '~/App';
-import prisma from '~/prisma';
-
-import { createUser } from '../factory';
 import { encodeToken } from '~/app/utils/auth';
 
+import App from '~/App';
+
+import { createUser } from '../factory';
+import { cleanDatabase } from '../utils';
 
 describe('invite store', () => {
   beforeEach(async () => {
-    await prisma.invite.deleteMany({});
-    await prisma.user.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able store 1 invite', async () => {
@@ -19,11 +18,13 @@ describe('invite store', () => {
 
     const token = encodeToken(user1);
 
-    const response = await request(App).post('/invites').send({ recipientId : user2.id }).set({ authorization: `Bearer ${token}`});
+    const response = await request(App)
+      .post('/invites')
+      .send({ recipientId: user2.id })
+      .set({ authorization: `Bearer ${token}` });
 
-    console.log(response.body);
     expect(response.status).toBe(200);
-    expect(response.body.recipientId).toBe(user2.id)
-    expect(response.body.userId).toBe(user1.id)
+    expect(response.body.recipientId).toBe(user2.id);
+    expect(response.body.userId).toBe(user1.id);
   });
 });

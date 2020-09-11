@@ -1,13 +1,13 @@
 import request from 'supertest';
 
 import App from '~/App';
-import prisma from '~/prisma';
 
 import { generateSchedule, createSchedule } from '../factory';
+import { cleanDatabase } from '../utils';
 
 describe('Schedule Store', () => {
   beforeEach(async () => {
-    await prisma.schedule.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to create a schedule', async () => {
@@ -73,7 +73,7 @@ describe('Schedule Store', () => {
 
 describe('Schedule Index', () => {
   beforeEach(async () => {
-    await prisma.schedule.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to index one schedule', async () => {
@@ -107,7 +107,7 @@ describe('Schedule Index', () => {
 
 describe('Schedule Update', () => {
   beforeEach(async () => {
-    await prisma.schedule.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to update a schedule', async () => {

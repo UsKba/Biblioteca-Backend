@@ -1,13 +1,13 @@
 import request from 'supertest';
 
 import App from '~/App';
-import prisma from '~/prisma';
 
 import { generateUser, createUser } from '../factory';
+import { cleanDatabase } from '../utils';
 
 describe('User store', () => {
   beforeEach(async () => {
-    await prisma.user.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to register an user', async () => {
@@ -50,7 +50,7 @@ describe('User store', () => {
 
 describe('User index', () => {
   beforeEach(async () => {
-    await prisma.user.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able list 1 user', async () => {
@@ -80,7 +80,7 @@ describe('User index', () => {
 
 describe('User Update', () => {
   beforeEach(async () => {
-    await prisma.user.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able to update the name of one user', async () => {
@@ -133,7 +133,7 @@ describe('User Update', () => {
 
 describe('User show', () => {
   beforeEach(async () => {
-    await prisma.user.deleteMany({});
+    await cleanDatabase();
   });
 
   it('should be able show one user', async () => {
