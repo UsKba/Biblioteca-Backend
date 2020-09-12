@@ -6,7 +6,7 @@ export async function assertEmailNotExists(email: string) {
   });
 
   if (emailExists) {
-    throw new Error('email já cadastrado');
+    throw new Error('Email já cadastrado');
   }
 }
 
@@ -16,8 +16,10 @@ export async function assertEnrollmentNotExists(enrollment: string) {
   });
 
   if (enrollmentExists) {
-    throw new Error('matricula já está cadastrada');
+    throw new Error('Matricula já está cadastrada');
   }
+
+  return enrollmentExists;
 }
 
 export async function assertUserIdExists(id: number) {
@@ -28,4 +30,18 @@ export async function assertUserIdExists(id: number) {
   if (!userId) {
     throw new Error('Usuário não encontrado');
   }
+
+  return userId;
+}
+
+export async function assertUserEnrollmentExists(enrollment: string) {
+  const user = await prisma.user.findOne({
+    where: { enrollment },
+  });
+
+  if (!user) {
+    throw new Error('Usuário não encontrado');
+  }
+
+  return user;
 }

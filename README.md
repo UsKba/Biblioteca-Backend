@@ -25,15 +25,18 @@
 - [x] Testes em reservas
 - [x] Ver como separar testes em varios arquivos
 - [x] should not be able to update the enrollment
-
 - [x] Organizar os controllers
-- [ ] Limite de reservas por turno por aluno
+- [x] Testes em Invites
+- [x] Testes em InvitesConfirmation
+- [x] Precisa garantir o userId em InviteConfirmationController
+- [x] Verificar se a matricula existe
+- [x] Listar suas reservas
 
-- [ ] Testes em Invites
-- [ ] Testes em InvitesConfirmation
-- [ ] Precisa garantir o userId em InviteConfirmationController
+- [ ] Listar suas reservas Testes
+- [ ] Listar suas reservas Testes (Olhar documentação do prisma, findMany: every, some, none)
+- [ ] Listar seus amigos
 
-- [ ] Salvar dias e horarios de funcionameto
+- [ ] Armazear turnos e ligar com os schedules
 
 
 ## Coisas pra fazer depois
@@ -47,6 +50,9 @@
 - [ ] Ver 'Deletar' user
 - [ ] Passar os nomes dos modelos para o plural
 - [ ] Garantir que o email não existe na session
+
+- [ ] Limite de reservas por turno por aluno
+- [ ] Salvar dias e horarios de funcionameto
 
 ## Regras de Negócio
 

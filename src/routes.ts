@@ -6,6 +6,7 @@ import InviteController from '~/app/controllers/InviteController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
+import SeachController from '~/app/controllers/SeachController';
 import SessionController from '~/app/controllers/SessionController';
 import UserController from '~/app/controllers/UserController';
 import UserReserverController from '~/app/controllers/UserReserverController';
@@ -13,9 +14,11 @@ import UserReserverController from '~/app/controllers/UserReserverController';
 import authMiddleware from '~/app/middlewares/auth';
 
 import { validateParamsId } from '~/app/validations';
+import { validateInviteStore } from '~/app/validations/invite';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
+import { validateSeachShow } from '~/app/validations/search';
 import { validateSessionStore } from '~/app/validations/session';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 
@@ -56,9 +59,11 @@ routes.delete('/userReserves', UserReserverController.deleteAll);
 routes.get('/friends', FriendController.index);
 
 routes.get('/invites', InviteController.index);
-routes.post('/invites', InviteController.store);
-routes.delete('/invites/:id', InviteController.delete);
+routes.post('/invites', validateInviteStore, InviteController.store);
+routes.delete('/invites/:id', validateParamsId, InviteController.delete);
 
 routes.post('/invites/confirmation', InviteConfirmationController.store);
+
+routes.get('/search/:enrollment', validateSeachShow, SeachController.show);
 
 export default routes;

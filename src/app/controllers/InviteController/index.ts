@@ -5,7 +5,7 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserIdExists } from '../UserController/tradingRules';
-import { assertInviteNotExists } from './tradingRules';
+import { assertInviteNotExists, assertUserIsNotFriend } from './tradingRules';
 import { deleteInvite } from './utils';
 
 interface StoreInvite {
@@ -28,8 +28,9 @@ class InviteController {
     const userId = req.userId as number;
 
     try {
-      await assertInviteNotExists(userId, recipientId);
       await assertUserIdExists(recipientId);
+      await assertInviteNotExists(userId, recipientId);
+      await assertUserIsNotFriend(userId, recipientId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }

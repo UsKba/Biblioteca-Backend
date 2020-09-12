@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import { RequestBody } from '~/types';
+import { RequestAuth } from '~/types/auth';
 
 import prisma from '~/prisma';
 
@@ -23,13 +24,20 @@ interface StoreReserve {
   year: number;
   classmatesIDs: number[];
 }
-
+type IndexRequest = RequestAuth;
 type StoreRequest = RequestBody<StoreReserve>;
 
 class ReserveController {
-  async index(request: Request, response: Response) {
-    const reserve = await prisma.reserve.findMany({});
-    return response.json(reserve);
+  async index(request: IndexRequest, response: Response) {
+    const userId = request.userId as number;
+
+    const reserves = await prisma.reserve.findMany({
+      where: {
+        UserReserve: { some: { userId } },
+      },
+    });
+
+    return response.json(reserves);
   }
 
   async store(request: StoreRequest, response: Response) {

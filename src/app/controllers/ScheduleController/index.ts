@@ -92,6 +92,3 @@ class ScheduleController {
 }
 
 export default new ScheduleController();
-
-// aaaaaaaaa
-// hora: 99
