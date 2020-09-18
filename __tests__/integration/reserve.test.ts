@@ -4,8 +4,108 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
-import { createUser, createRoom, createSchedule, generateDate } from '../factory';
+import { createUser, createRoom, createSchedule, generateDate, createReserve } from '../factory';
 import { cleanDatabase } from '../utils';
+
+describe('Reserve Index', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able index the one reserve linked with user', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({ users: [user1, user2, user3] });
+
+    const token = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${token}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].id).toBe(reserve.id);
+  });
+
+  it('should be able index the two reserves linked with user', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const schedule1 = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ initialHour: '13:00', endHour: '14:00' });
+
+    const reserve1 = await createReserve({
+      users: [user1, user2, user3],
+      schedule: schedule1,
+      room,
+    });
+
+    const reserve2 = await createReserve({
+      users: [user1, user2, user3],
+      schedule: schedule2,
+      room,
+    });
+
+    const token = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${token}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(reserve1.id);
+    expect(response.body[1].id).toBe(reserve2.id);
+  });
+
+  it('should be able index the two reserves linked with user even if are more reserves created of anothers users', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const user4 = await createUser({ enrollment: '20181104010044' });
+
+    const room = await createRoom();
+    const schedule1 = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ initialHour: '13:00', endHour: '14:00' });
+    const schedule3 = await createSchedule({ initialHour: '18:00', endHour: '19:00' });
+
+    const reserve1 = await createReserve({
+      users: [user1, user2, user3],
+      schedule: schedule1,
+      room,
+    });
+
+    const reserve2 = await createReserve({
+      users: [user1, user2, user3],
+      schedule: schedule2,
+      room,
+    });
+
+    await createReserve({ users: [user2, user3, user4], room, schedule: schedule3 });
+
+    const token = encodeToken(user1);
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${token}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(reserve1.id);
+    expect(response.body[1].id).toBe(reserve2.id);
+  });
+});
 
 describe('Reserve Store', () => {
   beforeEach(async () => {

@@ -29,7 +29,7 @@ type StoreRequest = RequestBody<StoreReserve>;
 
 class ReserveController {
   async index(request: IndexRequest, response: Response) {
-    const userId = request.userId as number;
+    const userId = request.userId as number; // Quem sou eu e quais reservas estão linkadas a mim
 
     const reserves = await prisma.reserve.findMany({
       where: {

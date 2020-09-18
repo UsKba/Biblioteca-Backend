@@ -1,5 +1,9 @@
+import { Room, Schedule, User } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import faker from 'faker';
+
+import { encodeToken } from '~/app/utils/auth';
 
 import prisma from '~/prisma';
 
@@ -23,6 +27,17 @@ interface GenerateRoomParams {
 interface GenerateScheduleParams {
   initialHour?: string | any;
   endHour?: string | any;
+}
+
+interface GenerateReserveParams {
+  users: User[];
+  schedule?: Schedule;
+  room?: Room;
+  date?: {
+    year: number;
+    month: number;
+    day: number;
+  };
 }
 
 export function generateUser(params?: GenerateUserParams) {
@@ -102,4 +117,32 @@ export async function createSchedule(params?: GenerateScheduleParams) {
   });
 
   return schedule;
+}
+
+export async function createReserve(params: GenerateReserveParams) {
+  const room = params?.room || (await createRoom());
+  const schedule = params?.schedule || (await createSchedule(params?.schedule));
+
+  const { day, month, year } = params.date || generateDate({ sumDay: 1 });
+
+  const reserve = await prisma.reserve.create({
+    data: {
+      day,
+      month,
+      year,
+      room: { connect: { id: room.id } },
+      schedule: { connect: { id: schedule.id } },
+    },
+  });
+
+  for (let i = 0; i < params.users.length; i += 1) {
+    await prisma.userReserve.create({
+      data: {
+        reserve: { connect: { id: reserve.id } },
+        user: { connect: { id: params.users[i].id } },
+      },
+    });
+  }
+
+  return reserve;
 }

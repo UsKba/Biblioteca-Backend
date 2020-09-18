@@ -22,13 +22,3 @@ export async function validateReserveStore(request: Request, response: Response,
 
   return next();
 }
-
-export async function validateReserveUpdate(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(ReserveSchema, request.body);
-
-  if (error) {
-    return response.status(400).json(error);
-  }
-
-  return next();
-}

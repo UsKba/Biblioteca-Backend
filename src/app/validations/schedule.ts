@@ -4,20 +4,15 @@ import * as Yup from 'yup';
 
 import { validateSchema } from '~/app/utils/yup';
 
-interface Body {
-  initialHour: number;
-  endHour: number;
-}
-
-function assertIsHourValid(hour: string) {
+function checkIsHourValid(hour: string) {
   return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(hour);
 }
 
 const scheduleSchema = Yup.object().shape({
   initialHour: Yup.string()
     .required('Hora inicial é requerida')
-    .test('is-hour-valid', 'Hora inválida', (value) => assertIsHourValid(value)), // mesmo
-  endHour: Yup.string().required('Hora final é requerida').test('is-hour-valid', 'Hora inválida', assertIsHourValid), // mesmo
+    .test('is-hour-valid', 'Hora inválida', (value) => checkIsHourValid(value)), // mesmo
+  endHour: Yup.string().required('Hora final é requerida').test('is-hour-valid', 'Hora inválida', checkIsHourValid), // mesmo
 });
 
 export async function validateScheduleStore(request: Request, response: Response, next: NextFunction) {

@@ -123,11 +123,28 @@ describe('Schedule Update', () => {
     expect(updateResponse.body.endHour).toBe('09:00');
   });
 
-  it('should not be able to update a schedule with an id that not exists', async () => {
-    const schedule = await createSchedule();
+  it('should not be able to update a schedule with invalid id', async () => {
+    const response = await request(App).put(`/schedules/invalidId`).send({ initialHour: '08:00', endHour: '09:00' });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule wihout initialHour or endHour', async () => {
+    const schedule = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
     const nextScheduleId = schedule.id + 1;
 
     const response = await request(App).put(`/schedules/${nextScheduleId}`).send({});
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule with an id that not exists', async () => {
+    const schedule = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
+    const nextScheduleId = schedule.id + 1;
+
+    const response = await request(App)
+      .put(`/schedules/${nextScheduleId}`)
+      .send({ initialHour: '08:00', endHour: '09:00' });
 
     expect(response.status).toBe(400);
   });

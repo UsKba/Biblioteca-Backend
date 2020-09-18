@@ -1,49 +1,21 @@
 Co-authored-by: Kaduco19 <caduco2003@gmail.com>
 
-Criar docker container:
+finalização dos testes da listagem de reservas
+correção nos testes dos horários
+testes no login
+
+=> Criar docker container:
 docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 
 => listar containers em execucao:
 docker ps
 
-docker start sb_database
-docker stop sb_database
-
-
-prisma
-
-npx prisma init
-
 .env
-DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
+PRISMA_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
 
 
 FAZER MIGRACAO
-npx prisma migrate save --experimental
-
-UPAR PRO DB
-npx prisma migrate up --experimental
-
-ATUALIZAR TYPESCRIPT MODEL (CASO NN RECONHECA DE PRIMEIRA FECHE O ARQUIVO E ABRA DENOVO OU RELOAD VS)
-npx prisma generate
-
-
-npx prisma studio --experimental
-npx prisma introspect
-
-sudo docker run --name postgresLibrary -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
-//criar o conteiner postgres
-
-sudo docker ps -a
-//mostrar todos conteiners do computador
-
-sudo docker ps
-//mostrar conteiners em execucao
-
-sudo docker start postgresLibrary
-//startar o container
-
-
+yarn migrate
 
 ==================================== HEROKU ===================================
 

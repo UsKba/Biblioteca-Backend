@@ -1,6 +1,5 @@
 # TODO
 
-
 ## 1° Etapa
 - [x] Revisar o código
 - [x] Model User (Prisma)
@@ -20,6 +19,7 @@
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
 
+
 ## Coisas fazendo hoje
 - [x] Pegar o year em ReserveController
 - [x] Testes em reservas
@@ -31,12 +31,11 @@
 - [x] Precisa garantir o userId em InviteConfirmationController
 - [x] Verificar se a matricula existe
 - [x] Listar suas reservas
+- [x] Listar suas reservas Testes
+- [x] Listar suas reservas Testes (Olhar documentação do prisma, findMany: every, some, none)
 
-- [ ] Listar suas reservas Testes
-- [ ] Listar suas reservas Testes (Olhar documentação do prisma, findMany: every, some, none)
 - [ ] Listar seus amigos
-
-- [ ] Armazear turnos e ligar com os schedules
+- [ ] Armazear turnos e relacionar com os schedules
 
 
 ## Coisas pra fazer depois
@@ -53,6 +52,9 @@
 
 - [ ] Limite de reservas por turno por aluno
 - [ ] Salvar dias e horarios de funcionameto
+
+- [ ] Lider do gp
+- [ ] Mensagens em portugues no Yup
 
 ## Regras de Negócio
 
