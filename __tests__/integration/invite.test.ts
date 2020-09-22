@@ -4,7 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
-import { createUser } from '../factory';
+import { createInvite, createUser } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('invite store', () => {
@@ -101,6 +101,63 @@ describe('invite store', () => {
 
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(400);
+  });
+});
+
+describe('invite index', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able to index one invite', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    await createInvite({ user1, user2 });
+    const tokenUser2 = encodeToken(user2);
+
+    const response = await request(App)
+      .get('/invites')
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+  });
+
+  it('should be able to index two invites', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    await createInvite({ user1, user2 });
+    await createInvite({ user1: user3, user2 });
+
+    const tokenUser2 = encodeToken(user2);
+
+    const response = await request(App)
+      .get('/invites')
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+  });
+
+  it('should not be able to index invites where you are not the recipient', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    await createInvite({ user1, user2 });
+    await createInvite({ user1: user3, user2 });
+
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/invites')
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(0);
   });
 });
 

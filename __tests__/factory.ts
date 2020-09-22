@@ -1,10 +1,12 @@
-import { Room, Schedule, User } from '@prisma/client';
+import { Friend, Invite, Room, Schedule, User } from '@prisma/client';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import faker from 'faker';
+import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import App from '~/App';
 import prisma from '~/prisma';
 
 interface GenerateUserParams {
@@ -38,6 +40,16 @@ interface GenerateReserveParams {
     month: number;
     day: number;
   };
+}
+
+interface GenerateInviteParams {
+  user1: User;
+  user2: User;
+}
+
+interface GenerateFriendParams {
+  user1: User;
+  user2: User;
 }
 
 export function generateUser(params?: GenerateUserParams) {
@@ -145,4 +157,38 @@ export async function createReserve(params: GenerateReserveParams) {
   }
 
   return reserve;
+}
+
+export async function createInvite(params: GenerateInviteParams) {
+  const { user1, user2 } = params;
+
+  const token = encodeToken(user1);
+
+  const response = await request(App)
+    .post('/invites')
+    .send({ recipientId: user2.id })
+    .set({ authorization: `Bearer ${token}` });
+
+  return response.body as Invite;
+}
+
+export async function createFriend(params: GenerateFriendParams) {
+  const { user1, user2 } = params;
+
+  const tokenUser1 = encodeToken(user1);
+  const tokenUser2 = encodeToken(user2);
+
+  const inviteResponse = await request(App)
+    .post('/invites')
+    .send({ recipientId: user2.id })
+    .set({ authorization: `Bearer ${tokenUser1}` });
+
+  const { id } = inviteResponse.body;
+
+  const inviteConfirmationResponse = await request(App)
+    .post('/invites/confirmation')
+    .send({ id })
+    .set({ authorization: `Bearer ${tokenUser2}` });
+
+  return inviteConfirmationResponse.body as Friend;
 }

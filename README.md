@@ -37,6 +37,12 @@
 - [ ] Listar seus amigos
 - [ ] Armazear turnos e relacionar com os schedules
 
+- [ ] Index dos dois no Invite
+- [ ] Delete no Invite garantir quem eh
+- [ ] OR prisma em friend controller
+- [ ] 'should not be able to index invites where you are not the recipient' tests change message
+- [ ] chamar rotas na factory
+- [ ] transfomar a matricula em id para o invite
 
 ## Coisas pra fazer depois
 - [x] Faker em testes

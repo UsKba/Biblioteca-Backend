@@ -13,7 +13,20 @@ type StoreRequest = RequestAuthBody<StoreInvite>;
 
 class FriendController {
   async index(req: IndexRequest, res: Response) {
-    const friends = await prisma.friend.findMany({});
+    // Vc manda a solicitação 'user1'
+    // Vc aceita a solicitação 'user2'
+
+    const userId = req.userId as number;
+
+    const findFriendsUser1 = await prisma.friend.findMany({
+      where: { userId1: userId },
+    });
+
+    const findFriendsUser2 = await prisma.friend.findMany({
+      where: { userId2: userId },
+    });
+
+    const friends = [...findFriendsUser1, ...findFriendsUser2];
 
     return res.json(friends);
   }

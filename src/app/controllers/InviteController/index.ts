@@ -18,7 +18,11 @@ type DeleteRequest = RequestAuthParamsId;
 
 class InviteController {
   async index(req: IndexRequest, res: Response) {
-    const invites = await prisma.invite.findMany({});
+    const userId = req.userId as number;
+
+    const invites = await prisma.invite.findMany({
+      where: { recipientId: userId },
+    });
 
     return res.json(invites);
   }
