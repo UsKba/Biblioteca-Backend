@@ -34,15 +34,17 @@
 - [x] Listar suas reservas Testes
 - [x] Listar suas reservas Testes (Olhar documentação do prisma, findMany: every, some, none)
 
-- [ ] Listar seus amigos
-- [ ] Armazear turnos e relacionar com os schedules
+- [x] Listar seus amigos
+- [x] OR prisma em friend controller
 
-- [ ] Index dos dois no Invite
-- [ ] Delete no Invite garantir quem eh
-- [ ] OR prisma em friend controller
+- [x] Index dos seus pedidos de amizade
+- [x] Index dos seus pedidos de amizade pendentes
+
+- [x] Delete no Invite garantir quem eh
 - [ ] 'should not be able to index invites where you are not the recipient' tests change message
 - [ ] chamar rotas na factory
-- [ ] transfomar a matricula em id para o invite
+- [ ] transfomar a matricula em id para o invite (search frontend)
+
 
 ## Coisas pra fazer depois
 - [x] Faker em testes
@@ -61,6 +63,13 @@
 
 - [ ] Lider do gp
 - [ ] Mensagens em portugues no Yup
+
+- [ ] sender e receiver em Invite
+- [ ] consertar nomes de fields no prisma
+- [ ] organizar o readme
+
+- [ ] Armazear turnos e relacionar com os schedules
+
 
 ## Regras de Negócio
 

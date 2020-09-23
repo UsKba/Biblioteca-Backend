@@ -1,3 +1,5 @@
+import { Invite } from '@prisma/client';
+
 import prisma from '~/prisma';
 
 export async function assertInviteNotExists(userId: number, recipientId: number) {
@@ -31,6 +33,14 @@ export async function assertInviteExists(id: number) {
 
   if (!invite) {
     throw new Error('Convite não encontrado');
+  }
+
+  return invite;
+}
+
+export async function assertIsSenderOrRecipientId(userId: number, invite: Invite) {
+  if (invite?.userId !== userId && invite?.recipientId !== userId) {
+    throw new Error('Você não tem permissão para deletar o convite');
   }
 
   return invite;

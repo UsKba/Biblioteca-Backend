@@ -62,6 +62,7 @@ routes.get('/invites', InviteController.index);
 routes.post('/invites', validateInviteStore, InviteController.store);
 routes.delete('/invites/:id', validateParamsId, InviteController.delete);
 
+routes.get('/invites/pending', InviteController.indexPending);
 routes.post('/invites/confirmation', InviteConfirmationController.store);
 
 routes.get('/search/:enrollment', validateSeachShow, SeachController.show);

@@ -5,7 +5,6 @@ import { RequestAuthBody } from '~/types/auth';
 import prisma from '~/prisma';
 
 import { assertInviteExists } from '../InviteController/tradingRules';
-import { deleteInvite } from '../InviteController/utils';
 import { assertUserWhoIsConfirmingIsTheRecipient } from './tradingRules';
 
 interface StoreInviteConfirmation {
@@ -30,7 +29,7 @@ class InviteConfirmationController {
         },
       });
 
-      await deleteInvite(id);
+      await prisma.invite.delete({ where: { id } });
 
       return res.json(friend);
     } catch (e) {

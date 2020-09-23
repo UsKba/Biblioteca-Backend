@@ -5,8 +5,12 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserIdExists } from '../UserController/tradingRules';
-import { assertInviteNotExists, assertUserIsNotFriend } from './tradingRules';
-import { deleteInvite } from './utils';
+import {
+  assertInviteExists,
+  assertInviteNotExists,
+  assertIsSenderOrRecipientId,
+  assertUserIsNotFriend,
+} from './tradingRules';
 
 interface StoreInvite {
   recipientId: number;
@@ -22,6 +26,16 @@ class InviteController {
 
     const invites = await prisma.invite.findMany({
       where: { recipientId: userId },
+    });
+
+    return res.json(invites);
+  }
+
+  async indexPending(req: IndexRequest, res: Response) {
+    const userId = req.userId as number;
+
+    const invites = await prisma.invite.findMany({
+      where: { userId },
     });
 
     return res.json(invites);
@@ -51,11 +65,15 @@ class InviteController {
 
   async delete(req: DeleteRequest, res: Response) {
     const id = Number(req.params.id);
+    const userId = req.userId as number;
 
     try {
-      const result = await deleteInvite(id);
+      const inivite = await assertInviteExists(id);
+      await assertIsSenderOrRecipientId(userId, inivite);
 
-      return res.json(result);
+      await prisma.invite.delete({ where: { id } });
+
+      return res.json({ id });
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
