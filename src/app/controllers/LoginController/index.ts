@@ -4,7 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 
 import { RequestBody } from '~/types';
 
-import prisma from '~/prisma';
+import { findUserOrCreate } from './utils';
 
 interface StoreBody {
   name: string;
@@ -14,21 +14,11 @@ interface StoreBody {
 
 type StoreRequest = RequestBody<StoreBody>;
 
-class SessionController {
+class LoginController {
   async store(req: StoreRequest, res: Response) {
     const { enrollment, name, email } = req.body;
 
-    let user = await prisma.user.findOne({ where: { enrollment } });
-
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          enrollment,
-          email,
-          name,
-        },
-      });
-    }
+    const user = await findUserOrCreate({ enrollment, name, email });
 
     return res.json({
       user,
@@ -37,4 +27,4 @@ class SessionController {
   }
 }
 
-export default new SessionController();
+export default new LoginController();

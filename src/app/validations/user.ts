@@ -7,19 +7,17 @@ import { validateSchema } from '~/app/utils/yup';
 const UserStoreSchema = Yup.object().shape({
   name: Yup.string().required('O nome é requerido'),
   email: Yup.string().email('Email inválido').required('O email é requerido'),
-  enrollment: Yup.number().required('A matrícula é requerida'),
+  enrollment: Yup.number().required('A matrícula é requerida').typeError('A matrícula precisa ser um número'),
 });
 
 const UserUpdateSchema = Yup.object().shape({
   name: Yup.string(),
   email: Yup.string(),
-  enrollment: Yup.number().test(
-    'should not pass enrollment',
-    'Você não pode atualizar a matrícula',
-    (enrollment?: string) => {
+  enrollment: Yup.number()
+    .test('should not pass enrollment', 'Você não pode atualizar a matrícula', (enrollment?: string) => {
       return enrollment === undefined;
-    }
-  ),
+    })
+    .typeError('A matrícula precisa ser um número'),
 });
 
 export async function validateUserStore(request: Request, response: Response, next: NextFunction) {

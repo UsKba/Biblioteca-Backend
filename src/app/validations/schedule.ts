@@ -11,8 +11,8 @@ function checkIsHourValid(hour: string) {
 const scheduleSchema = Yup.object().shape({
   initialHour: Yup.string()
     .required('Hora inicial é requerida')
-    .test('is-hour-valid', 'Hora inválida', (value) => checkIsHourValid(value)), // mesmo
-  endHour: Yup.string().required('Hora final é requerida').test('is-hour-valid', 'Hora inválida', checkIsHourValid), // mesmo
+    .test('is-hour-valid', 'Hora inválida', checkIsHourValid),
+  endHour: Yup.string().required('Hora final é requerida').test('is-hour-valid', 'Hora inválida', checkIsHourValid),
 });
 
 export async function validateScheduleStore(request: Request, response: Response, next: NextFunction) {

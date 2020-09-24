@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { validateSchema } from '~/app/utils/yup';
 
 const SearchShowSchema = Yup.object().shape({
-  enrollment: Yup.number().required('A matrícula é obrigatória'),
+  enrollment: Yup.number().required('A matrícula é obrigatória').typeError('A matrícula precisa ser um número'),
 });
 
 export async function validateSeachShow(request: Request, response: Response, next: NextFunction) {

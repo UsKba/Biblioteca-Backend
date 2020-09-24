@@ -4,7 +4,7 @@ import App from '~/App';
 
 import { cleanDatabase } from '../utils';
 
-describe('Session Store', () => {
+describe('Login', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
@@ -12,7 +12,7 @@ describe('Session Store', () => {
   it('should be able to login', async () => {
     const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
 
-    const response = await request(App).post('/sessions').send(userData);
+    const response = await request(App).post('/login').send(userData);
 
     expect(response.status).toBe(200);
   });
@@ -20,7 +20,7 @@ describe('Session Store', () => {
   it('should be able to create user ', async () => {
     const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
 
-    const createUserResponse = await request(App).post('/sessions').send(userData);
+    const createUserResponse = await request(App).post('/login').send(userData);
     const indexUsersResponse = await request(App).get('/users');
 
     expect(indexUsersResponse.status).toBe(200);
@@ -35,8 +35,8 @@ describe('Session Store', () => {
   it('should be able to login user ', async () => {
     const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
 
-    const createUserResponse = await request(App).post('/sessions').send(userData);
-    const loginUserResponse = await request(App).post('/sessions').send(userData);
+    const createUserResponse = await request(App).post('/login').send(userData);
+    const loginUserResponse = await request(App).post('/login').send(userData);
     const indexUsersResponse = await request(App).get('/users');
 
     expect(indexUsersResponse.status).toBe(200);
@@ -52,13 +52,13 @@ describe('Session Store', () => {
   it('should not be able to login with invalid data', async () => {
     const invalidData = { name: 1234, enrollment: 'invalid', email: 'invalidEmail' };
 
-    const response = await request(App).post('/sessions').send(invalidData);
+    const response = await request(App).post('/login').send(invalidData);
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to login without data', async () => {
-    const response = await request(App).post('/sessions').send({});
+    const response = await request(App).post('/login').send({});
 
     expect(response.status).toBe(400);
   });

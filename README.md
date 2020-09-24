@@ -21,54 +21,30 @@
 
 
 ## Coisas fazendo hoje
-- [x] Pegar o year em ReserveController
-- [x] Testes em reservas
-- [x] Ver como separar testes em varios arquivos
-- [x] should not be able to update the enrollment
-- [x] Organizar os controllers
-- [x] Testes em Invites
-- [x] Testes em InvitesConfirmation
-- [x] Precisa garantir o userId em InviteConfirmationController
-- [x] Verificar se a matricula existe
-- [x] Listar suas reservas
-- [x] Listar suas reservas Testes
-- [x] Listar suas reservas Testes (Olhar documentação do prisma, findMany: every, some, none)
+- [x] Mensagens em portugues no Yup
+- [X] Garantir que o email não existe no login
+- [x] chamar rotas na factory
+- [x] correção de erro na listagem de reservas
 
-- [x] Listar seus amigos
-- [x] OR prisma em friend controller
+- [x] Session para login
+- [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
+- [ ] Passar os nomes dos modelos para o plural
 
-- [x] Index dos seus pedidos de amizade
-- [x] Index dos seus pedidos de amizade pendentes
-
-- [x] Delete no Invite garantir quem eh
-- [ ] 'should not be able to index invites where you are not the recipient' tests change message
-- [ ] chamar rotas na factory
-- [ ] transfomar a matricula em id para o invite (search frontend)
-
-
-## Coisas pra fazer depois
-- [x] Faker em testes
-- [x] Terminar testes em schules (yup)
-- [x] Terminar testes em reservas (yup)
-- [x] Rever testes em usuários (yup)
-- [x] Refatorar generateDate (tests - factory)
 
 - [ ] Ver 'Deletar' horario
 - [ ] Ver 'Deletar' user
-- [ ] Passar os nomes dos modelos para o plural
-- [ ] Garantir que o email não existe na session
 
-- [ ] Limite de reservas por turno por aluno
-- [ ] Salvar dias e horarios de funcionameto
-
-- [ ] Lider do gp
-- [ ] Mensagens em portugues no Yup
-
-- [ ] sender e receiver em Invite
-- [ ] consertar nomes de fields no prisma
+- [ ] 'should not be able to index invites where you are not the recipient' tests change message
 - [ ] organizar o readme
 
+
+## Coisas pra fazer depois
+- [ ] Limite de reservas por turno por aluno
+- [ ] Salvar dias e horarios de funcionameto
 - [ ] Armazear turnos e relacionar com os schedules
+
+- [ ] transfomar a matricula em id para o invite (search frontend)
+- [ ] Lider do gp
 
 
 ## Regras de Negócio

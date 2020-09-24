@@ -1,7 +1,6 @@
 Co-authored-by: Kaduco19 <caduco2003@gmail.com>
 
-Listagem dos seus amigos e os testes
-Listagem dos seus convites de amizade e os testes
+
 
 => Criar docker container:
 docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
@@ -13,10 +12,6 @@ docker ps
 PRISMA_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
 PRISMA_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
 
-Correção de erro na listagem de amigos
-Listagem de convites de amizade pendente e testes
-Garantir que só pode deletar convite se for quem o remetente ou o destinatário e testes
-Continuação dos testes na confimarção do pedido de amizade
 
 
 FAZER MIGRACAO

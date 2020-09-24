@@ -35,6 +35,9 @@ class ReserveController {
       where: {
         UserReserve: { some: { userId } },
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
 
     return response.json(reserves);
