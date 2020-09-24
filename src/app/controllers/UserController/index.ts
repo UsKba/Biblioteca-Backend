@@ -22,7 +22,7 @@ type UpdateRequest = RequestBodyParamsId<UpdateBody>;
 
 class UserController {
   async index(request: Request, response: Response) {
-    const users = await prisma.user.findMany({});
+    const users = await prisma.users.findMany({});
 
     return response.json(users);
   }
@@ -30,7 +30,7 @@ class UserController {
   async show(request: RequestParamsId, response: Response) {
     const { id } = request.params;
 
-    const user = await prisma.user.findOne({
+    const user = await prisma.users.findOne({
       where: { id: Number(id) },
     });
 
@@ -51,7 +51,7 @@ class UserController {
       return response.status(400).json({ error: e.message });
     }
 
-    const user = await prisma.user.create({
+    const user = await prisma.users.create({
       data: {
         enrollment,
         email,
@@ -73,7 +73,7 @@ class UserController {
       return response.status(400).json({ error: e.message });
     }
 
-    const user = await prisma.user.update({
+    const user = await prisma.users.update({
       data: {
         name,
         email,

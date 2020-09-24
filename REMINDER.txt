@@ -79,7 +79,7 @@ O heroku usa o comando `start` para rodar o app
     for (let i = 0; i < classmatesIDs.length; i += 1) {
       const targetClassmate = classmatesIDs[i];
 
-      const userReserves = await prisma.userReserve.findMany({
+      const userReserves = await prisma.userReserves.findMany({
         where: {
           userId: targetClassmate,
         },
@@ -88,7 +88,7 @@ O heroku usa o comando `start` para rodar o app
       for (let j = 0; j < userReserves.length; j += 1) {
         const targetUserReserve = userReserves[j];
 
-        const targetReserve = await prisma.reserve.findOne({
+        const targetReserve = await prisma.reserves.findOne({
           where: { id: targetUserReserve.reserveId,  },
         });
 

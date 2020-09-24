@@ -22,11 +22,11 @@
 
 ## Coisas fazendo hoje
 - [x] Mensagens em portugues no Yup
-- [X] Garantir que o email não existe no login
-- [x] chamar rotas na factory
-- [x] correção de erro na listagem de reservas
+- [X] Garantir que não existe usuário com tal email no login
+- [x] Continuação dos testes
+- [x] Correção de erro na listagem de reservas
+- [x] 'session' renomeada para 'login'
 
-- [x] Session para login
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
 - [ ] Passar os nomes dos modelos para o plural
 

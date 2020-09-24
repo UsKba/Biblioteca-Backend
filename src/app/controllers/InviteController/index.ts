@@ -24,7 +24,7 @@ class InviteController {
   async index(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const invites = await prisma.invite.findMany({
+    const invites = await prisma.invites.findMany({
       where: { recipientId: userId },
     });
 
@@ -34,7 +34,7 @@ class InviteController {
   async indexPending(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const invites = await prisma.invite.findMany({
+    const invites = await prisma.invites.findMany({
       where: { userId },
     });
 
@@ -53,7 +53,7 @@ class InviteController {
       return res.status(400).json({ error: e.message });
     }
 
-    const invite = await prisma.invite.create({
+    const invite = await prisma.invites.create({
       data: {
         user: { connect: { id: userId } },
         recipient: { connect: { id: recipientId } },
@@ -71,7 +71,7 @@ class InviteController {
       const inivite = await assertInviteExists(id);
       await assertIsSenderOrRecipientId(userId, inivite);
 
-      await prisma.invite.delete({ where: { id } });
+      await prisma.invites.delete({ where: { id } });
 
       return res.json({ id });
     } catch (e) {

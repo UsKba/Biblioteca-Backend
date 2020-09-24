@@ -5,7 +5,7 @@ import { stringsToDateArray } from '~/app/utils/date';
 import prisma from '~/prisma';
 
 export async function isScheduleOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
-  const schedules = await prisma.schedule.findMany({});
+  const schedules = await prisma.schedules.findMany({});
 
   for (let i = 0; i < schedules.length; i += 1) {
     if (schedules[i].id === ignoreId) {
@@ -44,7 +44,7 @@ export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Dat
 }
 
 export async function assertIfScheduleExists(id: number) {
-  const schedule = await prisma.schedule.findOne({
+  const schedule = await prisma.schedules.findOne({
     where: { id },
   });
 

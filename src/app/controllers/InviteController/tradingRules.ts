@@ -3,7 +3,7 @@ import { Invite } from '@prisma/client';
 import prisma from '~/prisma';
 
 export async function assertInviteNotExists(userId: number, recipientId: number) {
-  const invites = await prisma.invite.findMany({
+  const invites = await prisma.invites.findMany({
     where: { userId, recipientId },
   });
 
@@ -15,7 +15,7 @@ export async function assertInviteNotExists(userId: number, recipientId: number)
 }
 
 export async function assertUserIsNotFriend(userId: number, recipientId: number) {
-  const friends = await prisma.friend.findMany({
+  const friends = await prisma.friends.findMany({
     where: { userId1: userId, userId2: recipientId },
   });
 
@@ -27,7 +27,7 @@ export async function assertUserIsNotFriend(userId: number, recipientId: number)
 }
 
 export async function assertInviteExists(id: number) {
-  const invite = await prisma.invite.findOne({
+  const invite = await prisma.invites.findOne({
     where: { id },
   });
 

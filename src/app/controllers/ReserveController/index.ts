@@ -31,7 +31,7 @@ class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number; // Quem sou eu e quais reservas estão linkadas a mim
 
-    const reserves = await prisma.reserve.findMany({
+    const reserves = await prisma.reserves.findMany({
       where: {
         UserReserve: { some: { userId } },
       },
@@ -61,7 +61,7 @@ class ReserveController {
       return response.status(400).json({ error: e.message });
     }
 
-    const reserve = await prisma.reserve.create({
+    const reserve = await prisma.reserves.create({
       data: {
         year,
         month,
@@ -72,7 +72,7 @@ class ReserveController {
     });
 
     for (let i = 0; i < classmatesIDs.length; i += 1) {
-      await prisma.userReserve.create({
+      await prisma.userReserves.create({
         data: {
           reserve: { connect: { id: reserve.id } },
           user: { connect: { id: classmatesIDs[i] } },
@@ -84,7 +84,7 @@ class ReserveController {
   }
 
   async deleteAll(req: Request, res: Response) {
-    await prisma.reserve.deleteMany({});
+    await prisma.reserves.deleteMany({});
 
     return res.json({ ok: true });
   }

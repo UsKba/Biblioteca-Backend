@@ -104,7 +104,7 @@
 // export async function createUser(params?: GenerateUserParams) {
 //   const userData = generateUser(params);
 
-//   const user = await prisma.user.create({
+//   const user = await prisma.users.create({
 //     data: userData,
 //   });
 
@@ -114,7 +114,7 @@
 // export async function createRoom(params?: GenerateRoomParams) {
 //   const roomData = generateRoom(params);
 
-//   const room = await prisma.room.create({
+//   const room = await prisma.rooms.create({
 //     data: roomData,
 //   });
 
@@ -124,7 +124,7 @@
 // export async function createSchedule(params?: GenerateScheduleParams) {
 //   const scheduleData = generateSchedule(params);
 
-//   const schedule = await prisma.schedule.create({
+//   const schedule = await prisma.schedules.create({
 //     data: scheduleData,
 //   });
 
@@ -137,7 +137,7 @@
 
 //   const { day, month, year } = params.date || generateDate({ sumDay: 1 });
 
-//   const reserve = await prisma.reserve.create({
+//   const reserve = await prisma.reserves.create({
 //     data: {
 //       day,
 //       month,
@@ -148,7 +148,7 @@
 //   });
 
 //   for (let i = 0; i < params.users.length; i += 1) {
-//     await prisma.userReserve.create({
+//     await prisma.userReserves.create({
 //       data: {
 //         reserve: { connect: { id: reserve.id } },
 //         user: { connect: { id: params.users[i].id } },

@@ -20,7 +20,7 @@ type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
 
 class RoomController {
   async index(request: Request, response: Response) {
-    const rooms = await prisma.room.findMany({});
+    const rooms = await prisma.rooms.findMany({});
 
     return response.json(rooms);
   }
@@ -34,7 +34,7 @@ class RoomController {
       return response.status(400).json({ error: e.message });
     }
 
-    const newRoom = await prisma.room.create({
+    const newRoom = await prisma.rooms.create({
       data: {
         initials,
       },
@@ -56,7 +56,7 @@ class RoomController {
       return response.status(400).json({ error: e.message });
     }
 
-    const room = await prisma.room.update({
+    const room = await prisma.rooms.update({
       where: { id: Number(id) },
       data: {
         available,
@@ -76,7 +76,7 @@ class RoomController {
       return response.status(400).json({ error: e.message });
     }
 
-    await prisma.room.delete({
+    await prisma.rooms.delete({
       where: { id },
     });
 

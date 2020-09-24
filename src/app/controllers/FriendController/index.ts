@@ -13,7 +13,7 @@ class FriendController {
 
     const userId = req.userId as number;
 
-    const friends = await prisma.user.findMany({
+    const friends = await prisma.users.findMany({
       where: {
         OR: [
           {

@@ -24,7 +24,7 @@ export default async (req: AuthRequest, res: Response, next: NextFunction) => {
   }
 
   const { id } = tokenDecoded;
-  const user = await prisma.user.findOne({ where: { id } });
+  const user = await prisma.users.findOne({ where: { id } });
 
   if (!user) {
     return res.status(401).json({ error: 'Usuário não encontrado' });

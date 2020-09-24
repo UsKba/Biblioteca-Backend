@@ -11,7 +11,7 @@ export async function checkUsersExists(classmatesIDs: number[]) {
   for (let i = 0; i < classmatesIDs.length; i += 1) {
     const classmateId = classmatesIDs[i];
 
-    const userExists = await prisma.user.findOne({
+    const userExists = await prisma.users.findOne({
       where: { id: classmateId },
     });
 
@@ -46,7 +46,7 @@ export async function assertIfReserveExists(
   month: number,
   day: number
 ) {
-  const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, year, month, day } });
+  const reserveExistsArray = await prisma.reserves.findMany({ where: { scheduleId, roomId, year, month, day } });
 
   if (reserveExistsArray.length > 0) {
     throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse horário`);

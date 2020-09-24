@@ -1,7 +1,7 @@
 import prisma from '~/prisma';
 
 export async function assertInitialsNotExists(initials: string) {
-  const room = await prisma.room.findOne({
+  const room = await prisma.rooms.findOne({
     where: { initials },
   });
 
@@ -11,7 +11,7 @@ export async function assertInitialsNotExists(initials: string) {
 }
 
 export async function assertRoomIdExists(id: number) {
-  const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
+  const roomExists = await prisma.rooms.findOne({ where: { id: Number(id) } });
 
   if (!roomExists) {
     throw new Error('Sala não encontrada');
