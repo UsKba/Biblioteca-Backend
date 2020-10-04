@@ -9,7 +9,6 @@
 - [x] Login
 - [x] CRUD Salas
 
-
 ## 2° Etapa
 - [x] Fazer a estrutura do Banco de Dados (Modelo descritivo)
 - [x] Fazer o modelo (último) criar as tabelas
@@ -19,17 +18,8 @@
 - [ ] Funcionario vs Estudante
 - [ ] Coming soon ...
 
-
 ## Coisas fazendo hoje
-- [x] Mensagens em portugues no Yup
-- [X] Garantir que não existe usuário com tal email no login
-- [x] Continuação dos testes
-- [x] Correção de erro na listagem de reservas
-- [x] 'session' renomeada para 'login'
-
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
-- [ ] Passar os nomes dos modelos para o plural
-
 
 - [ ] Ver 'Deletar' horario
 - [ ] Ver 'Deletar' user

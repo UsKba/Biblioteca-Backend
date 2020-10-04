@@ -35,6 +35,8 @@ git push heroku master
 -> Va para `resources` no heroku
 -> Pesquise `Postgres` e adicione
 -> Click em Postgres
+-> Va em 'Settings'
+-> Click em `Database Credentials`
 -> copie `URI` e cole no seu .env
 
 git add .
