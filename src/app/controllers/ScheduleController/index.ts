@@ -15,6 +15,7 @@ import {
 } from './tradingRules';
 
 interface StoreSchedule {
+  periodId: number;
   initialHour: string;
   endHour: string;
 }
@@ -35,7 +36,7 @@ class ScheduleController {
   }
 
   async store(request: StoreRequest, response: Response) {
-    const { initialHour, endHour } = request.body;
+    const { initialHour, endHour, periodId } = request.body;
     const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
 
     try {
@@ -49,6 +50,7 @@ class ScheduleController {
       data: {
         initialHour,
         endHour,
+        period: { connect: { id: periodId } },
       },
     });
 

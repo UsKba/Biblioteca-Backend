@@ -4,6 +4,7 @@ import FriendController from '~/app/controllers/FriendController';
 import InviteConfirmationController from '~/app/controllers/InviteConfirmationController';
 import InviteController from '~/app/controllers/InviteController';
 import LoginController from '~/app/controllers/LoginController';
+import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
@@ -44,6 +45,9 @@ routes.get('/schedules', ScheduleController.index);
 routes.post('/schedules', validateScheduleStore, ScheduleController.store);
 routes.put('/schedules/:id', validateParamsId, validateScheduleUpdate, ScheduleController.update);
 routes.delete('/schedules/', ScheduleController.deleteAll);
+
+routes.get('/periods', PeriodController.index);
+routes.post('/periods', PeriodController.store);
 
 // Privada
 
