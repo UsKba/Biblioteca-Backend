@@ -19,6 +19,11 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
+- [x] Dados da sala na reserva
+- [x] Dados do horario na reserva
+- [x] Dados dos componentes na reserva
+- [x] Mensagem na reserva aparecer nome e matricula do kra
+
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
 
 - [ ] Ver 'Deletar' horario
@@ -26,7 +31,6 @@
 
 - [ ] 'should not be able to index invites where you are not the recipient' tests change message
 - [ ] organizar o readme
-
 
 ## Coisas pra fazer depois
 - [ ] Limite de reservas por turno por aluno
@@ -84,7 +88,6 @@ mesma data, na mesma sala, no mesmo horario
 - [x] Final de semana
 
 - [ ] Limite de reservas diárias por aluno
-
 
 ### campus
 

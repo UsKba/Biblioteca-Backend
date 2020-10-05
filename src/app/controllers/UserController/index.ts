@@ -68,7 +68,10 @@ class UserController {
 
     try {
       await assertUserIdExists(id);
-      if (email) await assertEmailNotExists(email);
+
+      if (email) {
+        await assertEmailNotExists(email);
+      }
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }

@@ -48,7 +48,7 @@ export async function assertIfScheduleExists(id: number) {
     where: { id },
   });
 
-  if (schedule === null) {
+  if (!schedule) {
     throw new Error('Horário não encontrado');
   }
 

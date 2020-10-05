@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 
+import { Users } from '@prisma/client';
+
 import { RequestBody } from '~/types';
 import { RequestAuth } from '~/types/auth';
 
@@ -8,12 +10,13 @@ import prisma from '~/prisma';
 import { assertRoomIdExists } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import {
-  assertIfHaveEnoughClassmates,
-  assertIdsAreDiferent,
+  assertIfHaveTheMinimunClassmatesRequired,
+  assertIfHaveTheMaximumClassmatesRequired,
+  assertClassmatesIdsAreDiferent,
   assertIfReserveExists,
   assertUsersExistsOnDatabase,
   assertIfTheReserveIsNotOnWeekend,
-  assertIfTheReserveIsNotBefore,
+  assertIfTheReserveIsNotBeforeOfToday,
 } from './tradingRules';
 
 interface StoreReserve {
@@ -47,16 +50,18 @@ class ReserveController {
     const { roomId, scheduleId, year, month, day, classmatesIDs } = request.body;
 
     try {
+      assertIfHaveTheMinimunClassmatesRequired(classmatesIDs);
+      assertIfHaveTheMaximumClassmatesRequired(classmatesIDs);
+      assertClassmatesIdsAreDiferent(classmatesIDs);
+
       const schedule = await assertIfScheduleExists(scheduleId);
 
       assertIfTheReserveIsNotOnWeekend(schedule.initialHour, year, month, day);
-      assertIfTheReserveIsNotBefore(schedule.initialHour, year, month, day);
-      assertIfHaveEnoughClassmates(classmatesIDs);
-      assertIdsAreDiferent(classmatesIDs);
+      assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
 
+      await assertRoomIdExists(roomId);
       await assertIfReserveExists(scheduleId, roomId, year, month, day);
       await assertUsersExistsOnDatabase(classmatesIDs);
-      await assertRoomIdExists(roomId);
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }
@@ -69,18 +74,37 @@ class ReserveController {
         room: { connect: { id: roomId } },
         schedule: { connect: { id: scheduleId } },
       },
+      include: {
+        room: true,
+        schedule: true,
+      },
     });
 
+    const users = [] as Users[];
+
     for (let i = 0; i < classmatesIDs.length; i += 1) {
-      await prisma.userReserves.create({
+      const userReserve = await prisma.userReserves.create({
         data: {
           reserve: { connect: { id: reserve.id } },
           user: { connect: { id: classmatesIDs[i] } },
         },
+        include: {
+          user: true,
+        },
       });
+
+      users.push(userReserve.user);
     }
 
-    return response.json(reserve);
+    return response.json({
+      id: reserve.id,
+      day: reserve.day,
+      month: reserve.month,
+      year: reserve.year,
+      room: reserve.room,
+      schedule: reserve.schedule,
+      users,
+    });
   }
 
   async deleteAll(req: Request, res: Response) {

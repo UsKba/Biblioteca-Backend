@@ -139,11 +139,11 @@ describe('Reserve Store', () => {
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.roomId).toBe(reserve.roomId);
-    expect(response.body.scheduleId).toBe(reserve.scheduleId);
+    expect(response.body.room.id).toBe(reserve.roomId);
+    expect(response.body.schedule.id).toBe(reserve.scheduleId);
   });
 
-  it('should not be able to create a reserve if is the before day', async () => {
+  it('should not be able to create a reserve on a day before of today', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });

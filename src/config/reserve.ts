@@ -1,5 +1,7 @@
 const reserveConfig = {
   minClassmatesPerRoom: 3,
+  maxClassmatesPerRoom: 6,
+
   maxReservesPerTurn: 2,
 
   turns: {
@@ -11,7 +13,7 @@ const reserveConfig = {
       initialHour: 13,
       endHour: 18,
     },
-    nigth: {
+    night: {
       initialHour: 19,
       endHour: 22,
     },

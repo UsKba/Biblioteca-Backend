@@ -111,8 +111,18 @@ describe('User Update', () => {
     expect(response.status).toBe(400);
   });
 
+  it('should not be able to update a email with an invalid one', async () => {
+    const { id } = await createUser();
+
+    const response = await request(App).put(`/users/${id}`).send({
+      email: 'invalidEmail',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should not be able to update a email to one that already exists', async () => {
-    const { id, email } = await createUser({ email: 'kalon@gmail.com' });
+    const { id, email } = await createUser();
     const userToUpdate = { email };
 
     const response = await request(App).put(`/users/${id}`).send(userToUpdate);
