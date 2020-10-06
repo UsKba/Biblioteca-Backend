@@ -1,4 +1,5 @@
-import { areIntervalsOverlapping, isBefore } from 'date-fns';
+import { Periods } from '@prisma/client';
+import { areIntervalsOverlapping, isWithinInterval } from 'date-fns';
 
 import { stringsToDateArray } from '~/app/utils/date';
 
@@ -37,9 +38,22 @@ export async function assertScheduleIsNotOverlappingOnDatabase(initialDate: Date
   }
 }
 
-export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Date) {
-  if (isBefore(endDate, initialDate)) {
-    throw new Error('A hora final não pode ser antes da de inicio');
+export function assertScheduleIsOnPeriodInterval(period: Periods, initialDate: Date, endDate: Date) {
+  const { initialHour, endHour } = period;
+  const [periodInitialDate, periodEndDate] = stringsToDateArray(initialHour, endHour);
+
+  const isInitialDateInsidePeriodInterval = isWithinInterval(initialDate, {
+    start: periodInitialDate,
+    end: periodEndDate,
+  });
+
+  const isEndDateInsidePeriodInterval = isWithinInterval(endDate, {
+    start: periodInitialDate,
+    end: periodEndDate,
+  });
+
+  if (!isInitialDateInsidePeriodInterval || !isEndDateInsidePeriodInterval) {
+    throw new Error(`O horário deve estar entre às ${initialHour} ate às ${endHour}`);
   }
 }
 

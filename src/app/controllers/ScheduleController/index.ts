@@ -1,17 +1,16 @@
 import { Request, Response } from 'express';
 
-import { isBefore } from 'date-fns';
-
-import { stringsToDateArray } from '~/app/utils/date';
+import { assertInitialDateIsBeforeEndDate, stringsToDateArray } from '~/app/utils/date';
 
 import { RequestBody, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
+import { assertPeriodExists } from '../PeriodController/tradingRules';
 import {
   assertIfScheduleExists,
-  assertInitialDateIsBeforeEndDate,
   assertScheduleIsNotOverlappingOnDatabase,
+  assertScheduleIsOnPeriodInterval,
 } from './tradingRules';
 
 interface StoreSchedule {
@@ -41,6 +40,10 @@ class ScheduleController {
 
     try {
       assertInitialDateIsBeforeEndDate(initialDate, endDate);
+
+      const period = await assertPeriodExists(periodId);
+
+      assertScheduleIsOnPeriodInterval(period, initialDate, endDate);
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate);
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -62,10 +65,6 @@ class ScheduleController {
 
     const { initialHour, endHour } = request.body;
     const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
-
-    if (isBefore(endDate, initialDate)) {
-      return response.status(400).json({ error: 'A hora final não pode ser antes da de inicio' });
-    }
 
     try {
       assertInitialDateIsBeforeEndDate(initialDate, endDate);

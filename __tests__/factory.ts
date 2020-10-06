@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friends, Invites, Reserves, Rooms, Schedules, Users } from '@prisma/client';
+import { Friends, Invites, Periods, Reserves, Rooms, Schedules, Users } from '@prisma/client';
 import faker from 'faker';
 import request from 'supertest';
 
@@ -25,13 +25,21 @@ interface GenerateRoomParams {
   available?: boolean | any;
 }
 
+interface GeneratePeriodParams {
+  name?: string | any;
+  initialHour?: string | any;
+  endHour?: string | any;
+}
+
 interface GenerateScheduleParams {
+  periodId: number;
   initialHour?: string | any;
   endHour?: string | any;
 }
 
 interface GenerateReserveParams {
   users: Users[];
+  period?: Periods;
   schedule?: Schedules;
   room?: Rooms;
   date?: {
@@ -106,7 +114,16 @@ export function generateRoom(params?: GenerateRoomParams) {
   };
 }
 
-export function generateSchedule(params?: GenerateScheduleParams) {
+export function generatePeriod(params?: GeneratePeriodParams) {
+  return {
+    name: 'Manhã',
+    initialHour: '06:00',
+    endHour: '12:00',
+    ...params,
+  };
+}
+
+export function generateSchedule(params: GenerateScheduleParams) {
   return {
     initialHour: '06:00',
     endHour: '07:00',
@@ -130,7 +147,15 @@ export async function createRoom(params?: GenerateRoomParams) {
   return response.body as Rooms;
 }
 
-export async function createSchedule(params?: GenerateScheduleParams) {
+export async function createPeriod(params?: GeneratePeriodParams) {
+  const periodData = generatePeriod(params);
+
+  const response = await request(App).post('/periods').send(periodData);
+
+  return response.body as Periods;
+}
+
+export async function createSchedule(params: GenerateScheduleParams) {
   const scheduleData = generateSchedule(params);
 
   const response = await request(App).post('/schedules').send(scheduleData);
@@ -139,12 +164,13 @@ export async function createSchedule(params?: GenerateScheduleParams) {
 }
 
 export async function createReserve(params: GenerateReserveParams) {
-  const { users, room, schedule, date } = params;
+  const { users, room, period, schedule, date } = params;
 
   const classmatesIDs = users.map((user) => user.id);
 
   const targetRoom = room || (await createRoom());
-  const targetSchedule = schedule || (await createSchedule());
+  const targetPeriod = period || (await createPeriod());
+  const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriod.id }));
   const tomorrowDate = date || generateDate({ sumDay: 1 });
 
   const reserve = {

@@ -24,6 +24,13 @@
 - [x] Dados dos componentes na reserva
 - [x] Mensagem na reserva aparecer nome e matricula do kra
 
+- [x] Mudanças nos testes do horário
+
+- [ ] Testes no período
+- [ ] Regras de negócio no período e novos testes
+
+- [ ] Novas regras de negócio no horáio e novos testes
+
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
 
 - [ ] Ver 'Deletar' horario
@@ -38,8 +45,9 @@
 - [ ] Armazear turnos e relacionar com os schedules
 
 - [ ] transfomar a matricula em id para o invite (search frontend)
-- [ ] Lider do gp
+- [ ] Lider do grupo
 
+- [ ] `isScheduleOverlappingOtherOnDatabase` and `isPeriodOverlappingOtherOnDatabase`
 
 ## Regras de Negócio
 
@@ -83,19 +91,19 @@
 - [x] As matriculas dos alunos devem ser distintas
 - [x] Os Alunos da reserva devem existir
 - [x] A Sala da reserva não pode ser reservada caso ja tenha sido na mesma data
-- [x] A Sala da reserva não pode ser reservada em dois horários iguais na
-mesma data, na mesma sala, no mesmo horario
+- [x] A Sala da reserva não pode ser reservada em dois horários iguais na mesma data, na mesma sala, no mesmo horario
 - [x] Final de semana
 
-- [ ] Limite de reservas diárias por aluno
+- [ ] Limite de reservas por turno por aluno
 
 ### campus
 
 ## Problemas + Soluções
-- [ ]  Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
-- [ ]  Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
+- [ ] Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
+- [ ] Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
 
 
 ## Problemas + Ver Depois
-- [ ]  Precisa apagar um horario? Ou so vai precisar atualiza-lo?
-- [ ]  precisa armazenar os dias?
+- [ ] Precisa apagar um horario? Ou so vai precisar atualiza-lo?
+- [ ] precisa armazenar os dias?
+- [ ] Precisa criar um slugName no período?

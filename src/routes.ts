@@ -17,6 +17,7 @@ import authMiddleware from '~/app/middlewares/auth';
 import { validateParamsId } from '~/app/validations';
 import { validateInviteStore } from '~/app/validations/invite';
 import { validateLoginStore } from '~/app/validations/login';
+import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
@@ -36,6 +37,8 @@ routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
 
+// Admin
+
 routes.get('/rooms', RoomController.index);
 routes.post('/rooms', validateRoomStore, RoomController.store);
 routes.put('/rooms/:id', validateParamsId, validateRoomUpdate, RoomController.update);
@@ -47,9 +50,9 @@ routes.put('/schedules/:id', validateParamsId, validateScheduleUpdate, ScheduleC
 routes.delete('/schedules/', ScheduleController.deleteAll);
 
 routes.get('/periods', PeriodController.index);
-routes.post('/periods', PeriodController.store);
+routes.post('/periods', validatePeriodStore, PeriodController.store);
 
-// Privada
+// Usuário Privada
 
 routes.use(authMiddleware);
 

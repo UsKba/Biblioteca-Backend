@@ -6,7 +6,7 @@ import { validateSchema } from '~/app/utils/yup';
 
 import { checkIsCorrectHourFormat } from '../utils/date';
 
-const scheduleSchema = Yup.object().shape({
+const periodStoreSchema = Yup.object().shape({
   initialHour: Yup.string()
     .required('Hora inicial é requerida')
     .test('is-hour-valid', 'Hora inicial inválida', checkIsCorrectHourFormat),
@@ -15,18 +15,8 @@ const scheduleSchema = Yup.object().shape({
     .test('is-hour-valid', 'Hora final inválida', checkIsCorrectHourFormat),
 });
 
-export async function validateScheduleStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(scheduleSchema, request.body);
-
-  if (error) {
-    return response.status(400).json(error);
-  }
-
-  return next();
-}
-
-export async function validateScheduleUpdate(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(scheduleSchema, request.body);
+export async function validatePeriodStore(request: Request, response: Response, next: NextFunction) {
+  const error = await validateSchema(periodStoreSchema, request.body);
 
   if (error) {
     return response.status(400).json(error);

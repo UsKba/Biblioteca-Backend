@@ -1,4 +1,4 @@
-import { setSeconds, setMilliseconds } from 'date-fns';
+import { setSeconds, setMilliseconds, isBefore } from 'date-fns';
 
 export function resetSecondsAndMiliseconds(value: number | string | Date) {
   const date = new Date(value);
@@ -27,4 +27,14 @@ export function stringsToDateArray(dateStr1: string, dateStr2: string) {
   const date2 = stringToDate(dateStr2);
 
   return [date1, date2] as [Date, Date];
+}
+
+export function checkIsCorrectHourFormat(hour: string) {
+  return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(hour);
+}
+
+export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Date) {
+  if (isBefore(endDate, initialDate)) {
+    throw new Error('A hora final não pode ser antes da de inicio');
+  }
 }

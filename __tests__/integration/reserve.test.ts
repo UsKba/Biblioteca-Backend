@@ -4,7 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
-import { createUser, createRoom, createSchedule, generateDate, createReserve } from '../factory';
+import { createUser, createRoom, createSchedule, generateDate, createReserve, createPeriod } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('Reserve Index', () => {
@@ -38,8 +38,10 @@ describe('Reserve Index', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule1 = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
-    const schedule2 = await createSchedule({ initialHour: '13:00', endHour: '14:00' });
+    const period = await createPeriod();
+
+    const schedule1 = await createSchedule({ periodId: period.id, initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ periodId: period.id, initialHour: '08:00', endHour: '09:00' });
 
     const reserve1 = await createReserve({
       users: [user1, user2, user3],
@@ -71,13 +73,17 @@ describe('Reserve Index', () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
-
     const user4 = await createUser({ enrollment: '20181104010044' });
 
     const room = await createRoom();
-    const schedule1 = await createSchedule({ initialHour: '07:00', endHour: '08:00' });
-    const schedule2 = await createSchedule({ initialHour: '13:00', endHour: '14:00' });
-    const schedule3 = await createSchedule({ initialHour: '18:00', endHour: '19:00' });
+
+    const morningPeriod = await createPeriod({ initialHour: '07:00', endHour: '12:00' });
+    const afternoonPeriod = await createPeriod({ initialHour: '13:00', endHour: '18:00' });
+    const nightPeriod = await createPeriod({ initialHour: '19:00', endHour: '22:00' });
+
+    const schedule1 = await createSchedule({ periodId: morningPeriod.id, initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ periodId: afternoonPeriod.id, initialHour: '13:00', endHour: '14:00' });
+    const schedule3 = await createSchedule({ periodId: nightPeriod.id, initialHour: '18:00', endHour: '19:00' });
 
     const reserve1 = await createReserve({
       users: [user1, user2, user3],
@@ -118,7 +124,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -149,7 +156,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const yesterdayDate = generateDate({ sumDay: -1 });
 
@@ -178,7 +186,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -207,19 +216,20 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
     const afterTomorrowDate = generateDate({ sumDay: 4 });
 
-    const reserve1 = {
+    const tomorrowReserve = {
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
       ...tomorrowDate,
     };
 
-    const reserve2 = {
+    const afterTomorrowReserve = {
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -228,22 +238,22 @@ describe('Reserve Store', () => {
 
     const token = encodeToken(user1); // Lider do grupo
 
-    const response1 = await request(App)
+    const tomorrowResponse = await request(App)
       .post('/reserves')
-      .send(reserve1)
+      .send(tomorrowReserve)
       .set({
         authorization: `Bearer ${token}`,
       });
 
-    const response2 = await request(App)
+    const afterTomorrowResponse = await request(App)
       .post('/reserves')
-      .send(reserve2)
+      .send(afterTomorrowReserve)
       .set({
         authorization: `Bearer ${token}`,
       });
 
-    expect(response1.status).toBe(200);
-    expect(response2.status).toBe(200);
+    expect(tomorrowResponse.status).toBe(200);
+    expect(afterTomorrowResponse.status).toBe(200);
   });
 
   it('should not be able to create a reserve if the room not exists', async () => {
@@ -252,7 +262,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -280,7 +291,8 @@ describe('Reserve Store', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -307,7 +319,8 @@ describe('Reserve Store', () => {
     const user = await createUser({ enrollment: '20181104010022' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -335,7 +348,8 @@ describe('Reserve Store', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -364,7 +378,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010039' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
 
@@ -401,7 +416,8 @@ describe('Reserve Store', () => {
     const user3 = await createUser({ enrollment: '20181104010098' });
 
     const room = await createRoom();
-    const schedule = await createSchedule();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
     const now = new Date();
     const weekendMonthDay = now.getUTCDate() + (6 - now.getDay());

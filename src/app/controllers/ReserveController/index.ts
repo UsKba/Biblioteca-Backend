@@ -13,7 +13,7 @@ import {
   assertIfHaveTheMinimunClassmatesRequired,
   assertIfHaveTheMaximumClassmatesRequired,
   assertClassmatesIdsAreDiferent,
-  assertIfReserveExists,
+  assertRoomIsOpenOnThisDateAndSchedule,
   assertUsersExistsOnDatabase,
   assertIfTheReserveIsNotOnWeekend,
   assertIfTheReserveIsNotBeforeOfToday,
@@ -60,7 +60,7 @@ class ReserveController {
       assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
 
       await assertRoomIdExists(roomId);
-      await assertIfReserveExists(scheduleId, roomId, year, month, day);
+      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, year, month, day);
       await assertUsersExistsOnDatabase(classmatesIDs);
     } catch (e) {
       return response.status(400).json({ error: e.message });
