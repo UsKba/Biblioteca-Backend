@@ -24,15 +24,14 @@ describe('invite store', () => {
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(200);
-    expect(response.body.recipientId).toBe(user2.id);
-    expect(response.body.userId).toBe(user1.id);
+    expect(response.body.receiverId).toBe(user2.id);
+    expect(response.body.senderId).toBe(user1.id);
   });
 
   it('should be able to invite 2 different users', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181004010034' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181004010033' });
 
     const token = encodeToken(user1);
 
@@ -49,11 +48,11 @@ describe('invite store', () => {
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(200);
 
-    expect(response1.body.userId).toBe(user1.id);
-    expect(response1.body.recipientId).toBe(user2.id);
+    expect(response1.body.senderId).toBe(user1.id);
+    expect(response1.body.receiverId).toBe(user2.id);
 
-    expect(response2.body.userId).toBe(user1.id);
-    expect(response2.body.recipientId).toBe(user3.id);
+    expect(response2.body.senderId).toBe(user1.id);
+    expect(response2.body.receiverId).toBe(user3.id);
   });
 
   it('should be able to invite a user with invalid recipientId', async () => {

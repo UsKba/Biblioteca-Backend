@@ -71,12 +71,12 @@ class ReserveController {
         year,
         month,
         day,
-        room: { connect: { id: roomId } },
-        schedule: { connect: { id: scheduleId } },
+        Room: { connect: { id: roomId } },
+        Schedule: { connect: { id: scheduleId } },
       },
       include: {
-        room: true,
-        schedule: true,
+        Room: true,
+        Schedule: true,
       },
     });
 
@@ -85,15 +85,15 @@ class ReserveController {
     for (let i = 0; i < classmatesIDs.length; i += 1) {
       const userReserve = await prisma.userReserve.create({
         data: {
-          reserve: { connect: { id: reserve.id } },
-          user: { connect: { id: classmatesIDs[i] } },
+          Reserve: { connect: { id: reserve.id } },
+          User: { connect: { id: classmatesIDs[i] } },
         },
         include: {
-          user: true,
+          User: true,
         },
       });
 
-      users.push(userReserve.user);
+      users.push(userReserve.User);
     }
 
     return response.json({
@@ -101,8 +101,8 @@ class ReserveController {
       day: reserve.day,
       month: reserve.month,
       year: reserve.year,
-      room: reserve.room,
-      schedule: reserve.schedule,
+      room: reserve.Room,
+      schedule: reserve.Schedule,
       users,
     });
   }

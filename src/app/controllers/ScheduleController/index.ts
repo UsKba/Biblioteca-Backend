@@ -53,7 +53,7 @@ class ScheduleController {
       data: {
         initialHour,
         endHour,
-        period: { connect: { id: periodId } },
+        Period: { connect: { id: periodId } },
       },
     });
 

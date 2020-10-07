@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model User {
@@ -13,13 +13,13 @@ model User {
   email      String @unique
   name       String
 
+  UserReserve UserReserve[]
+
   FriendUser1 Friend[] @relation("user1")
   FriendUser2 Friend[] @relation("user2")
 
   InviteSender   Invite[] @relation("sender")
   InviteReceiver Invite[] @relation("receiver")
-  
-  UserReserve UserReserve[]
 }
 
 model Friend {

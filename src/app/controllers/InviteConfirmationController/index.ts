@@ -5,7 +5,7 @@ import { RequestAuthBody } from '~/types/auth';
 import prisma from '~/prisma';
 
 import { assertInviteExists } from '../InviteController/tradingRules';
-import { assertUserWhoIsConfirmingIsTheRecipient } from './tradingRules';
+import { assertUserWhoIsConfirmingIsTheReceiver } from './tradingRules';
 
 interface StoreInviteConfirmation {
   id: number;
@@ -20,12 +20,12 @@ class InviteConfirmationController {
 
     try {
       const invite = await assertInviteExists(id);
-      assertUserWhoIsConfirmingIsTheRecipient(userId, invite.recipientId);
+      assertUserWhoIsConfirmingIsTheReceiver(userId, invite.receiverId);
 
       const friend = await prisma.friend.create({
         data: {
-          user1: { connect: { id: invite.userId } },
-          user2: { connect: { id: invite.recipientId } },
+          User1: { connect: { id: invite.senderId } },
+          User2: { connect: { id: invite.receiverId } },
         },
       });
 

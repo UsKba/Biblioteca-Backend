@@ -19,7 +19,7 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-- [ ] renomear database para o singular
+- [x] renomear database para o singular
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
 
 - [ ] Ver 'Deletar' user

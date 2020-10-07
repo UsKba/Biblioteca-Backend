@@ -1,5 +1,5 @@
-export function assertUserWhoIsConfirmingIsTheRecipient(userId: number, recipientId: number) {
-  if (userId !== recipientId) {
+export function assertUserWhoIsConfirmingIsTheReceiver(userId: number, receiverId: number) {
+  if (userId !== receiverId) {
     throw new Error('Somente o destinatário pode confirmar o convite');
   }
 }

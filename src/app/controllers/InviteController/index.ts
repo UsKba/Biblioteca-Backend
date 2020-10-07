@@ -8,7 +8,7 @@ import { assertUserIdExists } from '../UserController/tradingRules';
 import {
   assertInviteExists,
   assertInviteNotExists,
-  assertIsSenderOrRecipientId,
+  assertIsSenderOrReceiverId,
   assertUserIsNotFriend,
 } from './tradingRules';
 
@@ -25,7 +25,7 @@ class InviteController {
     const userId = req.userId as number;
 
     const invites = await prisma.invite.findMany({
-      where: { recipientId: userId },
+      where: { receiverId: userId },
     });
 
     return res.json(invites);
@@ -35,7 +35,7 @@ class InviteController {
     const userId = req.userId as number;
 
     const invites = await prisma.invite.findMany({
-      where: { userId },
+      where: { senderId: userId },
     });
 
     return res.json(invites);
@@ -55,8 +55,8 @@ class InviteController {
 
     const invite = await prisma.invite.create({
       data: {
-        user: { connect: { id: userId } },
-        recipient: { connect: { id: recipientId } },
+        UserSender: { connect: { id: userId } },
+        UserReceiver: { connect: { id: recipientId } },
       },
     });
 
@@ -69,7 +69,7 @@ class InviteController {
 
     try {
       const inivite = await assertInviteExists(id);
-      await assertIsSenderOrRecipientId(userId, inivite);
+      await assertIsSenderOrReceiverId(userId, inivite);
 
       await prisma.invite.delete({ where: { id } });
 
