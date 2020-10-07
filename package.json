@@ -8,17 +8,13 @@
     "build": "babel src --extensions .js,.ts --out-dir dist --copy-files --no-copy-ignored",
     "start": "NODE_ENV=PRODUCTION node ./dist/server.js",
     "dev": "NODE_ENV=DEVELOPMENT ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
-
     "migrate:reset": "dotenv -e .env -- prisma migrate down `20200629145634-create-user` --experimental",
     "migrate:reset:test": "dotenv -e .env.test -- developrisma migrate down `20200629145634-create-user` --experimental",
-
     "migrate": "prisma format && dotenv -e .env -- prisma migrate save -c --experimental && dotenv -e .env -- prisma migrate up --experimental && dotenv -e .env -- prisma generate",
     "migrate:production": "prisma format && prisma migrate save -c --experimental && prisma migrate up --experimental && prisma generate",
     "migrate:test": "dotenv -e .env.test -- prisma migrate save -c --experimental && dotenv -e .env.test -- prisma migrate up --experimental && dotenv -e .env.test -- prisma generate",
-
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
-
     "seed": "dotenv -e .env -- ts-node prisma/seed.ts",
     "seed:production": "ts-node prisma/seed.ts"
   },
@@ -30,7 +26,6 @@
     "dotenv": "^8.2.0",
     "dotenv-cli": "^3.2.0",
     "express": "^4.17.1",
-    "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
     "lodash.template": "^4.5.0",
     "mongoose": "^5.9.15",
