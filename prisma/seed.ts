@@ -62,76 +62,68 @@ async function run() {
   ];
 
   const schedules = [
-    {
-      periodId: 1,
-      initialHour: '07:15',
-      endHour: '08:00',
-    },
-    {
-      periodId: 1,
-      initialHour: '08:00',
-      endHour: '09:00',
-    },
-    {
-      periodId: 1,
-      initialHour: '09:00',
-      endHour: '10:00',
-    },
-    {
-      periodId: 1,
-      initialHour: '10:00',
-      endHour: '11:00',
-    },
-    {
-      periodId: 1,
-      initialHour: '11:00',
-      endHour: '12:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '13:00',
-      endHour: '14:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '13:00',
-      endHour: '14:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '14:00',
-      endHour: '15:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '15:00',
-      endHour: '16:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '16:00',
-      endHour: '17:00',
-    },
-    {
-      periodId: 2,
-      initialHour: '17:00',
-      endHour: '18:00',
-    },
-    {
-      periodId: 3,
-      initialHour: '19:00',
-      endHour: '20:00',
-    },
-    {
-      periodId: 3,
-      initialHour: '20:00',
-      endHour: '21:00',
-    },
-    {
-      periodId: 3,
-      initialHour: '21:00',
-      endHour: '22:00',
-    },
+    [
+      {
+        initialHour: '07:15',
+        endHour: '08:00',
+      },
+      {
+        initialHour: '08:00',
+        endHour: '09:00',
+      },
+      {
+        initialHour: '09:00',
+        endHour: '10:00',
+      },
+      {
+        initialHour: '10:00',
+        endHour: '11:00',
+      },
+      {
+        initialHour: '11:00',
+        endHour: '12:00',
+      },
+    ],
+    [
+      {
+        initialHour: '13:00',
+        endHour: '14:00',
+      },
+      {
+        initialHour: '13:00',
+        endHour: '14:00',
+      },
+      {
+        initialHour: '14:00',
+        endHour: '15:00',
+      },
+      {
+        initialHour: '15:00',
+        endHour: '16:00',
+      },
+      {
+        initialHour: '16:00',
+        endHour: '17:00',
+      },
+      {
+        initialHour: '17:00',
+        endHour: '18:00',
+      },
+    ],
+    [
+      {
+        initialHour: '19:00',
+        endHour: '20:00',
+      },
+      {
+        initialHour: '20:00',
+        endHour: '21:00',
+      },
+      {
+        initialHour: '21:00',
+        endHour: '22:00',
+      },
+    ],
   ];
 
   const rooms = [
@@ -155,22 +147,26 @@ async function run() {
     });
   }
 
-  for (const period of periods) {
-    await prisma.periods.create({
-      data: period,
-    });
-  }
+  for (let i = 0; i < periods.length; i += 1) {
+    const periodData = periods[i];
 
-  for (const schedule of schedules) {
-    const { initialHour, endHour, periodId } = schedule;
-
-    await prisma.schedules.create({
-      data: {
-        initialHour,
-        endHour,
-        period: { connect: { id: periodId } },
-      },
+    const period = await prisma.periods.create({
+      data: periodData,
     });
+
+    const targetSchedulesLength = schedules[i]?.length || 0;
+
+    for (let j = 0; j < targetSchedulesLength; j += 1) {
+      const { initialHour, endHour } = schedules[i][j];
+
+      await prisma.schedules.create({
+        data: {
+          initialHour,
+          endHour,
+          period: { connect: { id: period.id } },
+        },
+      });
+    }
   }
 
   for (const room of rooms) {
