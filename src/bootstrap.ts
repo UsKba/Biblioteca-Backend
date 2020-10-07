@@ -6,8 +6,8 @@ interface NodeEnv {
 
 const nodeModeEnv: NodeEnv = {
   TEST: '.env.test',
-  PRODUCTION: '.env',
-  DEVELOPMENT: '.env.development',
+  PRODUCTION: '.env.production',
+  DEVELOPMENT: '.env',
 };
 
 const targetMode = process.env.NODE_ENV || 'DEVELOPMENT';
