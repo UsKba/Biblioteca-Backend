@@ -199,7 +199,7 @@ export async function createInvite(params: GenerateInviteParams) {
 
   const response = await request(App)
     .post('/invites')
-    .send({ recipientId: user2.id })
+    .send({ receiverId: user2.id })
     .set({ authorization: `Bearer ${token}` });
 
   return response.body as Invite;
@@ -213,7 +213,7 @@ export async function createFriend(params: GenerateFriendParams) {
 
   const inviteResponse = await request(App)
     .post('/invites')
-    .send({ recipientId: user2.id })
+    .send({ receiverId: user2.id })
     .set({ authorization: `Bearer ${tokenUser1}` });
 
   const { id } = inviteResponse.body;

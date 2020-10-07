@@ -18,7 +18,7 @@ model User {
 
   InviteSender   Invite[] @relation("sender")
   InviteReceiver Invite[] @relation("receiver")
-  
+
   UserReserve UserReserve[]
 }
 

@@ -20,7 +20,7 @@ describe('invite store', () => {
 
     const response = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(200);
@@ -37,12 +37,12 @@ describe('invite store', () => {
 
     const response1 = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${token}` });
 
     const response2 = await request(App)
       .post('/invites')
-      .send({ recipientId: user3.id })
+      .send({ receiverId: user3.id })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response1.status).toBe(200);
@@ -55,28 +55,28 @@ describe('invite store', () => {
     expect(response2.body.receiverId).toBe(user3.id);
   });
 
-  it('should be able to invite a user with invalid recipientId', async () => {
+  it('should be able to invite a user with invalid receiverId', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
 
     const token = encodeToken(user1);
 
     const response = await request(App)
       .post('/invites')
-      .send({ recipientId: 'invalidRecipientId' })
+      .send({ receiverId: 'invalidReceiverId' })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(400);
   });
 
-  it('should be able to invite a user with recipientId that not exists', async () => {
+  it('should be able to invite a user with receiverId that not exists', async () => {
     const user = await createUser({ enrollment: '20181104010022' });
-    const recipientId = user.id + 1;
+    const receiverId = user.id + 1;
 
     const token = encodeToken(user);
 
     const response = await request(App)
       .post('/invites')
-      .send({ recipientId })
+      .send({ receiverId })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(400);
@@ -90,12 +90,12 @@ describe('invite store', () => {
 
     const response1 = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${token}` });
 
     const response2 = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response1.status).toBe(200);
@@ -141,7 +141,7 @@ describe('invite index', () => {
     expect(response.body.length).toBe(2);
   });
 
-  it('should not be able to index invites where you are not the recipient', async () => {
+  it('should not be able to index invites where you are not the receiver', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
@@ -295,7 +295,7 @@ describe('invite confirmation store', () => {
 
     const inviteResponse = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const { id } = inviteResponse.body;
@@ -318,7 +318,7 @@ describe('invite confirmation store', () => {
 
     const inviteResponse = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const { id } = inviteResponse.body;
@@ -349,7 +349,7 @@ describe('invite confirmation store', () => {
 
     const inviteResponse = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const { id } = inviteResponse.body;
@@ -361,7 +361,7 @@ describe('invite confirmation store', () => {
 
     const errorInviteResponse = await request(App)
       .post('/invites')
-      .send({ recipientId: user2.id })
+      .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(inviteResponse.status).toBe(200);

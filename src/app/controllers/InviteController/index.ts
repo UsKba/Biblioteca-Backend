@@ -13,7 +13,7 @@ import {
 } from './tradingRules';
 
 interface StoreInvite {
-  recipientId: number;
+  receiverId: number;
 }
 
 type IndexRequest = RequestAuth;
@@ -42,13 +42,13 @@ class InviteController {
   }
 
   async store(req: StoreRequest, res: Response) {
-    const { recipientId } = req.body;
+    const { receiverId } = req.body;
     const userId = req.userId as number;
 
     try {
-      await assertUserIdExists(recipientId);
-      await assertInviteNotExists(userId, recipientId);
-      await assertUserIsNotFriend(userId, recipientId);
+      await assertUserIdExists(receiverId);
+      await assertInviteNotExists(userId, receiverId);
+      await assertUserIsNotFriend(userId, receiverId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -56,7 +56,7 @@ class InviteController {
     const invite = await prisma.invite.create({
       data: {
         UserSender: { connect: { id: userId } },
-        UserReceiver: { connect: { id: recipientId } },
+        UserReceiver: { connect: { id: receiverId } },
       },
     });
 

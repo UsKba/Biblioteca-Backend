@@ -24,7 +24,7 @@
 
 - [ ] Ver 'Deletar' user
 
-- [ ] 'should not be able to index invites where you are not the recipient' tests change message
+- [ ] 'should not be able to index invites where you are not the receiver' tests change message
 - [ ] organizar o readme
 
 ## Coisas pra fazer depois
