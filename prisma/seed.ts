@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 async function run() {
   const prisma = new PrismaClient();
 
-  // console.log('Starting to create data');
-
   const users = [
     {
       enrollment: '20181104010010',
@@ -176,7 +174,6 @@ async function run() {
   }
 
   prisma.disconnect();
-  // console.log('Data created!');
 }
 
 run();
