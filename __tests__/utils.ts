@@ -1,13 +1,13 @@
 import prisma from '~/prisma';
 
 export async function cleanDatabase() {
-  await prisma.userReserves.deleteMany({});
-  await prisma.invites.deleteMany({});
-  await prisma.friends.deleteMany({});
-  await prisma.reserves.deleteMany({});
-  await prisma.schedules.deleteMany({});
+  await prisma.userReserve.deleteMany({});
+  await prisma.invite.deleteMany({});
+  await prisma.friend.deleteMany({});
+  await prisma.reserve.deleteMany({});
+  await prisma.schedule.deleteMany({});
 
-  await prisma.users.deleteMany({});
-  await prisma.rooms.deleteMany({});
-  await prisma.periods.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.room.deleteMany({});
+  await prisma.period.deleteMany({});
 }

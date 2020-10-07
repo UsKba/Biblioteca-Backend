@@ -80,7 +80,7 @@ git push heroku master
     for (let i = 0; i < classmatesIDs.length; i += 1) {
       const targetClassmate = classmatesIDs[i];
 
-      const userReserves = await prisma.userReserves.findMany({
+      const userReserves = await prisma.userReserve.findMany({
         where: {
           userId: targetClassmate,
         },
@@ -89,7 +89,7 @@ git push heroku master
       for (let j = 0; j < userReserves.length; j += 1) {
         const targetUserReserve = userReserves[j];
 
-        const targetReserve = await prisma.reserves.findOne({
+        const targetReserve = await prisma.reserve.findOne({
           where: { id: targetUserReserve.reserveId,  },
         });
 

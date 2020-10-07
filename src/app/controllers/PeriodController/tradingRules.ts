@@ -5,7 +5,7 @@ import { stringsToDateArray } from '~/app/utils/date';
 import prisma from '~/prisma';
 
 async function isPeriodOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
-  const periods = await prisma.periods.findMany({});
+  const periods = await prisma.period.findMany({});
 
   for (let i = 0; i < periods.length; i += 1) {
     if (periods[i].id === ignoreId) {
@@ -38,7 +38,7 @@ export async function assertPeriodIsNotOverlappingOnDatabase(initialDate: Date, 
 }
 
 export async function assertPeriodExists(id: number) {
-  const period = await prisma.periods.findOne({
+  const period = await prisma.period.findOne({
     where: { id },
   });
 

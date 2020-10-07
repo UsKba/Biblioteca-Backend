@@ -1,4 +1,4 @@
-import { Periods } from '@prisma/client';
+import { Period } from '@prisma/client';
 import { areIntervalsOverlapping, isWithinInterval } from 'date-fns';
 
 import { stringsToDateArray } from '~/app/utils/date';
@@ -6,7 +6,7 @@ import { stringsToDateArray } from '~/app/utils/date';
 import prisma from '~/prisma';
 
 export async function isScheduleOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
-  const schedules = await prisma.schedules.findMany({});
+  const schedules = await prisma.schedule.findMany({});
 
   for (let i = 0; i < schedules.length; i += 1) {
     if (schedules[i].id === ignoreId) {
@@ -38,7 +38,7 @@ export async function assertScheduleIsNotOverlappingOnDatabase(initialDate: Date
   }
 }
 
-export function assertScheduleIsOnPeriodInterval(period: Periods, initialDate: Date, endDate: Date) {
+export function assertScheduleIsOnPeriodInterval(period: Period, initialDate: Date, endDate: Date) {
   const { initialHour, endHour } = period;
   const [periodInitialDate, periodEndDate] = stringsToDateArray(initialHour, endHour);
 
@@ -58,7 +58,7 @@ export function assertScheduleIsOnPeriodInterval(period: Periods, initialDate: D
 }
 
 export async function assertIfScheduleExists(id: number) {
-  const schedule = await prisma.schedules.findOne({
+  const schedule = await prisma.schedule.findOne({
     where: { id },
   });
 

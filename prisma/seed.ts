@@ -140,7 +140,7 @@ async function run() {
   ];
 
   for (const user of users) {
-    await prisma.users.create({
+    await prisma.user.create({
       data: user,
     });
   }
@@ -148,7 +148,7 @@ async function run() {
   for (let i = 0; i < periods.length; i += 1) {
     const periodData = periods[i];
 
-    const period = await prisma.periods.create({
+    const period = await prisma.period.create({
       data: periodData,
     });
 
@@ -157,7 +157,7 @@ async function run() {
     for (let j = 0; j < targetSchedulesLength; j += 1) {
       const { initialHour, endHour } = schedules[i][j];
 
-      await prisma.schedules.create({
+      await prisma.schedule.create({
         data: {
           initialHour,
           endHour,
@@ -168,7 +168,7 @@ async function run() {
   }
 
   for (const room of rooms) {
-    await prisma.rooms.create({
+    await prisma.room.create({
       data: room,
     });
   }

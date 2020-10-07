@@ -1,7 +1,7 @@
 import prisma from '~/prisma';
 
 export async function assertEmailNotExists(email: string) {
-  const emailExists = await prisma.users.findOne({
+  const emailExists = await prisma.user.findOne({
     where: { email },
   });
 
@@ -11,7 +11,7 @@ export async function assertEmailNotExists(email: string) {
 }
 
 export async function assertEnrollmentNotExists(enrollment: string) {
-  const enrollmentExists = await prisma.users.findOne({
+  const enrollmentExists = await prisma.user.findOne({
     where: { enrollment },
   });
 
@@ -23,7 +23,7 @@ export async function assertEnrollmentNotExists(enrollment: string) {
 }
 
 export async function assertUserIdExists(id: number) {
-  const userId = await prisma.users.findOne({
+  const userId = await prisma.user.findOne({
     where: { id },
   });
 
@@ -35,7 +35,7 @@ export async function assertUserIdExists(id: number) {
 }
 
 export async function assertUserEnrollmentExists(enrollment: string) {
-  const user = await prisma.users.findOne({
+  const user = await prisma.user.findOne({
     where: { enrollment },
   });
 

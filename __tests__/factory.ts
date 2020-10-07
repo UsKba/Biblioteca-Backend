@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friends, Invites, Periods, Reserves, Rooms, Schedules, Users } from '@prisma/client';
+import { Friend, Invite, Period, Reserve, Room, Schedule, User } from '@prisma/client';
 import faker from 'faker';
 import request from 'supertest';
 
@@ -38,10 +38,10 @@ interface GenerateScheduleParams {
 }
 
 interface GenerateReserveParams {
-  users: Users[];
-  period?: Periods;
-  schedule?: Schedules;
-  room?: Rooms;
+  users: User[];
+  period?: Period;
+  schedule?: Schedule;
+  room?: Room;
   date?: {
     year: number;
     month: number;
@@ -50,13 +50,13 @@ interface GenerateReserveParams {
 }
 
 interface GenerateInviteParams {
-  user1: Users;
-  user2: Users;
+  user1: User;
+  user2: User;
 }
 
 interface GenerateFriendParams {
-  user1: Users;
-  user2: Users;
+  user1: User;
+  user2: User;
 }
 
 export function generateUser(params?: GenerateUserParams) {
@@ -136,7 +136,7 @@ export async function createUser(params?: GenerateUserParams) {
 
   const response = await request(App).post('/users').send(userData);
 
-  return response.body as Users;
+  return response.body as User;
 }
 
 export async function createRoom(params?: GenerateRoomParams) {
@@ -144,7 +144,7 @@ export async function createRoom(params?: GenerateRoomParams) {
 
   const response = await request(App).post('/rooms').send(roomData);
 
-  return response.body as Rooms;
+  return response.body as Room;
 }
 
 export async function createPeriod(params?: GeneratePeriodParams) {
@@ -152,7 +152,7 @@ export async function createPeriod(params?: GeneratePeriodParams) {
 
   const response = await request(App).post('/periods').send(periodData);
 
-  return response.body as Periods;
+  return response.body as Period;
 }
 
 export async function createSchedule(params: GenerateScheduleParams) {
@@ -160,7 +160,7 @@ export async function createSchedule(params: GenerateScheduleParams) {
 
   const response = await request(App).post('/schedules').send(scheduleData);
 
-  return response.body as Schedules;
+  return response.body as Schedule;
 }
 
 export async function createReserve(params: GenerateReserveParams) {
@@ -189,7 +189,7 @@ export async function createReserve(params: GenerateReserveParams) {
       authorization: `Bearer ${token}`,
     });
 
-  return response.body as Reserves;
+  return response.body as Reserve;
 }
 
 export async function createInvite(params: GenerateInviteParams) {
@@ -202,7 +202,7 @@ export async function createInvite(params: GenerateInviteParams) {
     .send({ recipientId: user2.id })
     .set({ authorization: `Bearer ${token}` });
 
-  return response.body as Invites;
+  return response.body as Invite;
 }
 
 export async function createFriend(params: GenerateFriendParams) {
@@ -223,5 +223,5 @@ export async function createFriend(params: GenerateFriendParams) {
     .send({ id })
     .set({ authorization: `Bearer ${tokenUser2}` });
 
-  return inviteConfirmationResponse.body as Friends;
+  return inviteConfirmationResponse.body as Friend;
 }

@@ -29,7 +29,7 @@ type UpdateRequest = RequestBodyParamsId<UpdateSchedule>;
 
 class ScheduleController {
   async index(request: Request, response: Response) {
-    const schedules = await prisma.schedules.findMany({});
+    const schedules = await prisma.schedule.findMany({});
 
     return response.json(schedules);
   }
@@ -49,7 +49,7 @@ class ScheduleController {
       return response.status(400).json({ error: e.message });
     }
 
-    const schedule = await prisma.schedules.create({
+    const schedule = await prisma.schedule.create({
       data: {
         initialHour,
         endHour,
@@ -80,7 +80,7 @@ class ScheduleController {
       return response.status(400).json({ error: e.message });
     }
 
-    const newSchudule = await prisma.schedules.update({
+    const newSchudule = await prisma.schedule.update({
       data: {
         initialHour,
         endHour,
@@ -92,7 +92,7 @@ class ScheduleController {
   }
 
   async deleteAll(req: Request, res: Response) {
-    await prisma.schedules.deleteMany({});
+    await prisma.schedule.deleteMany({});
 
     return res.json({ ok: true });
   }

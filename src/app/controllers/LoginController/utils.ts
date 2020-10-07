@@ -9,7 +9,7 @@ interface UserData {
 export async function findUserOrCreate(userData: UserData) {
   const { enrollment, name, email } = userData;
 
-  const users = await prisma.users.findMany({
+  const users = await prisma.user.findMany({
     where: { enrollment, email },
   });
 
@@ -17,7 +17,7 @@ export async function findUserOrCreate(userData: UserData) {
     return users[0];
   }
 
-  const user = await prisma.users.create({
+  const user = await prisma.user.create({
     data: {
       enrollment,
       email,

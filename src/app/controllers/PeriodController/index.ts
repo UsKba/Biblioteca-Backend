@@ -18,7 +18,7 @@ type StoreRequest = RequestBody<StoreBody>;
 
 class PeriodController {
   async index(req: Request, res: Response) {
-    const periods = await prisma.periods.findMany({});
+    const periods = await prisma.period.findMany({});
 
     return res.json(periods);
   }
@@ -35,7 +35,7 @@ class PeriodController {
       return res.status(400).json({ error: e.message });
     }
 
-    const period = await prisma.periods.create({
+    const period = await prisma.period.create({
       data: {
         name,
         initialHour,
