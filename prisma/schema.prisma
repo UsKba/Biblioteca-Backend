@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id         Int    @default(autoincrement()) @id
+  id         Int    @id @default(autoincrement())
   enrollment String @unique
   email      String @unique
   name       String
@@ -23,7 +23,7 @@ model User {
 }
 
 model Friend {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
 
   User1 User @relation("user1", fields: [userId1], references: [id])
   User2 User @relation("user2", fields: [userId2], references: [id])
@@ -33,7 +33,7 @@ model Friend {
 }
 
 model Invite {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
 
   UserSender   User @relation("sender", fields: [senderId], references: [id])
   UserReceiver User @relation("receiver", fields: [receiverId], references: [id])
@@ -43,7 +43,7 @@ model Invite {
 }
 
 model Reserve {
-  id    Int @default(autoincrement()) @id
+  id    Int @id @default(autoincrement())
   day   Int
   month Int
   year  Int
@@ -58,7 +58,7 @@ model Reserve {
 }
 
 model UserReserve {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
 
   User    User    @relation(fields: [userId], references: [id])
   Reserve Reserve @relation(fields: [reserveId], references: [id])
@@ -68,7 +68,7 @@ model UserReserve {
 }
 
 model Room {
-  id        Int     @default(autoincrement()) @id
+  id        Int     @id @default(autoincrement())
   initials  String  @unique
   available Boolean @default(true)
 
@@ -76,7 +76,7 @@ model Room {
 }
 
 model Schedule {
-  id          Int    @default(autoincrement()) @id
+  id          Int    @id @default(autoincrement())
   initialHour String
   endHour     String
 
@@ -87,7 +87,7 @@ model Schedule {
 }
 
 model Period {
-  id          Int    @default(autoincrement()) @id
+  id          Int    @id @default(autoincrement())
   name        String
   initialHour String
   endHour     String
