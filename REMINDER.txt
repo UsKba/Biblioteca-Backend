@@ -35,15 +35,14 @@ git push heroku master
 -> Va para `resources` no heroku
 -> Pesquise `Postgres` e adicione
 -> Click em Postgres
--> Va em 'Settings'
--> Click em `Database Credentials`
--> copie `URI` e cole no seu .env
 
 git add .
 git ci "Postgres URI changed on .env"
 git push heroku master
 
 -> Click em `Open App` e copie a URL
+
+-> Va para `settings` e em `Config Vars` ponha as variáveis de ambiente
 
 -> Click em `More` e `Run console` e digite `bash`
 -> Rode as migrações do banco de dados (yarn migrate:production)
@@ -55,9 +54,8 @@ git push heroku master
 
 O heroku usa o comando `start` para rodar o app
 
-
-
-
+-> Va em 'Settings'
+-> Click em `Database Credentials`, é aki on estará a URI do seu database
 
 
 

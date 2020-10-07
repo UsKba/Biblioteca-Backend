@@ -13,14 +13,14 @@
     "migrate:reset:test": "dotenv -e .env.test -- developrisma migrate down `20200629145634-create-user` --experimental",
 
     "migrate": "prisma format && dotenv -e .env.development -- prisma migrate save -c --experimental && dotenv -e .env.development -- prisma migrate up --experimental && dotenv -e .env.development -- prisma generate",
-    "migrate:production": "prisma format && dotenv -e .env -- prisma migrate save -c --experimental && dotenv -e .env -- prisma migrate up --experimental && dotenv -e .env -- prisma generate",
+    "migrate:production": "prisma format && prisma migrate save -c --experimental && prisma migrate up --experimental && prisma generate",
     "migrate:test": "dotenv -e .env.test -- prisma migrate save -c --experimental && dotenv -e .env.test -- prisma migrate up --experimental && dotenv -e .env.test -- prisma generate",
 
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
 
     "seed": "dotenv -e .env.development -- ts-node prisma/seed.ts",
-    "seed:production": "dotenv -e .env -- ts-node prisma/seed.ts"
+    "seed:production": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^2.0.0-beta.7",
