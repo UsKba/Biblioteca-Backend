@@ -16,8 +16,8 @@ async function isPeriodOverlappingOtherOnDatabase(initialDate: Date, endDate: Da
     const [dbInitialDate, dbEndDate] = stringsToDateArray(periods[i].initialHour, periods[i].endHour);
 
     const areOverlapping = areIntervalsOverlapping(
-      { start: dbInitialDate, end: dbEndDate },
       { start: initialDate, end: endDate },
+      { start: dbInitialDate, end: dbEndDate },
       { inclusive: false }
     );
 

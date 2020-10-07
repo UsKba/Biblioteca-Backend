@@ -21,7 +21,6 @@
 ## Coisas fazendo hoje
 - [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
 
-- [ ] Ver 'Deletar' horario
 - [ ] Ver 'Deletar' user
 
 - [ ] 'should not be able to index invites where you are not the recipient' tests change message
@@ -33,6 +32,7 @@
 
 - [ ] transfomar a matricula em id para o invite (search frontend)
 - [ ] Lider do grupo
+- [ ] Ver 'Deletar' horario
 
 - [ ] `isScheduleOverlappingOtherOnDatabase` and `isPeriodOverlappingOtherOnDatabase`
 
@@ -75,6 +75,7 @@
 - [x] A Sala da reserva pode ser Reservada várias vezes
 - [x] Nao se pode cadastrar reserva em uma uma sala que não existe
 - [x] Necessita de ao menos 3 alunos para a reserva
+- [x] Necessita de no máximo 6 alunos para a reserva
 - [x] As matriculas dos alunos devem ser distintas
 - [x] Os Alunos da reserva devem existir
 - [x] A Sala da reserva não pode ser reservada caso ja tenha sido na mesma data

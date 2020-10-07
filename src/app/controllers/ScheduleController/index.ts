@@ -61,6 +61,9 @@ class ScheduleController {
   }
 
   async update(request: UpdateRequest, response: Response) {
+    // assertScheduleIsOnPeriodInterval
+    // nn pode atualizar o periodId
+
     const id = Number(request.params.id);
 
     const { initialHour, endHour } = request.body;
@@ -69,6 +72,9 @@ class ScheduleController {
     try {
       assertInitialDateIsBeforeEndDate(initialDate, endDate);
       await assertIfScheduleExists(id);
+
+      // assertScheduleIsOnPeriodInterval(period, initialDate, endDate);
+
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate, id);
     } catch (e) {
       return response.status(400).json({ error: e.message });

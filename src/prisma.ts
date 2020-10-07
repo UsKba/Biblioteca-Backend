@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 function getPrismaAndSetItOnGlobal() {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'PRODUCTION') {
     return new PrismaClient();
   }
 

@@ -19,6 +19,7 @@
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
 
+    "seed": "dotenv -e .env.development -- ts-node prisma/seed.ts",
     "seed:production": "dotenv -e .env -- ts-node prisma/seed.ts"
   },
   "dependencies": {
