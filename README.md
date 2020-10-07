@@ -19,9 +19,7 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-- [x] renomear database para o singular
-- [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
-
+- [ ] retornar se a sala ta ocupada em todos os dias da semana
 - [ ] Ver 'Deletar' user
 
 - [ ] 'should not be able to index invites where you are not the receiver' tests change message
