@@ -8,22 +8,19 @@
     "build": "babel src --extensions .js,.ts --out-dir dist --copy-files --no-copy-ignored",
     "start": "NODE_ENV=PRODUCTION node ./dist/server.js",
     "dev": "NODE_ENV=DEVELOPMENT ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
-
     "migrate:reset": "dotenv -e .env -- prisma migrate down `20200629145634-create-user` --experimental",
     "migrate:reset:test": "dotenv -e .env.test -- developrisma migrate down `20200629145634-create-user` --experimental",
-
     "migrate": "prisma format && dotenv -e .env -- prisma migrate save -c --experimental && dotenv -e .env -- prisma migrate up --experimental && dotenv -e .env -- prisma generate",
     "migrate:production": "prisma format && prisma migrate save -c --experimental && prisma migrate up --experimental && prisma generate",
     "migrate:test": "dotenv -e .env.test -- prisma migrate save -c --experimental && dotenv -e .env.test -- prisma migrate up --experimental && dotenv -e .env.test -- prisma generate",
-
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
-
     "seed": "dotenv -e .env -- ts-node prisma/seed.ts",
     "seed:production": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-beta.7",
+    "@prisma/cli": "~2.1.1",
+    "@prisma/client": "~2.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "date-fns": "^2.15.0",
@@ -44,7 +41,6 @@
     "@babel/node": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@prisma/cli": "^2.0.0-beta.7",
     "@sucrase/jest-plugin": "^2.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.7",

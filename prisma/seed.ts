@@ -161,7 +161,7 @@ async function run() {
         data: {
           initialHour,
           endHour,
-          period: { connect: { id: period.id } },
+          Period: { connect: { id: period.id } },
         },
       });
     }
