@@ -38,12 +38,39 @@ class ReserveController {
       where: {
         UserReserve: { some: { userId } },
       },
+      include: {
+        Room: true,
+        Schedule: true,
+        UserReserve: { include: { User: true } },
+      },
       orderBy: {
         id: 'asc',
       },
     });
 
-    return response.json(reserves);
+    const usersFormatted = [];
+
+    for (const reserve of reserves) {
+      const users = [] as User[];
+
+      for (const userReserve of reserve.UserReserve) {
+        users.push(userReserve.User);
+      }
+
+      const formattedUser = {
+        id: reserve.id,
+        day: reserve.day,
+        month: reserve.month,
+        year: reserve.year,
+        room: reserve.Room,
+        schedule: reserve.Schedule,
+        users,
+      };
+
+      usersFormatted.push(formattedUser);
+    }
+
+    return response.json(usersFormatted);
   }
 
   async store(request: StoreRequest, response: Response) {
