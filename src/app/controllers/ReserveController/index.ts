@@ -103,7 +103,7 @@ class ReserveController {
       year: reserve.year,
       room: reserve.Room,
       schedule: reserve.Schedule,
-      users,
+      users: users[0],
     });
   }
 

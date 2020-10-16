@@ -88,10 +88,6 @@ async function run() {
         endHour: '14:00',
       },
       {
-        initialHour: '13:00',
-        endHour: '14:00',
-      },
-      {
         initialHour: '14:00',
         endHour: '15:00',
       },

@@ -19,9 +19,11 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-- [x] renomear database para o singular
-- [ ] consertar nomes de fields no prisma (sender e receiver em Invite)
+- [ ] garantir ke o usuário esteja classmatesIds
+- [ ] retornar lista dos dias e se a sala está reservada em cada horário
 
+
+- [ ] update do schdule
 - [ ] Ver 'Deletar' user
 
 - [ ] 'should not be able to index invites where you are not the receiver' tests change message
@@ -90,7 +92,7 @@
 ## Problemas + Soluções
 - [ ] Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
 - [ ] Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
-
+- [ ] Resera para amig => Etrar de
 
 ## Problemas + Ver Depois
 - [ ] Precisa apagar um horario? Ou so vai precisar atualiza-lo?
