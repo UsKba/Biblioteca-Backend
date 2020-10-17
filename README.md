@@ -27,6 +27,8 @@
 - [ ] cancelar reserva -> somente o lider do gp
 - [x] Lider do grupo
 - [ ] renomear token e enrollments na resertva testes
+- [ ] createReserve factory
+
 - [ ] Atualizar Reserva
  - Adicionar ou remover componentes
 

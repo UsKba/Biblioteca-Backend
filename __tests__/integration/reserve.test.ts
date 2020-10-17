@@ -31,14 +31,14 @@ describe('Reserve Index', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({ leader: user1, users: [user1, user2, user3] });
 
-    const token = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .get('/reserves')
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(200);
@@ -62,15 +62,16 @@ describe('Reserve Index', () => {
       period,
       room,
       schedule,
+      leader: user1,
       users: [user1, user2, user3],
     });
 
-    const token = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .get('/reserves')
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     const reserveCreated = response.body[0];
@@ -113,23 +114,25 @@ describe('Reserve Index', () => {
     const schedule2 = await createSchedule({ periodId: period.id, initialHour: '08:00', endHour: '09:00' });
 
     const reserve1 = await createReserve({
+      leader: user1,
       users: [user1, user2, user3],
       schedule: schedule1,
       room,
     });
 
     const reserve2 = await createReserve({
+      leader: user1,
       users: [user1, user2, user3],
       schedule: schedule2,
       room,
     });
 
-    const token = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .get('/reserves')
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(200);
@@ -155,24 +158,31 @@ describe('Reserve Index', () => {
     const schedule3 = await createSchedule({ periodId: nightPeriod.id, initialHour: '18:00', endHour: '19:00' });
 
     const reserve1 = await createReserve({
+      leader: user1,
       users: [user1, user2, user3],
       schedule: schedule1,
       room,
     });
 
     const reserve2 = await createReserve({
+      leader: user1,
       users: [user1, user2, user3],
       schedule: schedule2,
       room,
     });
 
-    await createReserve({ users: [user2, user3, user4], room, schedule: schedule3 });
+    await createReserve({
+      leader: user1,
+      users: [user2, user3, user4],
+      room,
+      schedule: schedule3,
+    });
 
-    const token = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
     const response = await request(App)
       .get('/reserves')
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(200);
@@ -208,13 +218,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(200);
@@ -241,13 +251,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(200);
@@ -293,13 +303,13 @@ describe('Reserve Store', () => {
       ...yesterdayDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -323,13 +333,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -361,20 +371,20 @@ describe('Reserve Store', () => {
       ...afterTomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const tomorrowResponse = await request(App)
       .post('/reserves')
       .send(tomorrowReserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     const afterTomorrowResponse = await request(App)
       .post('/reserves')
       .send(afterTomorrowReserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(tomorrowResponse.status).toBe(200);
@@ -399,13 +409,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -428,13 +438,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -456,13 +466,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user); // Lider do grupo
+    const leaderToken = encodeToken(user);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -485,13 +495,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -515,20 +525,20 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response1 = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     const response2 = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response1.status).toBe(200);
@@ -557,13 +567,13 @@ describe('Reserve Store', () => {
       classmatesIDs: [user1.id, user2.id, user3.id],
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -588,13 +598,13 @@ describe('Reserve Store', () => {
       ...tomorrowDate,
     };
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .post('/reserves')
       .send(reserve)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     expect(response.status).toBe(400);
@@ -614,7 +624,10 @@ describe('Reserve Delete', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -632,14 +645,17 @@ describe('Reserve Delete', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
-    const token = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     await request(App)
       .delete(`/reserves/${reserve.id}`)
       .set({
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${leaderToken}`,
       });
 
     const usersOfReserve = await prisma.userReserve.findMany({
@@ -656,7 +672,10 @@ describe('Reserve Delete', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
     const nonReserveId = reserve.id + 1;
 
     const leaderToken = encodeToken(user1);
@@ -676,7 +695,10 @@ describe('Reserve Delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
     const nonMemberToken = encodeToken(user4);
 
@@ -694,7 +716,10 @@ describe('Reserve Delete', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
     const memberToken = encodeToken(user2);
 
@@ -712,9 +737,12 @@ describe('Reserve Delete', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    await createReserve({ users: [user1, user2, user3] });
+    await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
-    const leaderToken = encodeToken(user1); // Lider do grupo
+    const leaderToken = encodeToken(user1);
 
     const response = await request(App)
       .delete(`/reserves/invalidId`)
@@ -739,7 +767,10 @@ describe('Reserve Roles', () => {
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
     const [adminRole] = await prisma.role.findMany({
       where: { slug: reserveConfig.leaderSlug },

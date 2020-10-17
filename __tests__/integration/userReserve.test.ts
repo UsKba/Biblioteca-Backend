@@ -24,7 +24,10 @@ describe('UserReserve delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3, user4] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -43,7 +46,10 @@ describe('UserReserve delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3, user4] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -64,7 +70,10 @@ describe('UserReserve delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3, user4] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -93,7 +102,10 @@ describe('UserReserve delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    await createReserve({ users: [user1, user2, user3, user4] });
+    await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -112,7 +124,10 @@ describe('UserReserve delete', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3, user4] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
     const nonReserveId = reserve.id + 1;
 
     const leaderToken = encodeToken(user1);
@@ -133,7 +148,10 @@ describe('UserReserve delete', () => {
     const user4 = await createUser({ enrollment: '20181104010044' });
     const user5 = await createUser({ enrollment: '20181104010055' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3, user4] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3, user4],
+    });
 
     const leaderToken = encodeToken(user1);
 
@@ -151,7 +169,10 @@ describe('UserReserve delete', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const reserve = await createReserve({ users: [user1, user2, user3] });
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
     const leaderToken = encodeToken(user1);
 
