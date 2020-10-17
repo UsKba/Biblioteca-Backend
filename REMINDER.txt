@@ -1,6 +1,7 @@
 Co-authored-by: Kaduco19 <caduco2003@gmail.com>
 
 Criação dos cargos para as reservas. Apliação das regras de négocio nos cargos das reservas e testes
+Removendo componentes da reserva, inicio das regras de négocio e testes.
 
 
 => Criar docker container:

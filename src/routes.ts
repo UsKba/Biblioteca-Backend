@@ -22,6 +22,7 @@ import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
+import { validateReserveDeleteParams } from '~/app/validations/userReserve';
 
 const routes = Router();
 
@@ -62,7 +63,7 @@ routes.get('/reserves', ReserveController.index);
 routes.post('/reserves', validateReserveStore, ReserveController.store);
 routes.delete('/reserves/:id', validateParamsId, ReserveController.delete);
 
-routes.delete('/reserves/:id/users', UserReserveController.delete);
+routes.delete('/reserves/:reserveId/users/:userId', validateReserveDeleteParams, UserReserveController.delete);
 
 routes.get('/friends', FriendController.index);
 

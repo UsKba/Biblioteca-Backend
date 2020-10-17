@@ -26,6 +26,26 @@ describe('Reserve Index', () => {
     await createRole({ name: reserveConfig.memberSlug });
   });
 
+  it('should be able index the one reserve linked with user', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({ users: [user1, user2, user3] });
+
+    const token = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${token}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].id).toBe(reserve.id);
+  });
+
   it('should be able index one reserve with correct fields', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
@@ -79,26 +99,6 @@ describe('Reserve Index', () => {
     expect(reserveCreated.users[0].role).toHaveProperty('id');
     expect(reserveCreated.users[0].role).toHaveProperty('name');
     expect(reserveCreated.users[0].role).toHaveProperty('slug');
-  });
-
-  it('should be able index the one reserve linked with user', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
-
-    const reserve = await createReserve({ users: [user1, user2, user3] });
-
-    const token = encodeToken(user1);
-
-    const response = await request(App)
-      .get('/reserves')
-      .set({
-        authorization: `Bearer ${token}`,
-      });
-
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
-    expect(response.body[0].id).toBe(reserve.id);
   });
 
   it('should be able index the two reserves linked with user', async () => {
@@ -670,24 +670,6 @@ describe('Reserve Delete', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to delete a reserve with invalid id', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
-
-    await createReserve({ users: [user1, user2, user3] });
-
-    const token = encodeToken(user1); // Lider do grupo
-
-    const response = await request(App)
-      .delete(`/reserves/invalidId`)
-      .set({
-        authorization: `Bearer ${token}`,
-      });
-
-    expect(response.status).toBe(400);
-  });
-
   it('should not be able to delete a reserve if you are not the leader', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
@@ -701,6 +683,24 @@ describe('Reserve Delete', () => {
       .delete(`/reserves/${reserve.id}`)
       .set({
         authorization: `Bearer ${memberToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to delete a reserve with invalid id', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    await createReserve({ users: [user1, user2, user3] });
+
+    const token = encodeToken(user1); // Lider do grupo
+
+    const response = await request(App)
+      .delete(`/reserves/invalidId`)
+      .set({
+        authorization: `Bearer ${token}`,
       });
 
     expect(response.status).toBe(400);
@@ -732,7 +732,7 @@ describe('Reserve Roles', () => {
 
     const usersOfReserve = await prisma.userReserve.findMany({
       where: {
-        Reserve: { id: reserve.id },
+        reserveId: reserve.id,
       },
     });
 

@@ -117,26 +117,20 @@ export async function assertReserveExists(id: number) {
   return reserve;
 }
 
-export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
+export async function checkIsReserveLeader(userId: number, userReserves: UserReserve[]) {
   const [adminRole] = await prisma.role.findMany({
     where: { slug: reserveConfig.leaderSlug },
   });
 
-  const reserveLeader = userReserves.find((userReserve) => userReserve.userId === userId);
+  const reserveUser = userReserves.find((userReserve) => userReserve.userId === userId);
 
-  if (reserveLeader?.roleId !== adminRole.id) {
+  return reserveUser?.roleId === adminRole.id;
+}
+
+export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
+  const isReserveLeader = checkIsReserveLeader(userId, userReserves);
+
+  if (!isReserveLeader) {
     throw new Error('Somente o líder da reserva pode realizar esta ação');
   }
 }
-
-// export async function assertCanRemoveC(userId: number, userReserves: UserReserve[]) {
-//   const [adminRole] = await prisma.role.findMany({
-//     where: { slug: reserveConfig.leaderSlug },
-//   });
-
-//   const reserveLeader = userReserves.find((userReserve) => userReserve.userId === userId);
-
-//   if (reserveLeader?.roleId !== adminRole.id) {
-//     throw new Error('Somente o líder da reserva pode realizar esta ação');
-//   }
-// }
