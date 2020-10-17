@@ -1,3 +1,4 @@
+import { UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
@@ -64,6 +65,14 @@ export function assertIfHaveTheMaximumClassmatesRequired(classmatesIDs: number[]
   }
 }
 
+export function assertUserIsOnClassmatesIds(userId: number, classmatesIDs: number[]) {
+  const userExists = classmatesIDs.includes(userId);
+
+  if (!userExists) {
+    throw new Error('Somente o usuario autenticado pode realizar a reserva');
+  }
+}
+
 export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
   const haveIdsDuplicated = haveDuplicates(classmatesIDs);
 
@@ -92,3 +101,42 @@ export function assertIfTheReserveIsNotBeforeOfToday(initialHour: string, year: 
     throw new Error('A Data não pode ser anterior a atual');
   }
 }
+
+export async function assertReserveExists(id: number) {
+  const reserve = await prisma.reserve.findOne({
+    where: { id },
+    include: {
+      UserReserve: true,
+    },
+  });
+
+  if (!reserve) {
+    throw new Error('Reserva não encontrada');
+  }
+
+  return reserve;
+}
+
+export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
+  const [adminRole] = await prisma.role.findMany({
+    where: { slug: reserveConfig.leaderSlug },
+  });
+
+  const reserveLeader = userReserves.find((userReserve) => userReserve.userId === userId);
+
+  if (reserveLeader?.roleId !== adminRole.id) {
+    throw new Error('Somente o líder da reserva pode realizar esta ação');
+  }
+}
+
+// export async function assertCanRemoveC(userId: number, userReserves: UserReserve[]) {
+//   const [adminRole] = await prisma.role.findMany({
+//     where: { slug: reserveConfig.leaderSlug },
+//   });
+
+//   const reserveLeader = userReserves.find((userReserve) => userReserve.userId === userId);
+
+//   if (reserveLeader?.roleId !== adminRole.id) {
+//     throw new Error('Somente o líder da reserva pode realizar esta ação');
+//   }
+// }

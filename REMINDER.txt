@@ -1,5 +1,6 @@
 Co-authored-by: Kaduco19 <caduco2003@gmail.com>
 
+Criação dos cargos para as reservas. Apliação das regras de négocio nos cargos das reservas e testes
 
 
 => Criar docker container:
@@ -52,7 +53,7 @@ O heroku usa o comando `start` para rodar o app
 
 ==> URI do seu database
 -> Va em 'Settings'
--> Click em `Database Credentials` 
+-> Click em `Database Credentials`
 
 ==> Atualizar código do heroku
 git add .

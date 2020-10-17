@@ -4,20 +4,8 @@ const reserveConfig = {
 
   maxReservesPerTurn: 2,
 
-  turns: {
-    morning: {
-      initialHour: 7,
-      endHour: 12,
-    },
-    afternoon: {
-      initialHour: 13,
-      endHour: 18,
-    },
-    night: {
-      initialHour: 19,
-      endHour: 22,
-    },
-  },
+  leaderSlug: 'administrador',
+  memberSlug: 'membro',
 };
 
 export default reserveConfig;

@@ -6,11 +6,11 @@ import InviteController from '~/app/controllers/InviteController';
 import LoginController from '~/app/controllers/LoginController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
+import RoleController from '~/app/controllers/RoleController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
-import SeachController from '~/app/controllers/SeachController';
 import UserController from '~/app/controllers/UserController';
-import UserReserverController from '~/app/controllers/UserReserverController';
+import UserReserveController from '~/app/controllers/UserReserveController';
 
 import authMiddleware from '~/app/middlewares/auth';
 
@@ -21,7 +21,6 @@ import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
-import { validateSeachShow } from '~/app/validations/search';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 
 const routes = Router();
@@ -36,6 +35,9 @@ routes.get('/users', UserController.index);
 routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
+
+routes.get('/roles', RoleController.index);
+routes.post('/roles', RoleController.store);
 
 // Admin
 
@@ -58,10 +60,9 @@ routes.use(authMiddleware);
 
 routes.get('/reserves', ReserveController.index);
 routes.post('/reserves', validateReserveStore, ReserveController.store);
-routes.delete('/reserves', ReserveController.deleteAll);
+routes.delete('/reserves/:id', validateParamsId, ReserveController.delete);
 
-routes.get('/userReserves', UserReserverController.index);
-routes.delete('/userReserves', UserReserverController.deleteAll);
+routes.delete('/reserves/:id/users', UserReserveController.delete);
 
 routes.get('/friends', FriendController.index);
 
@@ -71,7 +72,5 @@ routes.delete('/invites/:id', validateParamsId, InviteController.delete);
 
 routes.get('/invites/pending', InviteController.indexPending);
 routes.post('/invites/confirmation', InviteConfirmationController.store);
-
-routes.get('/search/:enrollment', validateSeachShow, SeachController.show);
 
 export default routes;

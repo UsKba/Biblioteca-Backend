@@ -19,9 +19,16 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-- [ ] garantir ke o usuário esteja classmatesIds
 - [ ] retornar lista dos dias e se a sala está reservada em cada horário
+- [ ] remover usuário
+ - mensos de 3 pessoas
+ - somente o lider do gp ->
+ - ou o kra se remover
+- [ ] cancelar reserva -> somente o lider do gp
+- [x] Lider do grupo
 
+- [ ] Atualizar Reserva
+ - Adicionar ou remover componentes
 
 - [ ] update do schdule
 - [ ] Ver 'Deletar' user
@@ -34,10 +41,13 @@
 - [ ] Salvar dias e horarios de funcionameto
 
 - [ ] transfomar a matricula em id para o invite (search frontend)
-- [ ] Lider do grupo
 - [ ] Ver 'Deletar' horario
 
 - [ ] `isScheduleOverlappingOtherOnDatabase` and `isPeriodOverlappingOtherOnDatabase`
+
+- [ ] Custom status nos erros
+ - Delete Reserve
+
 
 ## Regras de Negócio
 
@@ -92,9 +102,11 @@
 ## Problemas + Soluções
 - [ ] Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
 - [ ] Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
-- [ ] Resera para amig => Etrar de
+- [ ] Reserva para amigo => Entrar denovo na conta dele
+
 
 ## Problemas + Ver Depois
 - [ ] Precisa apagar um horario? Ou so vai precisar atualiza-lo?
 - [ ] precisa armazenar os dias?
 - [ ] Precisa criar um slugName no período?
+- [ ] Atualizar Reserva
