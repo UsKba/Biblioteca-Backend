@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
@@ -17,6 +17,7 @@ import {
   assertIfTheReserveIsNotBeforeOfToday,
   assertReserveExists,
   assertIsReserveLeader,
+  assertUserIsOnReserve,
 } from './tradingRules';
 import { createRelationsBetweenUsersAndReserve } from './utils';
 
@@ -131,6 +132,9 @@ class ReserveController {
 
     try {
       const reserve = await assertReserveExists(reserveId);
+
+      assertUserIsOnReserve(userId, reserve.UserReserve);
+
       await assertIsReserveLeader(userId, reserve.UserReserve);
     } catch (e) {
       return res.status(400).json({ error: e.message });

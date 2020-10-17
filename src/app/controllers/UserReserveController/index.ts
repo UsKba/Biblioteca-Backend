@@ -4,8 +4,13 @@ import { RequestAuthParams } from '~/types/auth';
 
 import prisma from '~/prisma';
 
-import { assertIsReserveLeader, assertReserveExists, checkIsReserveLeader } from '../ReserveController/tradingRules';
-import { assertCanRemoveUserFromReserve, assertUserIsOnReserve } from './tradingRules';
+import {
+  assertIsReserveLeader,
+  assertReserveExists,
+  checkIsReserveLeader,
+  assertCanRemoveUserFromReserve,
+  assertUserIsOnReserve,
+} from '../ReserveController/tradingRules';
 
 type UserReserveDelete = {
   reserveId: string;

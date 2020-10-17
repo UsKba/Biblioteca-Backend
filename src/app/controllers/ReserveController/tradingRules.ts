@@ -128,9 +128,23 @@ export async function checkIsReserveLeader(userId: number, userReserves: UserRes
 }
 
 export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
-  const isReserveLeader = checkIsReserveLeader(userId, userReserves);
+  const isReserveLeader = await checkIsReserveLeader(userId, userReserves);
 
   if (!isReserveLeader) {
     throw new Error('Somente o líder da reserva pode realizar esta ação');
+  }
+}
+
+export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[]) {
+  const userExists = userReserves.find((userReserve) => userReserve.userId === userId);
+
+  if (!userExists) {
+    throw new Error('Não se pode remover um usuário que não está na reserva');
+  }
+}
+
+export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
+  if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
+    throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
   }
 }
