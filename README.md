@@ -20,14 +20,7 @@
 
 ## Coisas fazendo hoje
 - [ ] retornar lista dos dias e se a sala está reservada em cada horário
-- [ ] remover usuário
- - mensos de 3 pessoas
- - somente o lider do gp ->
- - ou o kra se remover
-- [ ] cancelar reserva -> somente o lider do gp
-- [x] Lider do grupo
-- [ ] renomear token e enrollments na resertva testes
-- [ ] createReserve factory
+- [ ] ao remover usuário do reserva, caso o usuario removido tenha sido o lider, outro usuario tera de ser o novo lider
 
 - [ ] Atualizar Reserva
  - Adicionar ou remover componentes
@@ -46,6 +39,8 @@
 - [ ] Ver 'Deletar' horario
 
 - [ ] `isScheduleOverlappingOtherOnDatabase` and `isPeriodOverlappingOtherOnDatabase`
+
+- [ ] trocar `~`
 
 - [ ] Custom status nos erros
  - Delete Reserve
@@ -112,3 +107,6 @@
 - [ ] precisa armazenar os dias?
 - [ ] Precisa criar um slugName no período?
 - [ ] Atualizar Reserva
+
+
+

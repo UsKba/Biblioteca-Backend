@@ -11,6 +11,7 @@ import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import UserController from '~/app/controllers/UserController';
 import UserReserveController from '~/app/controllers/UserReserveController';
+import WeekReserve from '~/app/controllers/WeekReserve';
 
 import authMiddleware from '~/app/middlewares/auth';
 
@@ -54,6 +55,8 @@ routes.delete('/schedules/', ScheduleController.deleteAll);
 
 routes.get('/periods', PeriodController.index);
 routes.post('/periods', validatePeriodStore, PeriodController.store);
+
+routes.get('/reserves/week', WeekReserve.index);
 
 // Usuário Privada
 

@@ -11,8 +11,6 @@
 //     data: {
 //       Role: { connect: { id: adminRole.id } },
 //     },
-//     where: {
-
-//     }
+//     where: {},
 //   });
 // }
