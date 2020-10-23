@@ -1,8 +1,6 @@
 Co-authored-by: Kaduco19 <caduco2003@gmail.com>
 
 
-Início da listagem de reservas semanais
-
 => Criar docker container:
 docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 
@@ -10,7 +8,6 @@ docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgr
 docker ps
 
 .env
-DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
 DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
 
 

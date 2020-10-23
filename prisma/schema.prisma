@@ -68,12 +68,12 @@ model UserReserve {
   id Int @id @default(autoincrement())
 
   User    User    @relation(fields: [userId], references: [id])
-  Reserve Reserve @relation(fields: [reserveId], references: [id])
   Role    Role    @relation(fields: [roleId], references: [id])
+  Reserve Reserve @relation(fields: [reserveId], references: [id])
 
   userId    Int
-  reserveId Int
   roleId    Int
+  reserveId Int
 }
 
 model Room {

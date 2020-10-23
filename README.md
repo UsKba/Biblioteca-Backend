@@ -107,6 +107,3 @@
 - [ ] precisa armazenar os dias?
 - [ ] Precisa criar um slugName no período?
 - [ ] Atualizar Reserva
-
-
-
