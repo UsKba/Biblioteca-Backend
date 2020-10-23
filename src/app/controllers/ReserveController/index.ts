@@ -141,9 +141,7 @@ class ReserveController {
     }
 
     await prisma.userReserve.deleteMany({
-      where: {
-        Reserve: { id: reserveId },
-      },
+      where: { reserveId },
     });
 
     await prisma.reserve.delete({
