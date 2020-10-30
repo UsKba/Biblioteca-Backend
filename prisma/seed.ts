@@ -20,7 +20,7 @@ async function run() {
       email: 'nana@gmail.com',
     },
     {
-      enrollment: '20181104010013',
+      enrollment: '20181104010023',
       name: 'Kadu',
       email: 'kadu@gmail.com',
     },

@@ -43,7 +43,7 @@
 - [ ] trocar `~`
 
 - [ ] Custom status nos erros
- - Delete Reserve
+- Delete Reserve
 
 
 ## Regras de Negócio
