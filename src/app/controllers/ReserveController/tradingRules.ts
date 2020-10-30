@@ -81,12 +81,13 @@ export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
   }
 }
 
-export function assertIfTheReserveIsNotOnWeekend(initialHour: string, year: number, month: number, day: number) {
+export function assertIfTheReserveIsNotOnWeekend(initialHour: string, date: Date) {
   const [hours, minutes] = splitSingleDate(initialHour);
 
-  const targetDate = new Date(year, month, day, hours, minutes);
+  // const targetDate = new Date(date, hours, minutes);
+  date.setHours(hours,minutes);
 
-  if (targetDate.getDay() === 0 || targetDate.getDay() === 6) {
+  if (date.getDay() === 0 || date.getDay() === 6) {
     throw new Error('Não se pode reservar sala no final de semana');
   }
 }

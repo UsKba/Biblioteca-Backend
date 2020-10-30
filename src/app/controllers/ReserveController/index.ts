@@ -37,45 +37,50 @@ class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number; // Quem sou eu e quais reservas estão linkadas a mim
 
-    const reserves = await prisma.reserve.findMany({
-      where: {
-        UserReserve: { some: { userId } },
-      },
-      include: {
-        Room: true,
-        Schedule: true,
-        UserReserve: { include: { User: true, Role: true } },
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
+    // const reserves = await prisma.reserve.findMany({
+    //   where: {
+    //     UserReserve: { some: { userId } },
+    //   },
+    //   include: {
+    //     Room: true,
+    //     Schedule: true,
+    //     UserReserve: { include: { User: true, Role: true } },
+    //   },
+    //   orderBy: {
+    //     id: 'asc',
+    //   },
+    // });
 
-    const usersFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map((userReserve) => ({
-        ...userReserve.User,
-        role: userReserve.Role,
-      }));
+    const reserves = await prisma.reserve.findMany({});
+    // const usersFormatted = reserves.map((reserve) => {
+    //   const users = reserve.UserReserve.map((userReserve) => ({
+    //     ...userReserve.User,
+    //     role: userReserve.Role,
+    //   }));
 
-      const formattedUser = {
-        id: reserve.id,
-        day: reserve.day,
-        month: reserve.month,
-        year: reserve.year,
-        room: reserve.Room,
-        schedule: reserve.Schedule,
-        users,
-      };
+    //   const date = new Date(reserve.date);
 
-      return formattedUser;
-    });
+    //   const formattedUser = {
+    //     id: reserve.id,
+    //     day: reserve.day,
+    //     month: reserve.month,
+    //     year: reserve.year,
+    //     room: reserve.Room,
+    //     schedule: reserve.Schedule,
+    //     users,
+    //   };
 
-    return response.json(usersFormatted);
+    //   return formattedUser;
+    // });
+
+    return response.json(reserves);
   }
 
   async store(request: StoreRequest, response: Response) {
     const userId = request.userId as number;
     const { roomId, scheduleId, year, month, day, classmatesIDs } = request.body;
+
+    const date = new Date(year,month,day);
 
     try {
       assertUserIsOnClassmatesIds(userId, classmatesIDs);
@@ -85,21 +90,21 @@ class ReserveController {
 
       const schedule = await assertIfScheduleExists(scheduleId);
 
-      assertIfTheReserveIsNotOnWeekend(schedule.initialHour, year, month, day);
-      assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
+      assertIfTheReserveIsNotOnWeekend(schedule.initialHour, date);
+      //assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
 
       await assertRoomIdExists(roomId);
-      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, year, month, day);
+      //await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, year, month, day);
       await assertUsersExistsOnDatabase(classmatesIDs);
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }
 
+
+
     const reserve = await prisma.reserve.create({
       data: {
-        year,
-        month,
-        day,
+        date,
         Room: { connect: { id: roomId } },
         Schedule: { connect: { id: scheduleId } },
       },
@@ -109,20 +114,18 @@ class ReserveController {
       },
     });
 
-    const reserveUsers = await createRelationsBetweenUsersAndReserve({
-      userId,
-      classmatesIDs,
-      reserveId: reserve.id,
-    });
+    // const reserveUsers = await createRelationsBetweenUsersAndReserve({
+    //   userId,
+    //   classmatesIDs,
+    //   reserveId: reserve.id,
+    // });
 
     return response.json({
       id: reserve.id,
-      day: reserve.day,
-      month: reserve.month,
-      year: reserve.year,
+      date: reserve.date,
       room: reserve.Room,
       schedule: reserve.Schedule,
-      users: reserveUsers,
+      // users: reserveUsers,
     });
   }
 
