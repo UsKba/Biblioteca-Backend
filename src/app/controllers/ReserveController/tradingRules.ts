@@ -1,3 +1,4 @@
+import { UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
@@ -64,6 +65,14 @@ export function assertIfHaveTheMaximumClassmatesRequired(classmatesIDs: number[]
   }
 }
 
+export function assertUserIsOnClassmatesIds(userId: number, classmatesIDs: number[]) {
+  const userExists = classmatesIDs.includes(userId);
+
+  if (!userExists) {
+    throw new Error('Somente o usuario autenticado pode realizar a reserva');
+  }
+}
+
 export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
   const haveIdsDuplicated = haveDuplicates(classmatesIDs);
 
@@ -72,12 +81,13 @@ export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
   }
 }
 
-export function assertIfTheReserveIsNotOnWeekend(initialHour: string, year: number, month: number, day: number) {
+export function assertIfTheReserveIsNotOnWeekend(initialHour: string, date: Date) {
   const [hours, minutes] = splitSingleDate(initialHour);
 
-  const targetDate = new Date(year, month, day, hours, minutes);
+  // const targetDate = new Date(date, hours, minutes);
+  date.setHours(hours,minutes);
 
-  if (targetDate.getDay() === 0 || targetDate.getDay() === 6) {
+  if (date.getDay() === 0 || date.getDay() === 6) {
     throw new Error('Não se pode reservar sala no final de semana');
   }
 }
@@ -90,5 +100,52 @@ export function assertIfTheReserveIsNotBeforeOfToday(initialHour: string, year: 
 
   if (isBefore(reserveDate, now)) {
     throw new Error('A Data não pode ser anterior a atual');
+  }
+}
+
+export async function assertReserveExists(id: number) {
+  const reserve = await prisma.reserve.findOne({
+    where: { id },
+    include: {
+      UserReserve: true,
+    },
+  });
+
+  if (!reserve) {
+    throw new Error('Reserva não encontrada');
+  }
+
+  return reserve;
+}
+
+export async function checkIsReserveLeader(userId: number, userReserves: UserReserve[]) {
+  const [adminRole] = await prisma.role.findMany({
+    where: { slug: reserveConfig.leaderSlug },
+  });
+
+  const reserveUser = userReserves.find((userReserve) => userReserve.userId === userId);
+
+  return reserveUser?.roleId === adminRole.id;
+}
+
+export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
+  const isReserveLeader = await checkIsReserveLeader(userId, userReserves);
+
+  if (!isReserveLeader) {
+    throw new Error('Somente o líder da reserva pode realizar esta ação');
+  }
+}
+
+export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[]) {
+  const userExists = userReserves.find((userReserve) => userReserve.userId === userId);
+
+  if (!userExists) {
+    throw new Error('Não se pode remover um usuário que não está na reserva');
+  }
+}
+
+export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
+  if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
+    throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
   }
 }

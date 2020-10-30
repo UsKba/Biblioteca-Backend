@@ -19,7 +19,17 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
+<<<<<<< HEAD
 - [ ] retornar se a sala ta ocupada em todos os dias da semana
+=======
+- [ ] retornar lista dos dias e se a sala está reservada em cada horário
+- [ ] ao remover usuário do reserva, caso o usuario removido tenha sido o lider, outro usuario tera de ser o novo lider
+
+- [ ] Atualizar Reserva
+ - Adicionar ou remover componentes
+
+- [ ] update do schdule
+>>>>>>> master
 - [ ] Ver 'Deletar' user
 
 - [ ] 'should not be able to index invites where you are not the receiver' tests change message
@@ -30,10 +40,15 @@
 - [ ] Salvar dias e horarios de funcionameto
 
 - [ ] transfomar a matricula em id para o invite (search frontend)
-- [ ] Lider do grupo
 - [ ] Ver 'Deletar' horario
 
 - [ ] `isScheduleOverlappingOtherOnDatabase` and `isPeriodOverlappingOtherOnDatabase`
+
+- [ ] trocar `~`
+
+- [ ] Custom status nos erros
+- Delete Reserve
+
 
 ## Regras de Negócio
 
@@ -88,9 +103,11 @@
 ## Problemas + Soluções
 - [ ] Deveria poder fazer uma reserva com muita antecedencia? Falar caso da Prova ⇒ Permitir somente apos as 6
 - [ ] Horarios de funcionamento diferentes, bem como dias de trabalho => Armazenar os horarios de funcionameto bem como os dias
+- [ ] Reserva para amigo => Entrar denovo na conta dele
 
 
 ## Problemas + Ver Depois
 - [ ] Precisa apagar um horario? Ou so vai precisar atualiza-lo?
 - [ ] precisa armazenar os dias?
 - [ ] Precisa criar um slugName no período?
+- [ ] Atualizar Reserva

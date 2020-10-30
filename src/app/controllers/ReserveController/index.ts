@@ -1,15 +1,13 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-import { User } from '@prisma/client';
-
-import { RequestBody } from '~/types';
-import { RequestAuth } from '~/types/auth';
+import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
 
 import { assertRoomIdExists } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import {
+  assertUserIsOnClassmatesIds,
   assertIfHaveTheMinimunClassmatesRequired,
   assertIfHaveTheMaximumClassmatesRequired,
   assertClassmatesIdsAreDiferent,
@@ -17,7 +15,11 @@ import {
   assertUsersExistsOnDatabase,
   assertIfTheReserveIsNotOnWeekend,
   assertIfTheReserveIsNotBeforeOfToday,
+  assertReserveExists,
+  assertIsReserveLeader,
+  assertUserIsOnReserve,
 } from './tradingRules';
+import { createRelationsBetweenUsersAndReserve } from './utils';
 
 interface StoreReserve {
   roomId: number;
@@ -27,50 +29,82 @@ interface StoreReserve {
   year: number;
   classmatesIDs: number[];
 }
+
 type IndexRequest = RequestAuth;
-type StoreRequest = RequestBody<StoreReserve>;
+type StoreRequest = RequestAuthBody<StoreReserve>;
 
 class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number; // Quem sou eu e quais reservas estão linkadas a mim
 
-    const reserves = await prisma.reserve.findMany({
-      where: {
-        UserReserve: { some: { userId } },
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
+    // const reserves = await prisma.reserve.findMany({
+    //   where: {
+    //     UserReserve: { some: { userId } },
+    //   },
+    //   include: {
+    //     Room: true,
+    //     Schedule: true,
+    //     UserReserve: { include: { User: true, Role: true } },
+    //   },
+    //   orderBy: {
+    //     id: 'asc',
+    //   },
+    // });
+
+    const reserves = await prisma.reserve.findMany({});
+    // const usersFormatted = reserves.map((reserve) => {
+    //   const users = reserve.UserReserve.map((userReserve) => ({
+    //     ...userReserve.User,
+    //     role: userReserve.Role,
+    //   }));
+
+    //   const date = new Date(reserve.date);
+
+    //   const formattedUser = {
+    //     id: reserve.id,
+    //     day: reserve.day,
+    //     month: reserve.month,
+    //     year: reserve.year,
+    //     room: reserve.Room,
+    //     schedule: reserve.Schedule,
+    //     users,
+    //   };
+
+    //   return formattedUser;
+    // });
 
     return response.json(reserves);
   }
 
   async store(request: StoreRequest, response: Response) {
+    const userId = request.userId as number;
     const { roomId, scheduleId, year, month, day, classmatesIDs } = request.body;
 
+    const date = new Date(year,month,day);
+
     try {
+      assertUserIsOnClassmatesIds(userId, classmatesIDs);
       assertIfHaveTheMinimunClassmatesRequired(classmatesIDs);
       assertIfHaveTheMaximumClassmatesRequired(classmatesIDs);
       assertClassmatesIdsAreDiferent(classmatesIDs);
 
       const schedule = await assertIfScheduleExists(scheduleId);
 
-      assertIfTheReserveIsNotOnWeekend(schedule.initialHour, year, month, day);
-      assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
+      assertIfTheReserveIsNotOnWeekend(schedule.initialHour, date);
+      //assertIfTheReserveIsNotBeforeOfToday(schedule.initialHour, year, month, day);
 
       await assertRoomIdExists(roomId);
-      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, year, month, day);
+      //await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, year, month, day);
       await assertUsersExistsOnDatabase(classmatesIDs);
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }
 
+
+
     const reserve = await prisma.reserve.create({
       data: {
-        year,
-        month,
-        day,
+        date,
         Room: { connect: { id: roomId } },
         Schedule: { connect: { id: scheduleId } },
       },
@@ -80,37 +114,44 @@ class ReserveController {
       },
     });
 
-    const users = [] as User[];
-
-    for (let i = 0; i < classmatesIDs.length; i += 1) {
-      const userReserve = await prisma.userReserve.create({
-        data: {
-          Reserve: { connect: { id: reserve.id } },
-          User: { connect: { id: classmatesIDs[i] } },
-        },
-        include: {
-          User: true,
-        },
-      });
-
-      users.push(userReserve.User);
-    }
+    // const reserveUsers = await createRelationsBetweenUsersAndReserve({
+    //   userId,
+    //   classmatesIDs,
+    //   reserveId: reserve.id,
+    // });
 
     return response.json({
       id: reserve.id,
-      day: reserve.day,
-      month: reserve.month,
-      year: reserve.year,
+      date: reserve.date,
       room: reserve.Room,
       schedule: reserve.Schedule,
-      users,
+      // users: reserveUsers,
     });
   }
 
-  async deleteAll(req: Request, res: Response) {
-    await prisma.reserve.deleteMany({});
+  async delete(req: RequestAuthParamsId, res: Response) {
+    const userId = req.userId as number;
+    const reserveId = Number(req.params.id);
 
-    return res.json({ ok: true });
+    try {
+      const reserve = await assertReserveExists(reserveId);
+
+      assertUserIsOnReserve(userId, reserve.UserReserve);
+
+      await assertIsReserveLeader(userId, reserve.UserReserve);
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+
+    await prisma.userReserve.deleteMany({
+      where: { reserveId },
+    });
+
+    await prisma.reserve.delete({
+      where: { id: reserveId },
+    });
+
+    return res.json({ id: reserveId });
   }
 }
 

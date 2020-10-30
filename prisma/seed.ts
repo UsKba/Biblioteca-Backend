@@ -20,7 +20,7 @@ async function run() {
       email: 'nana@gmail.com',
     },
     {
-      enrollment: '20181104010013',
+      enrollment: '20181104010023',
       name: 'Kadu',
       email: 'kadu@gmail.com',
     },
@@ -88,10 +88,6 @@ async function run() {
         endHour: '14:00',
       },
       {
-        initialHour: '13:00',
-        endHour: '14:00',
-      },
-      {
         initialHour: '14:00',
         endHour: '15:00',
       },
@@ -139,6 +135,17 @@ async function run() {
     },
   ];
 
+  const roles = [
+    {
+      name: 'Administrador',
+      slug: 'administrador',
+    },
+    {
+      name: 'Membro',
+      slug: 'membro',
+    },
+  ];
+
   for (const user of users) {
     await prisma.user.create({
       data: user,
@@ -173,7 +180,17 @@ async function run() {
     });
   }
 
+<<<<<<< HEAD
   prisma.$disconnect();
+=======
+  for (const role of roles) {
+    await prisma.role.create({
+      data: role,
+    });
+  }
+
+  prisma.disconnect();
+>>>>>>> master
 }
 
 run();

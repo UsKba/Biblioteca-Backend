@@ -19,3 +19,6 @@
 20201005020456-create-periods
 20201007034508-tables-renamed-to-singular
 20201007040434-columns-renamed
+20201016152701-create-role
+20201023164145-data-base-changed-to-sqlite
+20201030101817-change-day-month-year-to-date-time

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./database.sqlite"
+  provider = "postgresql"
+  url = "***"
 }
 
 model User {
@@ -50,15 +50,10 @@ model Role {
 }
 
 model Reserve {
-<<<<<<< HEAD
   id    Int @id @default(autoincrement())
   day   Int
   month Int
   year  Int
-=======
-  id   Int      @id @default(autoincrement())
-  date DateTime
->>>>>>> master
 
   Room     Room     @relation(fields: [roomId], references: [id])
   Schedule Schedule @relation(fields: [scheduleId], references: [id])
@@ -73,12 +68,12 @@ model UserReserve {
   id Int @id @default(autoincrement())
 
   User    User    @relation(fields: [userId], references: [id])
-  Role    Role    @relation(fields: [roleId], references: [id])
   Reserve Reserve @relation(fields: [reserveId], references: [id])
+  Role    Role    @relation(fields: [roleId], references: [id])
 
   userId    Int
-  roleId    Int
   reserveId Int
+  roleId    Int
 }
 
 model Room {

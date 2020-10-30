@@ -14,6 +14,10 @@ interface GenerateUserParams {
   enrollment?: string | any;
 }
 
+interface GenerateRoleParams {
+  name: string;
+}
+
 interface GenerateDateParams {
   sumYear?: number | any;
   sumMonth?: number | any;
@@ -38,6 +42,7 @@ interface GenerateScheduleParams {
 }
 
 interface GenerateReserveParams {
+  leader: User;
   users: User[];
   period?: Period;
   schedule?: Schedule;
@@ -139,6 +144,12 @@ export async function createUser(params?: GenerateUserParams) {
   return response.body as User;
 }
 
+export async function createRole(params: GenerateRoleParams) {
+  const response = await request(App).post('/roles').send(params);
+
+  return response.body as User;
+}
+
 export async function createRoom(params?: GenerateRoomParams) {
   const roomData = generateRoom(params);
 
@@ -164,7 +175,7 @@ export async function createSchedule(params: GenerateScheduleParams) {
 }
 
 export async function createReserve(params: GenerateReserveParams) {
-  const { users, room, period, schedule, date } = params;
+  const { leader, users, room, period, schedule, date } = params;
 
   const classmatesIDs = users.map((user) => user.id);
 
@@ -180,13 +191,13 @@ export async function createReserve(params: GenerateReserveParams) {
     ...tomorrowDate,
   };
 
-  const token = encodeToken(users[0]); // Lider do grupo
+  const leaderToken = encodeToken(leader);
 
   const response = await request(App)
     .post('/reserves')
     .send(reserve)
     .set({
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${leaderToken}`,
     });
 
   return response.body as Reserve;
@@ -195,12 +206,12 @@ export async function createReserve(params: GenerateReserveParams) {
 export async function createInvite(params: GenerateInviteParams) {
   const { user1, user2 } = params;
 
-  const token = encodeToken(user1);
+  const senderUserToken = encodeToken(user1);
 
   const response = await request(App)
     .post('/invites')
     .send({ receiverId: user2.id })
-    .set({ authorization: `Bearer ${token}` });
+    .set({ authorization: `Bearer ${senderUserToken}` });
 
   return response.body as Invite;
 }
