@@ -8,6 +8,7 @@
     "build": "babel src --extensions .js,.ts --out-dir dist --copy-files --no-copy-ignored",
     "start": "NODE_ENV=PRODUCTION node ./dist/server.js",
     "dev": "NODE_ENV=DEVELOPMENT ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
+    "dev:win": "SET NODE_ENV=DEVELOPMENT && ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
 
     "migrate:reset": "dotenv -e .env -- prisma migrate down `20200629145634-create-user` --experimental",
     "migrate:reset:test": "dotenv -e .env.test -- prisma migrate down `20200629145634-create-user` --experimental",
@@ -18,6 +19,7 @@
 
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
+    "test:win": "SET NODE_ENV=TEST && dotenv -e .env.test -- jest --runInBand" ,
 
     "seed": "dotenv -e .env -- ts-node prisma/seed.ts",
     "seed:production": "ts-node prisma/seed.ts"
