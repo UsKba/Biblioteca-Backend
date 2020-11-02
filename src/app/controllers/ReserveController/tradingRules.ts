@@ -84,11 +84,7 @@ export function assertIfTheReserveIsNotOnWeekend(date: Date) {
 }
 
 export function assertIfTheReserveIsNotBeforeOfNow(initialHour: string, date: Date) {
-  const [hours, minutes] = splitSingleDate(initialHour);
-
   const now = new Date();
-
-  date.setHours(hours, minutes);
 
   if (isBefore(date, now)) {
     throw new Error('A Data não pode ser anterior a atual');

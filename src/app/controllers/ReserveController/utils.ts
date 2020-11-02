@@ -1,5 +1,7 @@
 import { Role, User } from '@prisma/client';
 
+import { splitSingleDate } from '~/app/utils/date';
+
 import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
@@ -18,6 +20,11 @@ interface CreateUserReserveParams {
 
 interface UserFormatted extends User {
   role: Role;
+}
+
+export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
+  const [hours, minutes] = splitSingleDate(scheduleHours);
+  date.setHours(hours, minutes);
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {

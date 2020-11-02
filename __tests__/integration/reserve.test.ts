@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
+import { splitSingleDate } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
@@ -27,9 +28,9 @@ describe('Reserve Index', () => {
   });
 
   it('should be able index the one reserve linked with user', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const reserve = await createReserve({ leader: user1, users: [user1, user2, user3] });
 
@@ -47,9 +48,9 @@ describe('Reserve Index', () => {
   });
 
   it('should be able index one reserve with correct fields', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -75,7 +76,9 @@ describe('Reserve Index', () => {
       });
 
     const reserveCreated = response.body[0];
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day).toISOString();
+
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
@@ -233,9 +236,9 @@ describe('Reserve Store', () => {
 
   // CORRECT?
   it('should have correct fields on reserve creation', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -259,7 +262,8 @@ describe('Reserve Store', () => {
         authorization: `Bearer ${leaderToken}`,
       });
 
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day).toISOString();
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
@@ -282,36 +286,6 @@ describe('Reserve Store', () => {
     expect(response.body.users[0].role).toHaveProperty('id');
     expect(response.body.users[0].role).toHaveProperty('name');
     expect(response.body.users[0].role).toHaveProperty('slug');
-  });
-
-  it('should not be able to create a reserve on a day before of today', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
-
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
-
-    const yesterdayDate = generateDate({ sumDay: -1 });
-
-    const reserve = {
-      roomId: room.id,
-      scheduleId: schedule.id,
-      classmatesIDs: [user1.id, user2.id, user3.id],
-      ...yesterdayDate,
-    };
-
-    const leaderToken = encodeToken(user1);
-
-    const response = await request(App)
-      .post('/reserves')
-      .send(reserve)
-      .set({
-        authorization: `Bearer ${leaderToken}`,
-      });
-
-    expect(response.status).toBe(400);
   });
 
   it('should not be able to create a reserve on a schedule that does not exists', async () => {

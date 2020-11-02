@@ -19,7 +19,7 @@ import {
   assertIsReserveLeader,
   assertUserIsOnReserve,
 } from './tradingRules';
-import { createRelationsBetweenUsersAndReserve } from './utils';
+import { createRelationsBetweenUsersAndReserve, setScheduleHoursAndMinutes } from './utils';
 
 interface StoreReserve {
   roomId: number;
@@ -50,8 +50,6 @@ class ReserveController {
         id: 'asc',
       },
     });
-
-    // const reserves = await prisma.reserve.findMany({});
 
     const reservesFormatted = reserves.map((reserve) => {
       const users = reserve.UserReserve.map((userReserve) => ({
@@ -86,6 +84,7 @@ class ReserveController {
       assertClassmatesIdsAreDiferent(classmatesIDs);
 
       const schedule = await assertIfScheduleExists(scheduleId);
+      setScheduleHoursAndMinutes(date, schedule.initialHour);
 
       assertIfTheReserveIsNotOnWeekend(date);
       assertIfTheReserveIsNotBeforeOfNow(schedule.initialHour, date);
