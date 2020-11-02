@@ -35,14 +35,10 @@ export async function assertUsersExistsOnDatabase(userIds: number[]) {
   }
 }
 
-export async function assertRoomIsOpenOnThisDateAndSchedule(
-  scheduleId: number,
-  roomId: number,
-  year: number,
-  month: number,
-  day: number
-) {
-  const reserveExistsArray = await prisma.reserve.findMany({ where: { scheduleId, roomId, year, month, day } });
+export async function assertRoomIsOpenOnThisDateAndSchedule(scheduleId: number, roomId: number, date: Date) {
+  const reserveExistsArray = await prisma.reserve.findMany({
+    where: { scheduleId, roomId, date },
+  });
 
   if (reserveExistsArray.length > 0) {
     throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse dia e horário`);
@@ -81,24 +77,20 @@ export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
   }
 }
 
-export function assertIfTheReserveIsNotOnWeekend(initialHour: string, date: Date) {
-  const [hours, minutes] = splitSingleDate(initialHour);
-
-  // const targetDate = new Date(date, hours, minutes);
-  date.setHours(hours,minutes);
-
+export function assertIfTheReserveIsNotOnWeekend(date: Date) {
   if (date.getDay() === 0 || date.getDay() === 6) {
     throw new Error('Não se pode reservar sala no final de semana');
   }
 }
 
-export function assertIfTheReserveIsNotBeforeOfToday(initialHour: string, year: number, month: number, day: number) {
+export function assertIfTheReserveIsNotBeforeOfNow(initialHour: string, date: Date) {
   const [hours, minutes] = splitSingleDate(initialHour);
 
   const now = new Date();
-  const reserveDate = new Date(year, month, day, hours, minutes);
 
-  if (isBefore(reserveDate, now)) {
+  date.setHours(hours, minutes);
+
+  if (isBefore(date, now)) {
     throw new Error('A Data não pode ser anterior a atual');
   }
 }

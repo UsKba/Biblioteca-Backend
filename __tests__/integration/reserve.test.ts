@@ -75,14 +75,13 @@ describe('Reserve Index', () => {
       });
 
     const reserveCreated = response.body[0];
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
     expect(reserveCreated.id).toBe(reserve.id);
 
-    expect(reserveCreated.day).toBe(tomorrowDate.day);
-    expect(reserveCreated.month).toBe(tomorrowDate.month);
-    expect(reserveCreated.year).toBe(tomorrowDate.year);
+    expect(reserveCreated.date).toBe(dateISO);
 
     expect(reserveCreated.room.id).toBe(room.id);
     expect(reserveCreated.room.initials).toBe(room.initials);
@@ -260,12 +259,12 @@ describe('Reserve Store', () => {
         authorization: `Bearer ${leaderToken}`,
       });
 
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day).toISOString();
+
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
 
-    expect(response.body.day).toBe(tomorrowDate.day);
-    expect(response.body.month).toBe(tomorrowDate.month);
-    expect(response.body.year).toBe(tomorrowDate.year);
+    expect(response.body.date).toBe(dateISO);
 
     expect(response.body.room.id).toBe(room.id);
     expect(response.body.room.initials).toBe(room.initials);

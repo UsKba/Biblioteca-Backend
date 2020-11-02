@@ -50,15 +50,8 @@ model Role {
 }
 
 model Reserve {
-<<<<<<< HEAD
-  id    Int @id @default(autoincrement())
-  day   Int
-  month Int
-  year  Int
-=======
   id   Int      @id @default(autoincrement())
   date DateTime
->>>>>>> master
 
   Room     Room     @relation(fields: [roomId], references: [id])
   Schedule Schedule @relation(fields: [scheduleId], references: [id])

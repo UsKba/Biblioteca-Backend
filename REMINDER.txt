@@ -115,3 +115,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.sqlite"
+}

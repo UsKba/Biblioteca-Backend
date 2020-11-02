@@ -18,18 +18,17 @@ class WeekReserve {
     const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
     const [endDay, endMonth, endYear] = endDate.split('/').map(Number);
 
+    const startDate1 = new Date(startYear, startMonth, startDay);
+    const endDate1 = new Date(endYear, endMonth, endDay);
+
     const reserves = await prisma.reserve.findMany({
       where: {
         OR: [
           {
-            day: startDay,
-            month: startMonth,
-            year: startYear,
+            date: startDate1,
           },
           {
-            day: endDay,
-            month: endMonth,
-            year: endYear,
+            date: endDate1,
           },
         ],
       },
