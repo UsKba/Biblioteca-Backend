@@ -128,7 +128,7 @@ export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[
   const userExists = userReserves.find((userReserve) => userReserve.userId === userId);
 
   if (!userExists) {
-    throw new Error('Não se pode remover um usuário que não está na reserva');
+    throw new Error('Você não está na reserva');
   }
 }
 
