@@ -20,6 +20,7 @@ model User {
   InviteReceiver Invite[] @relation("receiver")
 
   UserReserve UserReserve[]
+  Reserve     Reserve[]
 }
 
 model Friend {
@@ -42,20 +43,15 @@ model Invite {
   receiverId Int
 }
 
-model Role {
-  id          Int           @id @default(autoincrement())
-  name        String
-  slug        String
-  UserReserve UserReserve[]
-}
-
 model Reserve {
   id   Int      @id @default(autoincrement())
   date DateTime
 
   Room     Room     @relation(fields: [roomId], references: [id])
   Schedule Schedule @relation(fields: [scheduleId], references: [id])
+  Admin    User     @relation(fields: [adminId], references: [id])
 
+  adminId    Int
   roomId     Int
   scheduleId Int
 
@@ -66,11 +62,9 @@ model UserReserve {
   id Int @id @default(autoincrement())
 
   User    User    @relation(fields: [userId], references: [id])
-  Role    Role    @relation(fields: [roleId], references: [id])
   Reserve Reserve @relation(fields: [reserveId], references: [id])
 
   userId    Int
-  roleId    Int
   reserveId Int
 }
 

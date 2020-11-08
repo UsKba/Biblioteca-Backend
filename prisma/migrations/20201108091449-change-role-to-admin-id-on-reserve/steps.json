@@ -1,0 +1,79 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteModel",
+      "model": "Role"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "Reserve",
+      "type": "Reserve",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "Admin",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "Admin"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "Admin"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[adminId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "Admin"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "adminId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "UserReserve",
+      "field": "Role"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "UserReserve",
+      "field": "roleId"
+    }
+  ]
+}

@@ -44,7 +44,7 @@ class ReserveController {
       include: {
         Room: true,
         Schedule: true,
-        UserReserve: { include: { User: true, Role: true } },
+        UserReserve: { include: { User: true } },
       },
       orderBy: {
         id: 'asc',
@@ -52,10 +52,7 @@ class ReserveController {
     });
 
     const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map((userReserve) => ({
-        ...userReserve.User,
-        role: userReserve.Role,
-      }));
+      const users = reserve.UserReserve.map((userReserve) => userReserve.User);
 
       const formattedUser = {
         id: reserve.id,
@@ -99,6 +96,7 @@ class ReserveController {
     const reserve = await prisma.reserve.create({
       data: {
         date,
+        Admin: { connect: { id: userId } },
         Room: { connect: { id: roomId } },
         Schedule: { connect: { id: scheduleId } },
       },
@@ -117,6 +115,7 @@ class ReserveController {
     return response.json({
       id: reserve.id,
       date: reserve.date,
+      adminId: reserve.adminId,
       room: reserve.Room,
       schedule: reserve.Schedule,
       users: reserveUsers,
@@ -132,7 +131,7 @@ class ReserveController {
 
       assertUserIsOnReserve(userId, reserve.UserReserve);
 
-      await assertIsReserveLeader(userId, reserve.UserReserve);
+      await assertIsReserveLeader(userId, reserve);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }

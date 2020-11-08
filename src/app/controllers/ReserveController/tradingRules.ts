@@ -1,4 +1,4 @@
-import { UserReserve } from '@prisma/client';
+import { Reserve, UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
@@ -7,6 +7,7 @@ import { splitSingleDate } from '~/app/utils/date';
 import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
+import ReserveController from '.';
 
 async function checkUsersExists(userIds: number[]) {
   for (let i = 0; i < userIds.length; i += 1) {
@@ -106,20 +107,9 @@ export async function assertReserveExists(id: number) {
   return reserve;
 }
 
-export async function checkIsReserveLeader(userId: number, userReserves: UserReserve[]) {
-  const [adminRole] = await prisma.role.findMany({
-    where: { slug: reserveConfig.leaderSlug },
-  });
 
-  const reserveUser = userReserves.find((userReserve) => userReserve.userId === userId);
-
-  return reserveUser?.roleId === adminRole.id;
-}
-
-export async function assertIsReserveLeader(userId: number, userReserves: UserReserve[]) {
-  const isReserveLeader = await checkIsReserveLeader(userId, userReserves);
-
-  if (!isReserveLeader) {
+export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
+  if (reserve.adminId !== userId) {
     throw new Error('Somente o líder da reserva pode realizar esta ação');
   }
 }

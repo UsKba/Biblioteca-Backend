@@ -1,4 +1,4 @@
-import { Role, User } from '@prisma/client';
+import { User } from '@prisma/client';
 
 import { splitSingleDate } from '~/app/utils/date';
 
@@ -15,12 +15,8 @@ interface CreateRelationsBetweenUsersAndReserveParams {
 interface CreateUserReserveParams {
   reserveId: number;
   userId: number;
-  roleId: number;
 }
 
-interface UserFormatted extends User {
-  role: Role;
-}
 
 export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
   const [hours, minutes] = splitSingleDate(scheduleHours);
@@ -28,17 +24,15 @@ export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {
-  const { reserveId, userId, roleId } = params;
+  const { reserveId, userId} = params;
 
   const userReserve = await prisma.userReserve.create({
     data: {
       Reserve: { connect: { id: reserveId } },
       User: { connect: { id: userId } },
-      Role: { connect: { id: roleId } },
     },
     include: {
       User: true,
-      Role: true,
     },
   });
 
@@ -46,22 +40,16 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 }
 
 export async function createRelationsBetweenMembersAndReserve(membersIds: number[], reserveId: number) {
-  const [memberRole] = await prisma.role.findMany({
-    where: { slug: reserveConfig.memberSlug },
-  });
-
-  const members = [] as UserFormatted[];
+  const members = [] as User[];
 
   for (let i = 0; i < membersIds.length; i += 1) {
     const userReserve = await createUserReserve({
       userId: membersIds[i],
       reserveId,
-      roleId: memberRole.id,
     });
 
     members.push({
-      ...userReserve.User,
-      role: userReserve.Role,
+      ...userReserve.User
     });
   }
 
@@ -69,19 +57,13 @@ export async function createRelationsBetweenMembersAndReserve(membersIds: number
 }
 
 export async function createRelationBetweenGroupLeaderAndReserve(userId: number, reserveId: number) {
-  const [adminRole] = await prisma.role.findMany({
-    where: { slug: reserveConfig.leaderSlug },
-  });
-
   const userReserve = await createUserReserve({
     userId,
     reserveId,
-    roleId: adminRole.id,
   });
 
   return {
-    ...userReserve.User,
-    role: userReserve.Role,
+    ...userReserve.User
   };
 }
 

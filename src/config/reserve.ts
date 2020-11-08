@@ -3,9 +3,6 @@ const reserveConfig = {
   maxClassmatesPerRoom: 6,
 
   maxReservesPerTurn: 2,
-
-  leaderSlug: 'administrador',
-  memberSlug: 'membro',
 };
 
 export default reserveConfig;
