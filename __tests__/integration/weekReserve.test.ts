@@ -1,26 +1,13 @@
 import request from 'supertest';
 
-import reserveConfig from '~/config/reserve';
-
 import App from '~/App';
 
-import {
-  createUser,
-  createReserve,
-  createRole,
-  generateDate,
-  createRoom,
-  createSchedule,
-  createPeriod,
-} from '../factory';
+import { createUser, createReserve, generateDate, createRoom, createSchedule, createPeriod } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('weekReser index', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
   it('should be able index the all reserves on an specific date', async () => {

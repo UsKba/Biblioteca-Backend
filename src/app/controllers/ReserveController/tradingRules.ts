@@ -2,12 +2,10 @@ import { Reserve, UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
-import { splitSingleDate } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
-import ReserveController from '.';
 
 async function checkUsersExists(userIds: number[]) {
   for (let i = 0; i < userIds.length; i += 1) {
@@ -106,7 +104,6 @@ export async function assertReserveExists(id: number) {
 
   return reserve;
 }
-
 
 export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
   if (reserve.adminId !== userId) {

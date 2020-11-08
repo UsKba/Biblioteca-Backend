@@ -2,20 +2,15 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
-import reserveConfig from '~/config/reserve';
-
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createReserve, createRole, createUser } from '../factory';
+import { createReserve, createUser } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('UserReserve delete', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
   it('should be able to delete one user from reserve', async () => {

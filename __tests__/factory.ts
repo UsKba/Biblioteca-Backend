@@ -14,10 +14,6 @@ interface GenerateUserParams {
   enrollment?: string | any;
 }
 
-interface GenerateRoleParams {
-  name: string;
-}
-
 interface GenerateDateParams {
   sumYear?: number | any;
   sumMonth?: number | any;
@@ -140,12 +136,6 @@ export async function createUser(params?: GenerateUserParams) {
   const userData = generateUser(params);
 
   const response = await request(App).post('/users').send(userData);
-
-  return response.body as User;
-}
-
-export async function createRole(params: GenerateRoleParams) {
-  const response = await request(App).post('/roles').send(params);
 
   return response.body as User;
 }

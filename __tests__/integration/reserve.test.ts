@@ -3,28 +3,15 @@ import request from 'supertest';
 import { encodeToken } from '~/app/utils/auth';
 import { splitSingleDate } from '~/app/utils/date';
 
-import reserveConfig from '~/config/reserve';
-
 import App from '~/App';
 import prisma from '~/prisma';
 
-import {
-  createUser,
-  createRoom,
-  createSchedule,
-  generateDate,
-  createReserve,
-  createPeriod,
-  createRole,
-} from '../factory';
+import { createUser, createRoom, createSchedule, generateDate, createReserve, createPeriod } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('Reserve Index', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
   it('should be able index the one reserve linked with user', async () => {
@@ -98,10 +85,6 @@ describe('Reserve Index', () => {
     expect(reserveCreated.users[0]).toHaveProperty('enrollment');
     expect(reserveCreated.users[0]).toHaveProperty('email');
     expect(reserveCreated.users[0]).toHaveProperty('name');
-
-    expect(reserveCreated.users[0].role).toHaveProperty('id');
-    expect(reserveCreated.users[0].role).toHaveProperty('name');
-    expect(reserveCreated.users[0].role).toHaveProperty('slug');
   });
 
   it('should be able index the two reserves linked with user', async () => {
@@ -197,9 +180,6 @@ describe('Reserve Index', () => {
 describe('Reserve Store', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
   it('should be able to create a reserve', async () => {
@@ -282,10 +262,6 @@ describe('Reserve Store', () => {
     expect(response.body.users[0]).toHaveProperty('enrollment');
     expect(response.body.users[0]).toHaveProperty('email');
     expect(response.body.users[0]).toHaveProperty('name');
-
-    expect(response.body.users[0].role).toHaveProperty('id');
-    expect(response.body.users[0].role).toHaveProperty('name');
-    expect(response.body.users[0].role).toHaveProperty('slug');
   });
 
   it('should not be able to create a reserve on a schedule that does not exists', async () => {
@@ -587,9 +563,6 @@ describe('Reserve Store', () => {
 describe('Reserve Delete', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
   it('should be able to delete a reserve', async () => {
@@ -730,42 +703,26 @@ describe('Reserve Delete', () => {
 describe('Reserve Roles', () => {
   beforeEach(async () => {
     await cleanDatabase();
-
-    await createRole({ name: reserveConfig.leaderSlug });
-    await createRole({ name: reserveConfig.memberSlug });
   });
 
-  it('should have correct roles on userReseves', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+  //   it('should have correct roles on userReseves', async () => {
+  //     const user1 = await createUser({ enrollment: '20181104010022' });
+  //     const user2 = await createUser({ enrollment: '20181104010033' });
+  //     const user3 = await createUser({ enrollment: '20181104010098' });
 
-    const reserve = await createReserve({
-      leader: user1,
-      users: [user1, user2, user3],
-    });
+  //     const reserve = await createReserve({
+  //       leader: user1,
+  //       users: [user1, user2, user3],
+  //     });aa
 
-    const [adminRole] = await prisma.role.findMany({
-      where: { slug: reserveConfig.leaderSlug },
-    });
+  //     const usersOfReserve = await prisma.userReserve.findMany({
+  //       where: {
+  //         reserveId: reserve.id,
+  //       },
+  //     });
 
-    const [memberRole] = await prisma.role.findMany({
-      where: { slug: reserveConfig.memberSlug },
-    });
+  //     const reserveLeaer = usersOfReserve.find((userReserve) => userReserve.userId === user1.id);
+  //     const reserveMembers = usersOfReserve.filter((userReserve) => userReserve.userId !== user1.id);
 
-    const usersOfReserve = await prisma.userReserve.findMany({
-      where: {
-        reserveId: reserve.id,
-      },
-    });
-
-    const reserveLeaer = usersOfReserve.find((userReserve) => userReserve.userId === user1.id);
-    const reserveMembers = usersOfReserve.filter((userReserve) => userReserve.userId !== user1.id);
-
-    for (const reserveMember of reserveMembers) {
-      expect(reserveMember.roleId).toBe(memberRole.id);
-    }
-
-    expect(reserveLeaer?.roleId).toBe(adminRole.id);
-  });
+  //   });
 });

@@ -65,8 +65,14 @@ describe('User index', () => {
   });
 
   it('should be able list 2 users', async () => {
-    const user1 = await createUser({ enrollment: '20181104010048', email: 'userEmail1@gmail.com' });
-    const user2 = await createUser({ enrollment: '20181104010049', email: 'userEmail2@gmail.com' });
+    const user1 = await createUser({
+      enrollment: '20181104010048',
+      email: 'userEmail1@gmail.com',
+    });
+    const user2 = await createUser({
+      enrollment: '20181104010049',
+      email: 'userEmail2@gmail.com',
+    });
 
     const response = await request(App).get('/users');
 

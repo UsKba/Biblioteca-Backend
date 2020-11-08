@@ -7,7 +7,6 @@ import prisma from '~/prisma';
 import {
   assertIsReserveLeader,
   assertReserveExists,
-  checkIsReserveLeader,
   assertCanRemoveUserFromReserve,
   assertUserIsOnReserve,
 } from '../ReserveController/tradingRules';
@@ -32,7 +31,7 @@ class UserReserveController {
       assertUserIsOnReserve(userIdToDelete, reserve.UserReserve);
       assertCanRemoveUserFromReserve(reserve.UserReserve);
 
-      await assertIsReserveLeader(userId, reserve.UserReserve);
+      await assertIsReserveLeader(userId, reserve);
 
       await prisma.userReserve.deleteMany({
         where: {
@@ -41,10 +40,10 @@ class UserReserveController {
         },
       });
 
-      const userReserveDeletedWasTheLeader = await checkIsReserveLeader(userIdToDelete, reserve.UserReserve);
-      if (userReserveDeletedWasTheLeader) {
-        //
-      }
+      // const userReserveDeletedWasTheLeader = await checkIsReserveLeader(userIdToDelete, reserve.UserReserve);
+      // if (userReserveDeletedWasTheLeader) {
+      //   //
+      // }
 
       return res.json({ reserveId, userId: userIdToDelete });
     } catch (e) {
