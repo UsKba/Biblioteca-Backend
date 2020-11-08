@@ -46,6 +46,7 @@ describe('Reserve Index', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = await createReserve({
+      name: 'Trabalho de Portugues',
       date: tomorrowDate,
       period,
       room,
@@ -71,6 +72,7 @@ describe('Reserve Index', () => {
     expect(response.body.length).toBe(1);
     expect(reserveCreated.id).toBe(reserve.id);
 
+    expect(reserveCreated.name).toBe(reserve.name);
     expect(reserveCreated.date).toBe(dateISO);
 
     expect(reserveCreated.room.id).toBe(room.id);
@@ -194,6 +196,7 @@ describe('Reserve Store', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -227,6 +230,7 @@ describe('Reserve Store', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -248,6 +252,7 @@ describe('Reserve Store', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
 
+    expect(response.body.name).toBe('Trabalho de portugues');
     expect(response.body.date).toBe(dateISO);
 
     expect(response.body.room.id).toBe(room.id);
@@ -276,6 +281,7 @@ describe('Reserve Store', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id,
       scheduleId: schedule.id + 1, // ID that not exists
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -307,6 +313,7 @@ describe('Reserve Store', () => {
     const afterTomorrowDate = generateDate({ sumDay: 4 });
 
     const tomorrowReserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -314,6 +321,7 @@ describe('Reserve Store', () => {
     };
 
     const afterTomorrowReserve = {
+      name: 'Trabalho de portugues2',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -352,6 +360,7 @@ describe('Reserve Store', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id + 1,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
@@ -468,6 +477,7 @@ describe('Reserve Store', () => {
     const tomorrowDate = generateDate({ sumDay: 1 });
 
     const reserve = {
+      name: 'Trabalho de portugues',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],

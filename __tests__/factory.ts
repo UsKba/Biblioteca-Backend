@@ -38,6 +38,7 @@ interface GenerateScheduleParams {
 }
 
 interface GenerateReserveParams {
+  name?: string;
   leader: User;
   users: User[];
   period?: Period;
@@ -165,16 +166,18 @@ export async function createSchedule(params: GenerateScheduleParams) {
 }
 
 export async function createReserve(params: GenerateReserveParams) {
-  const { leader, users, room, period, schedule, date } = params;
+  const { leader, users, room, period, schedule, date, name } = params;
 
   const classmatesIDs = users.map((user) => user.id);
 
+  const targetName = name || 'Reuniao';
   const targetRoom = room || (await createRoom());
   const targetPeriod = period || (await createPeriod());
   const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriod.id }));
   const tomorrowDate = date || generateDate({ sumDay: 1 });
 
   const reserve = {
+    name: targetName,
     roomId: targetRoom.id,
     scheduleId: targetSchedule.id,
     classmatesIDs,

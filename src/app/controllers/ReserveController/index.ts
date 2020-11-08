@@ -22,6 +22,7 @@ import {
 import { createRelationsBetweenUsersAndReserve, setScheduleHoursAndMinutes } from './utils';
 
 interface StoreReserve {
+  name: string;
   roomId: number;
   scheduleId: number;
   day: number;
@@ -54,15 +55,16 @@ class ReserveController {
     const reservesFormatted = reserves.map((reserve) => {
       const users = reserve.UserReserve.map((userReserve) => userReserve.User);
 
-      const formattedUser = {
+      const formattedReserve = {
         id: reserve.id,
+        name: reserve.name,
         date: reserve.date,
         room: reserve.Room,
         schedule: reserve.Schedule,
         users,
       };
 
-      return formattedUser;
+      return formattedReserve;
     });
 
     return response.json(reservesFormatted);
@@ -70,7 +72,7 @@ class ReserveController {
 
   async store(request: StoreRequest, response: Response) {
     const userId = request.userId as number;
-    const { roomId, scheduleId, year, month, day, classmatesIDs } = request.body;
+    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body;
 
     const date = new Date(year, month, day);
 
@@ -95,6 +97,7 @@ class ReserveController {
 
     const reserve = await prisma.reserve.create({
       data: {
+        name,
         date,
         Admin: { connect: { id: userId } },
         Room: { connect: { id: roomId } },
@@ -114,6 +117,7 @@ class ReserveController {
 
     return response.json({
       id: reserve.id,
+      name: reserve.name,
       date: reserve.date,
       adminId: reserve.adminId,
       room: reserve.Room,
