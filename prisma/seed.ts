@@ -135,17 +135,6 @@ async function run() {
     },
   ];
 
-  const roles = [
-    {
-      name: 'Administrador',
-      slug: 'administrador',
-    },
-    {
-      name: 'Membro',
-      slug: 'membro',
-    },
-  ];
-
   for (const user of users) {
     await prisma.user.create({
       data: user,
@@ -179,18 +168,7 @@ async function run() {
       data: room,
     });
   }
-
-<<<<<<< HEAD
-  prisma.$disconnect();
-=======
-  for (const role of roles) {
-    await prisma.role.create({
-      data: role,
-    });
-  }
-
   prisma.disconnect();
->>>>>>> master
 }
 
 run();

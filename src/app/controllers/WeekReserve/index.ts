@@ -31,7 +31,7 @@ class WeekReserve {
     include: {
       Room: true,
       Schedule: true,
-      UserReserve: { include: { User: true, Role: true } },
+      UserReserve: { include: { User: true} },
     },
     orderBy: {
       id: 'asc',
@@ -41,7 +41,6 @@ class WeekReserve {
     const reservesFormatted = reserves.map((reserve) => {
       const users = reserve.UserReserve.map((userReserve) => ({
         ...userReserve.User,
-        role: userReserve.Role,
       }));
 
       const formattedUser = {
@@ -61,13 +60,3 @@ class WeekReserve {
 
 export default new WeekReserve();
 
-
-// OR: [
-        //   {
-        //     date: startDate1,
-        //   },
-        //   {
-        //     date: endDate1,
-        //   },
-       // ],
-      // },

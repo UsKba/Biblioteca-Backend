@@ -6,7 +6,6 @@ import InviteController from '~/app/controllers/InviteController';
 import LoginController from '~/app/controllers/LoginController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
-import RoleController from '~/app/controllers/RoleController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import UserController from '~/app/controllers/UserController';
@@ -39,9 +38,6 @@ routes.get('/users', UserController.index);
 routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
-
-routes.get('/roles', RoleController.index);
-routes.post('/roles', RoleController.store);
 
 // Admin
 

@@ -709,29 +709,3 @@ describe('Reserve Delete', () => {
   });
 });
 
-describe('Reserve Roles', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
-
-  //   it('should have correct roles on userReseves', async () => {
-  //     const user1 = await createUser({ enrollment: '20181104010022' });
-  //     const user2 = await createUser({ enrollment: '20181104010033' });
-  //     const user3 = await createUser({ enrollment: '20181104010098' });
-
-  //     const reserve = await createReserve({
-  //       leader: user1,
-  //       users: [user1, user2, user3],
-  //     });aa
-
-  //     const usersOfReserve = await prisma.userReserve.findMany({
-  //       where: {
-  //         reserveId: reserve.id,
-  //       },
-  //     });
-
-  //     const reserveLeaer = usersOfReserve.find((userReserve) => userReserve.userId === user1.id);
-  //     const reserveMembers = usersOfReserve.filter((userReserve) => userReserve.userId !== user1.id);
-
-  //   });
-});
