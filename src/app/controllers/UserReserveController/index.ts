@@ -9,6 +9,7 @@ import {
   assertReserveExists,
   assertCanRemoveUserFromReserve,
   assertUserIsOnReserve,
+  uptateReserveLeader,
 } from '../ReserveController/tradingRules';
 
 type UserReserveDelete = {
@@ -20,7 +21,7 @@ type DeleteRequest = RequestAuthParams<UserReserveDelete>;
 
 class UserReserveController {
   async delete(req: DeleteRequest, res: Response) {
-    const userId = req.userId as number;
+    const userId = req.userId as number;//Lider da reserva
 
     const userIdToDelete = Number(req.params.userId);
     const reserveId = Number(req.params.reserveId);
@@ -40,10 +41,9 @@ class UserReserveController {
         },
       });
 
-      // const userReserveDeletedWasTheLeader = await checkIsReserveLeader(userIdToDelete, reserve.UserReserve);
-      // if (userReserveDeletedWasTheLeader) {
-      //   //
-      // }
+      if (reserve.adminId === userIdToDelete) {
+        await uptateReserveLeader(reserve);
+        }
 
       return res.json({ reserveId, userId: userIdToDelete });
     } catch (e) {
