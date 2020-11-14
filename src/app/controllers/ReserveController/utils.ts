@@ -7,7 +7,6 @@ import reserveConfig from '~/config/reserve';
 import prisma from '~/prisma';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
-  userId: number;
   reserveId: number;
   classmatesIDs: number[];
 }
@@ -39,43 +38,22 @@ export async function createUserReserve(params: CreateUserReserveParams) {
   return userReserve;
 }
 
-export async function createRelationsBetweenMembersAndReserve(membersIds: number[], reserveId: number) {
-  const members = [] as User[];
+export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
 
-  for (let i = 0; i < membersIds.length; i += 1) {
+  const { reserveId, classmatesIDs } = params;
+
+  const users = [] as User[];
+
+  for (let i = 0; i < classmatesIDs.length; i += 1) {
     const userReserve = await createUserReserve({
-      userId: membersIds[i],
+      userId: classmatesIDs[i],
       reserveId,
     });
 
-    members.push({
+    users.push({
       ...userReserve.User
     });
   }
-
-  return members;
-}
-
-export async function createRelationBetweenGroupLeaderAndReserve(userId: number, reserveId: number) {
-  const userReserve = await createUserReserve({
-    userId,
-    reserveId,
-  });
-
-  return {
-    ...userReserve.User
-  };
-}
-
-export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
-  const { userId, reserveId, classmatesIDs } = params;
-
-  const membersIds = classmatesIDs.filter((classmateId) => classmateId !== userId);
-
-  const reserveLeader = await createRelationBetweenGroupLeaderAndReserve(userId, reserveId);
-  const reserveMembers = await createRelationsBetweenMembersAndReserve(membersIds, reserveId);
-
-  const users = [reserveLeader, ...reserveMembers];
 
   return users;
 }

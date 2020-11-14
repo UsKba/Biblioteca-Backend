@@ -110,7 +110,6 @@ class ReserveController {
     });
 
     const reserveUsers = await createRelationsBetweenUsersAndReserve({
-      userId,
       classmatesIDs,
       reserveId: reserve.id,
     });

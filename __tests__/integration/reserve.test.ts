@@ -317,7 +317,7 @@ describe('Reserve Store', () => {
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesIDs: [user1.id, user2.id, user3.id],
-      ...tomorrowDate, tum ts tum dum uo uououo tum dum uo uououo tu dum
+      ...tomorrowDate,
     };
     const afterTomorrowReserve = {
       name: 'Trabalho de portugues2',
