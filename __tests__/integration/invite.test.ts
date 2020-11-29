@@ -82,290 +82,298 @@ describe('invite store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should not be able to invite the same user two times', async () => {
+  it('should be able to invite again a user that already denied ', async () => {
+
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const token = encodeToken(user1);
+    const tokenUser1 = encodeToken(user1);
 
-    const response1 = await request(App)
+    const responseInvite = await request(App)
       .post('/invites')
       .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${token}` });
+      .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const response2 = await request(App)
+    const tokenUser2 = encodeToken(user2);
+
+    await request(App)
+      .delete(`/invites/${responseInvite.body.id}`)
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const responseReInvite = await request(App)
       .post('/invites')
       .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${token}` });
+      .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(response1.status).toBe(200);
-    expect(response2.status).toBe(400);
+
+    expect(responseReInvite.status).toBe(200);
   });
+
 });
 
-describe('invite index', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
+// describe('invite index', () => {
+//   beforeEach(async () => {
+//     await cleanDatabase();
+//   });
 
-  it('should be able to index one invite', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to index one invite', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    const tokenUser2 = encodeToken(user2);
+//     await createInvite({ user1, user2 });
+//     const tokenUser2 = encodeToken(user2);
 
-    const response = await request(App)
-      .get('/invites')
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const response = await request(App)
+//       .get('/invites')
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(1);
+//   });
 
-  it('should be able to index two invites', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to index two invites', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1: user3, user2 });
+//     await createInvite({ user1, user2 });
+//     await createInvite({ user1: user3, user2 });
 
-    const tokenUser2 = encodeToken(user2);
+//     const tokenUser2 = encodeToken(user2);
 
-    const response = await request(App)
-      .get('/invites')
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const response = await request(App)
+//       .get('/invites')
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(2);
+//   });
 
-  it('should not be able to index invites where you are not the receiver', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
+//   it('should not be able to index invites where you are not the receiver', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1: user3, user2 });
+//     await createInvite({ user1, user2 });
+//     await createInvite({ user1: user3, user2 });
 
-    const tokenUser1 = encodeToken(user1);
+//     const tokenUser1 = encodeToken(user1);
 
-    const response = await request(App)
-      .get('/invites')
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const response = await request(App)
+//       .get('/invites')
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(0);
-  });
-});
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(0);
+//   });
+// });
 
-describe('invite delete', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
+// describe('invite delete', () => {
+//   beforeEach(async () => {
+//     await cleanDatabase();
+//   });
 
-  it('should be able to delete one invite when you are the sender', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to delete one invite when you are the sender', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
-    const tokenUser1 = encodeToken(user1);
+//     const invite = await createInvite({ user1, user2 });
+//     const tokenUser1 = encodeToken(user1);
 
-    const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const deleteResponse = await request(App)
+//       .delete(`/invites/${invite.id}`)
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const indexResponse = await request(App)
-      .get('/invites/pending')
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const indexResponse = await request(App)
+//       .get('/invites/pending')
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(deleteResponse.status).toBe(200);
-    expect(deleteResponse.body.id).toBe(invite.id);
+//     expect(deleteResponse.status).toBe(200);
+//     expect(deleteResponse.body.id).toBe(invite.id);
 
-    expect(indexResponse.body.length).toBe(0);
-  });
+//     expect(indexResponse.body.length).toBe(0);
+//   });
 
-  it('should be able to delete one invite when you are the receiver', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to delete one invite when you are the receiver', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
-    const tokenUser2 = encodeToken(user2);
+//     const invite = await createInvite({ user1, user2 });
+//     const tokenUser2 = encodeToken(user2);
 
-    const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const deleteResponse = await request(App)
+//       .delete(`/invites/${invite.id}`)
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const indexResponse = await request(App)
-      .get('/invites')
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const indexResponse = await request(App)
+//       .get('/invites')
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    expect(deleteResponse.status).toBe(200);
-    expect(deleteResponse.body.id).toBe(invite.id);
+//     expect(deleteResponse.status).toBe(200);
+//     expect(deleteResponse.body.id).toBe(invite.id);
 
-    expect(indexResponse.body.length).toBe(0);
-  });
+//     expect(indexResponse.body.length).toBe(0);
+//   });
 
-  it('should not be able to delete invite when you are not the sender or the receiver', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
+//   it('should not be able to delete invite when you are not the sender or the receiver', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
+//     const invite = await createInvite({ user1, user2 });
 
-    const tokenUser1 = encodeToken(user1);
-    const tokenUser3 = encodeToken(user3);
+//     const tokenUser1 = encodeToken(user1);
+//     const tokenUser3 = encodeToken(user3);
 
-    const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
-      .set({ authorization: `Bearer ${tokenUser3}` });
+//     const deleteResponse = await request(App)
+//       .delete(`/invites/${invite.id}`)
+//       .set({ authorization: `Bearer ${tokenUser3}` });
 
-    const indexResponse = await request(App)
-      .get('/invites/pending')
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const indexResponse = await request(App)
+//       .get('/invites/pending')
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(deleteResponse.status).toBe(400);
-    expect(indexResponse.body.length).toBe(1);
-  });
-});
+//     expect(deleteResponse.status).toBe(400);
+//     expect(indexResponse.body.length).toBe(1);
+//   });
+// });
 
-describe('invite pending index', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
+// describe('invite pending index', () => {
+//   beforeEach(async () => {
+//     await cleanDatabase();
+//   });
 
-  it('should be able to index one pending invite', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to index one pending invite', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    const tokenUser1 = encodeToken(user1);
+//     await createInvite({ user1, user2 });
+//     const tokenUser1 = encodeToken(user1);
 
-    const response = await request(App)
-      .get('/invites/pending')
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const response = await request(App)
+//       .get('/invites/pending')
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(1);
+//   });
 
-  it('should be able to index two pending invite', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to index two pending invite', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1, user2: user3 });
-    const tokenUser1 = encodeToken(user1);
+//     await createInvite({ user1, user2 });
+//     await createInvite({ user1, user2: user3 });
+//     const tokenUser1 = encodeToken(user1);
 
-    const response = await request(App)
-      .get('/invites/pending')
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const response = await request(App)
+//       .get('/invites/pending')
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(2);
+//   });
 
-  it('should not be able to index one pending invite when you do not have', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
+//   it('should not be able to index one pending invite when you do not have', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
 
-    const tokenUser = encodeToken(user1);
+//     const tokenUser = encodeToken(user1);
 
-    const response = await request(App)
-      .get('/invites/pending')
-      .set({ authorization: `Bearer ${tokenUser}` });
+//     const response = await request(App)
+//       .get('/invites/pending')
+//       .set({ authorization: `Bearer ${tokenUser}` });
 
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(0);
-  });
-});
+//     expect(response.status).toBe(200);
+//     expect(response.body.length).toBe(0);
+//   });
+// });
 
-describe('invite confirmation store', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
+// describe('invite confirmation store', () => {
+//   beforeEach(async () => {
+//     await cleanDatabase();
+//   });
 
-  it('should be able to confirm invite', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should be able to confirm invite', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const tokenUser1 = encodeToken(user1);
-    const tokenUser2 = encodeToken(user2);
+//     const tokenUser1 = encodeToken(user1);
+//     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
-      .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const inviteResponse = await request(App)
+//       .post('/invites')
+//       .send({ receiverId: user2.id })
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const { id } = inviteResponse.body;
+//     const { id } = inviteResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
-      .send({ id })
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const inviteConfirmationResponse = await request(App)
+//       .post('/invites/confirmation')
+//       .send({ id })
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
-  });
+//     expect(inviteResponse.status).toBe(200);
+//     expect(inviteConfirmationResponse.status).toBe(200);
+//   });
 
-  it('should delete invite when it is confirmed', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should delete invite when it is confirmed', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const tokenUser1 = encodeToken(user1);
-    const tokenUser2 = encodeToken(user2);
+//     const tokenUser1 = encodeToken(user1);
+//     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
-      .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const inviteResponse = await request(App)
+//       .post('/invites')
+//       .send({ receiverId: user2.id })
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const { id } = inviteResponse.body;
+//     const { id } = inviteResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
-      .send({ id })
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const inviteConfirmationResponse = await request(App)
+//       .post('/invites/confirmation')
+//       .send({ id })
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const indexResponse = await request(App)
-      .get('/invites/pending')
-      .send({ id })
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const indexResponse = await request(App)
+//       .get('/invites/pending')
+//       .send({ id })
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
+//     expect(inviteResponse.status).toBe(200);
+//     expect(inviteConfirmationResponse.status).toBe(200);
 
-    expect(indexResponse.status).toBe(200);
-    expect(indexResponse.body.length).toBe(0);
-  });
+//     expect(indexResponse.status).toBe(200);
+//     expect(indexResponse.body.length).toBe(0);
+//   });
 
-  it('should not be able to invite a user who already is your friend', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+//   it('should not be able to invite a user who already is your friend', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010022' });
+//     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const tokenUser1 = encodeToken(user1);
-    const tokenUser2 = encodeToken(user2);
+//     const tokenUser1 = encodeToken(user1);
+//     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
-      .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const inviteResponse = await request(App)
+//       .post('/invites')
+//       .send({ receiverId: user2.id })
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const { id } = inviteResponse.body;
+//     const { id } = inviteResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
-      .send({ id })
-      .set({ authorization: `Bearer ${tokenUser2}` });
+//     const inviteConfirmationResponse = await request(App)
+//       .post('/invites/confirmation')
+//       .send({ id })
+//       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const errorInviteResponse = await request(App)
-      .post('/invites')
-      .send({ receiverId: user2.id })
-      .set({ authorization: `Bearer ${tokenUser1}` });
+//     const errorInviteResponse = await request(App)
+//       .post('/invites')
+//       .send({ receiverId: user2.id })
+//       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
-    expect(errorInviteResponse.status).toBe(400);
-  });
-});
+//     expect(inviteResponse.status).toBe(200);
+//     expect(inviteConfirmationResponse.status).toBe(200);
+//     expect(errorInviteResponse.status).toBe(400);
+//   });
+// });

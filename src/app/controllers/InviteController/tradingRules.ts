@@ -2,18 +2,6 @@ import { Invite } from '@prisma/client';
 
 import prisma from '~/prisma';
 
-export async function assertInviteNotExists(senderId: number, receiverId: number) {
-  const invites = await prisma.invite.findMany({
-    where: { senderId, receiverId },
-  });
-
-  if (invites.length > 0) {
-    throw new Error('Convite já foi feito');
-  }
-
-  return invites[0];
-}
-
 export async function assertUserIsNotFriend(senderId: number, receiverId: number) {
   const friends = await prisma.friend.findMany({
     where: { userId1: senderId, userId2: receiverId },
