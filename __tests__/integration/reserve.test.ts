@@ -708,4 +708,3 @@ describe('Reserve Delete', () => {
     expect(response.status).toBe(400);
   });
 });
-

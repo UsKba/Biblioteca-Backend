@@ -70,20 +70,14 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-function getDayBasedOnSumDayAndWeekDay(weekDay: number, sumDay: number, date: Date) {
-  if (weekDay === 0) {
-    if (sumDay < 0) {
-      return date.getUTCDate() - 2;
-    }
+function getNextWeekDay(date: Date) {
+  const weekDay = date.getDay();
 
+  if (weekDay === 0) {
     return date.getUTCDate() + 1;
   }
 
   if (weekDay === 6) {
-    if (sumDay < 0) {
-      return date.getUTCDate() - 1;
-    }
-
     return date.getUTCDate() + 2;
   }
 
@@ -92,19 +86,24 @@ function getDayBasedOnSumDayAndWeekDay(weekDay: number, sumDay: number, date: Da
 
 export function generateDate(params?: GenerateDateParams) {
   const now = new Date();
+  const nowUtc = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
 
-  const newYear = now.getFullYear() + Number(params?.sumYear || 0);
-  const newMonth = now.getMonth() + Number(params?.sumMonth || 0);
-  const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
+  const newYear = nowUtc.getUTCFullYear() + Number(params?.sumYear || 0);
+  const newMonth = nowUtc.getUTCMonth() + Number(params?.sumMonth || 0);
+  const newDay = nowUtc.getUTCDate() + Number(params?.sumDay || 0);
 
   const newDate = new Date(newYear, newMonth, newDay);
-  const weekDay = newDate.getDay();
-  const day = getDayBasedOnSumDayAndWeekDay(weekDay, params?.sumDay || 0, newDate);
+  const newDateUtc = new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60000);
+
+  const day = getNextWeekDay(newDateUtc);
+
+  const targetDate = new Date(newDateUtc.getUTCFullYear(), newDateUtc.getUTCMonth(), day);
+  const targetDateUtc = new Date(targetDate.getTime() - targetDate.getTimezoneOffset() * 60000);
 
   return {
-    year: now.getFullYear() + Number(params?.sumYear || 0),
-    month: now.getMonth() + Number(params?.sumMonth || 0),
-    day,
+    year: targetDateUtc.getUTCFullYear(),
+    month: targetDateUtc.getUTCMonth(),
+    day: targetDateUtc.getUTCDate(),
   };
 }
 
