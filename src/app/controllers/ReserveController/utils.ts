@@ -2,8 +2,6 @@ import { User } from '@prisma/client';
 
 import { splitSingleDate } from '~/app/utils/date';
 
-import reserveConfig from '~/config/reserve';
-
 import prisma from '~/prisma';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
@@ -16,14 +14,13 @@ interface CreateUserReserveParams {
   userId: number;
 }
 
-
 export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
   const [hours, minutes] = splitSingleDate(scheduleHours);
   date.setHours(hours, minutes);
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {
-  const { reserveId, userId} = params;
+  const { reserveId, userId } = params;
 
   const userReserve = await prisma.userReserve.create({
     data: {
@@ -39,7 +36,6 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 }
 
 export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
-
   const { reserveId, classmatesIDs } = params;
 
   const users = [] as User[];
@@ -51,7 +47,7 @@ export async function createRelationsBetweenUsersAndReserve(params: CreateRelati
     });
 
     users.push({
-      ...userReserve.User
+      ...userReserve.User,
     });
   }
 

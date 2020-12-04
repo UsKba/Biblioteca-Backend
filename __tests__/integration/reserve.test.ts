@@ -618,7 +618,7 @@ describe('Reserve Delete', () => {
         Reserve: { id: reserve.id },
       },
     });
-
+ 
     expect(usersOfReserve.length).toBe(0);
   });
 

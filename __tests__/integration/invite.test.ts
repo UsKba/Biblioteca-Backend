@@ -83,7 +83,6 @@ describe('invite store', () => {
   });
 
   it('should be able to invite again a user that already denied ', async () => {
-
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
@@ -105,10 +104,8 @@ describe('invite store', () => {
       .send({ receiverId: user2.id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-
     expect(responseReInvite.status).toBe(200);
   });
-
 });
 
 // describe('invite index', () => {

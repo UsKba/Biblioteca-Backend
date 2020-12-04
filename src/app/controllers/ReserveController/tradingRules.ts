@@ -111,18 +111,18 @@ export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
   }
 }
 
-export async function uptateReserveLeader( reserve: Reserve) {
-    const usersReserve = await prisma.userReserve.findMany({
-      where: { reserveId : reserve.id}
-    });
+export async function uptateReserveLeader(reserve: Reserve) {
+  const usersReserve = await prisma.userReserve.findMany({
+    where: { reserveId: reserve.id },
+  });
 
-    await prisma.reserve.update({
-      where : { id : reserve.id },
-      data : {
-        Admin: { connect: { id: usersReserve[0].userId } }
-      }
-    });
-  }
+  await prisma.reserve.update({
+    where: { id: reserve.id },
+    data: {
+      Admin: { connect: { id: usersReserve[0].userId } },
+    },
+  });
+}
 
 export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[]) {
   const userExists = userReserves.find((userReserve) => userReserve.userId === userId);

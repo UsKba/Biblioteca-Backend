@@ -21,7 +21,7 @@ type DeleteRequest = RequestAuthParams<UserReserveDelete>;
 
 class UserReserveController {
   async delete(req: DeleteRequest, res: Response) {
-    const userId = req.userId as number;//Lider da reserva
+    const userId = req.userId as number; // Lider da reserva
 
     const userIdToDelete = Number(req.params.userId);
     const reserveId = Number(req.params.reserveId);
@@ -43,7 +43,7 @@ class UserReserveController {
 
       if (reserve.adminId === userIdToDelete) {
         await uptateReserveLeader(reserve);
-        }
+      }
 
       return res.json({ reserveId, userId: userIdToDelete });
     } catch (e) {

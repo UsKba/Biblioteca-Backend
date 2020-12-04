@@ -24,18 +24,18 @@ class WeekReserve {
     const reserves = await prisma.reserve.findMany({
       where: {
         date: {
-           gte: startDate1,
-           lt: endDate1,
-      }
-    },
-    include: {
-      Room: true,
-      Schedule: true,
-      UserReserve: { include: { User: true} },
-    },
-    orderBy: {
-      id: 'asc',
-    },
+          gte: startDate1,
+          lt: endDate1,
+        },
+      },
+      include: {
+        Room: true,
+        Schedule: true,
+        UserReserve: { include: { User: true } },
+      },
+      orderBy: {
+        id: 'asc',
+      },
     });
 
     const reservesFormatted = reserves.map((reserve) => {
@@ -59,4 +59,3 @@ class WeekReserve {
 }
 
 export default new WeekReserve();
-

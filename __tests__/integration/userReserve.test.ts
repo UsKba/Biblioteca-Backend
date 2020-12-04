@@ -14,7 +14,7 @@ describe('UserReserve delete', () => {
   });
   afterAll(async () => {
     await prisma.disconnect();
-    });
+  });
 
   it('should be able to delete one user from reserve', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
@@ -184,7 +184,6 @@ describe('UserReserve delete', () => {
   });
 
   it('should be able to change the leader of reserve if userToDelete was the leader', async () => {
-
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
@@ -195,7 +194,6 @@ describe('UserReserve delete', () => {
       users: [user1, user2, user3, user4],
     });
 
-
     const leaderToken = encodeToken(user1);
 
     const response = await request(App)
@@ -205,7 +203,7 @@ describe('UserReserve delete', () => {
       });
 
     const reserveUpdated = await prisma.reserve.findOne({
-      where : { id : reserve.id }
+      where: { id: reserve.id },
     });
 
     expect(reserveUpdated?.adminId).toBe(user2.id);

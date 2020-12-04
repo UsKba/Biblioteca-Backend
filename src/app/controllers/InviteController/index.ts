@@ -1,17 +1,13 @@
 import { Response } from 'express';
 
+import friendConfig from '~/config/friend';
+
 import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
 
-import friendConfig from '~/config/friend';
-
 import { assertUserIdExists } from '../UserController/tradingRules';
-import {
-  assertInviteExists,
-  assertIsSenderOrReceiverId,
-  assertUserIsNotFriend,
-} from './tradingRules';
+import { assertInviteExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
 
 interface StoreInvite {
   receiverId: number;
@@ -43,7 +39,7 @@ class InviteController {
   }
 
   async store(req: StoreRequest, res: Response) {
-    const { receiverId} = req.body;
+    const { receiverId } = req.body;
     const userId = req.userId as number;
 
     try {
@@ -57,13 +53,12 @@ class InviteController {
       where: { senderId: userId, receiverId },
     });
 
-    if(invite == null){
-
+    if (invite == null) {
       const inviteCreated = await prisma.invite.create({
         data: {
           UserSender: { connect: { id: userId } },
           UserReceiver: { connect: { id: receiverId } },
-          status: friendConfig.statusPending ,
+          status: friendConfig.statusPending,
         },
       });
 
@@ -71,12 +66,12 @@ class InviteController {
     }
 
     const inviteUpdated = await prisma.invite.update({
-      where : {
-        id: invite.id ,
+      where: {
+        id: invite.id,
       },
       data: {
         status: friendConfig.statusPending,
-      }
+      },
     });
 
     return res.json(inviteUpdated);
@@ -92,10 +87,9 @@ class InviteController {
 
       await prisma.invite.update({
         where: { id },
-        data :  {
+        data: {
           status: friendConfig.statusDenied,
-        }
-
+        },
       });
       return res.json({ id });
     } catch (e) {

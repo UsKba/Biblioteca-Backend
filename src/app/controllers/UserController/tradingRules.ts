@@ -16,7 +16,7 @@ export async function assertEnrollmentNotExists(enrollment: string) {
   });
 
   if (enrollmentExists) {
-    throw new Error('Matricula já está cadastrada');
+    throw new Error('Matrícula já está cadastrada');
   }
 
   return enrollmentExists;
