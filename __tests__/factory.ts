@@ -85,25 +85,22 @@ function getNextWeekDay(date: Date) {
 }
 
 export function generateDate(params?: GenerateDateParams) {
-  const now = new Date();
-  const nowUtc = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  // Remove timezone
+  // targetDate.getTime() - targetDate.getTimezoneOffset() * 60000
 
-  const newYear = nowUtc.getUTCFullYear() + Number(params?.sumYear || 0);
-  const newMonth = nowUtc.getUTCMonth() + Number(params?.sumMonth || 0);
-  const newDay = nowUtc.getUTCDate() + Number(params?.sumDay || 0);
+  const now = new Date();
+
+  const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
+  const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
+  const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
   const newDate = new Date(newYear, newMonth, newDay);
-  const newDateUtc = new Date(newDate.getTime() - newDate.getTimezoneOffset() * 60000);
-
-  const day = getNextWeekDay(newDateUtc);
-
-  const targetDate = new Date(newDateUtc.getUTCFullYear(), newDateUtc.getUTCMonth(), day);
-  const targetDateUtc = new Date(targetDate.getTime() - targetDate.getTimezoneOffset() * 60000);
+  const day = getNextWeekDay(newDate);
 
   return {
-    year: targetDateUtc.getUTCFullYear(),
-    month: targetDateUtc.getUTCMonth(),
-    day: targetDateUtc.getUTCDate(),
+    year: newDate.getUTCFullYear(),
+    month: newDate.getUTCMonth(),
+    day,
   };
 }
 
