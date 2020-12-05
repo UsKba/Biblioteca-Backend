@@ -1,4 +1,5 @@
 import { Response } from 'express';
+
 import { RequestAuthParams } from '~/types/auth';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';

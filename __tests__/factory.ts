@@ -70,9 +70,9 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-function getDayBasedOnSumDayAndWeekDay(weekDay: number, date: Date) {
-  console.log(date);
-  console.log(date.getMonth());
+function getNextWeekDay(date: Date) {
+  const weekDay = date.getDay();
+
   if (weekDay === 0) {
     return date.getUTCDate() + 1;
   }
@@ -85,22 +85,24 @@ function getDayBasedOnSumDayAndWeekDay(weekDay: number, date: Date) {
 }
 
 export function generateDate(params?: GenerateDateParams) {
+  // Remove timezone
+  // targetDate.getTime() - targetDate.getTimezoneOffset() * 60000
+
   const now = new Date();
 
-  const newYear = now.getFullYear() + Number(params?.sumYear || 0);
-  const newMonth = now.getMonth() + Number(params?.sumMonth || 0);
+  const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
+  const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
   const TestDate = new Date(newYear, 11, newDay);
   console.log("TestDate: " + TestDate);
 
   const newDate = new Date(newYear, newMonth, newDay);
-  const weekDay = newDate.getDay();
-  const day = getDayBasedOnSumDayAndWeekDay(weekDay, newDate);
+  const day = getNextWeekDay(newDate);
 
   return {
-    year: newYear ,
-    month: newMonth,
+    year: newDate.getUTCFullYear(),
+    month: newDate.getUTCMonth(),
     day,
   };
 }

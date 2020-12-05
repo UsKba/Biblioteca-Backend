@@ -182,532 +182,532 @@ describe('Reserve Index', () => {
 
 });
 
-// describe('Reserve Store', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
-
-//   it('should be able to create a reserve', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(200);
-//     expect(response.body.room.id).toBe(reserve.roomId);
-//     expect(response.body.schedule.id).toBe(reserve.scheduleId);
-//   });
-
-//   it('should have correct fields on reserve creation', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010011' });
-//     const user2 = await createUser({ enrollment: '20181104010022' });
-//     const user3 = await createUser({ enrollment: '20181104010033' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     const [hours, minutes] = splitSingleDate(schedule.initialHour);
-//     const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
-
-//     expect(response.status).toBe(200);
-//     expect(response.body).toHaveProperty('id');
-
-//     expect(response.body.name).toBe('Trabalho de portugues');
-//     expect(response.body.date).toBe(dateISO);
-
-//     expect(response.body.room.id).toBe(room.id);
-//     expect(response.body.room.initials).toBe(room.initials);
-
-//     expect(response.body.schedule.id).toBe(schedule.id);
-//     expect(response.body.schedule.initialHour).toBe(schedule.initialHour);
-//     expect(response.body.schedule.endHour).toBe(schedule.endHour);
-//     expect(response.body.schedule.periodId).toBe(schedule.periodId);
-
-//     expect(response.body.users[0]).toHaveProperty('id');
-//     expect(response.body.users[0]).toHaveProperty('enrollment');
-//     expect(response.body.users[0]).toHaveProperty('email');
-//     expect(response.body.users[0]).toHaveProperty('name');
-//   });
-
-//   it('should not be able to create a reserve on a schedule that does not exists', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id,
-//       scheduleId: schedule.id + 1, // ID that not exists
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should be able to create various reserves on the same room on diferents days', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-//     const afterTomorrowDate = generateDate({ sumDay: 4 });
-
-//     const tomorrowReserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-//     const afterTomorrowReserve = {
-//       name: 'Trabalho de portugues2',
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...afterTomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const tomorrowResponse = await request(App)
-//       .post('/reserves')
-//       .send(tomorrowReserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     const afterTomorrowResponse = await request(App)
-//       .post('/reserves')
-//       .send(afterTomorrowReserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(tomorrowResponse.status).toBe(200);
-//     expect(afterTomorrowResponse.status).toBe(200);
-//   });
-
-//   it('should not be able to create a reserve if the room not exists', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id + 1,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve if does not have 3 users', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve with the classmateIDs repeated', async () => {
-//     const user = await createUser({ enrollment: '20181104010022' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user.id, user.id, user.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve if the user does not exists ', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user2.id + 1], // never will exists the next id user of the last user created
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve on the same date, schedule, room', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010039' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       name: 'Trabalho de portugues',
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response1 = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     const response2 = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response1.status).toBe(200);
-//     expect(response2.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve on weekend', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const now = new Date();
-//     const weekendMonthDay = now.getUTCDate() + (6 - now.getDay());
-
-//     const reserve = {
-//       year: now.getFullYear(),
-//       month: now.getMonth(),
-//       day: weekendMonthDay,
-
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, user3.id],
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to create a reserve if the logged user is not on classmatesIds', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-
-//     const nonUserId = user2.id + 1;
-
-//     const room = await createRoom();
-//     const period = await createPeriod();
-//     const schedule = await createSchedule({ periodId: period.id });
-
-//     const tomorrowDate = generateDate({ sumDay: 1 });
-
-//     const reserve = {
-//       roomId: room.id,
-//       scheduleId: schedule.id,
-//       classmatesIDs: [user1.id, user2.id, nonUserId],
-//       ...tomorrowDate,
-//     };
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .post('/reserves')
-//       .send(reserve)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-// });
-
-// describe('Reserve Delete', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
-
-//   it('should be able to delete a reserve', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const reserve = await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .delete(`/reserves/${reserve.id}`)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(200);
-//   });
-
-//   it('should have deleted the userReserve relations', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const reserve = await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-
-//     const leaderToken = encodeToken(user1);
-
-//     await request(App)
-//       .delete(`/reserves/${reserve.id}`)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     const usersOfReserve = await prisma.userReserve.findMany({
-//       where: {
-//         Reserve: { id: reserve.id },
-//       },
-//     });
-
-//     expect(usersOfReserve.length).toBe(0);
-//   });
-
-//   it('should not be able to delete a reserve with id that not exists', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     const reserve = await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-//     const nonReserveId = reserve.id + 1;
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .delete(`/reserves/${nonReserveId}`)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to delete a reserve if you are one that reserve', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010011' });
-//     const user2 = await createUser({ enrollment: '20181104010022' });
-//     const user3 = await createUser({ enrollment: '20181104010033' });
-//     const user4 = await createUser({ enrollment: '20181104010044' });
-
-//     const reserve = await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-
-//     const nonMemberToken = encodeToken(user4);
-
-//     const response = await request(App)
-//       .delete(`/reserves/${reserve.id}`)
-//       .set({
-//         authorization: `Bearer ${nonMemberToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to delete a reserve if you are not the leader', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010011' });
-//     const user2 = await createUser({ enrollment: '20181104010022' });
-//     const user3 = await createUser({ enrollment: '20181104010033' });
-
-//     const reserve = await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-
-//     const memberToken = encodeToken(user2);
-
-//     const response = await request(App)
-//       .delete(`/reserves/${reserve.id}`)
-//       .set({
-//         authorization: `Bearer ${memberToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-
-//   it('should not be able to delete a reserve with invalid id', async () => {
-//     const user1 = await createUser({ enrollment: '20181104010022' });
-//     const user2 = await createUser({ enrollment: '20181104010033' });
-//     const user3 = await createUser({ enrollment: '20181104010098' });
-
-//     await createReserve({
-//       leader: user1,
-//       users: [user1, user2, user3],
-//     });
-
-//     const leaderToken = encodeToken(user1);
-
-//     const response = await request(App)
-//       .delete(`/reserves/invalidId`)
-//       .set({
-//         authorization: `Bearer ${leaderToken}`,
-//       });
-
-//     expect(response.status).toBe(400);
-//   });
-// });
-
+describe('Reserve Store', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able to create a reserve', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.room.id).toBe(reserve.roomId);
+    expect(response.body.schedule.id).toBe(reserve.scheduleId);
+  });
+
+  // CORRECT?
+  it('should have correct fields on reserve creation', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+
+    expect(response.body.name).toBe('Trabalho de portugues');
+    expect(response.body.date).toBe(dateISO);
+
+    expect(response.body.room.id).toBe(room.id);
+    expect(response.body.room.initials).toBe(room.initials);
+
+    expect(response.body.schedule.id).toBe(schedule.id);
+    expect(response.body.schedule.initialHour).toBe(schedule.initialHour);
+    expect(response.body.schedule.endHour).toBe(schedule.endHour);
+    expect(response.body.schedule.periodId).toBe(schedule.periodId);
+
+    expect(response.body.users[0]).toHaveProperty('id');
+    expect(response.body.users[0]).toHaveProperty('enrollment');
+    expect(response.body.users[0]).toHaveProperty('email');
+    expect(response.body.users[0]).toHaveProperty('name');
+  });
+
+  it('should not be able to create a reserve on a schedule that does not exists', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id + 1, // ID that not exists
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should be able to create various reserves on the same room on diferents days', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+    const afterTomorrowDate = generateDate({ sumDay: 4 });
+
+    const tomorrowReserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+    const afterTomorrowReserve = {
+      name: 'Trabalho de portugues2',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...afterTomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const tomorrowResponse = await request(App)
+      .post('/reserves')
+      .send(tomorrowReserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const afterTomorrowResponse = await request(App)
+      .post('/reserves')
+      .send(afterTomorrowReserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(tomorrowResponse.status).toBe(200);
+    expect(afterTomorrowResponse.status).toBe(200);
+  });
+
+  it('should not be able to create a reserve if the room not exists', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id + 1,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve if does not have 3 users', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve with the classmateIDs repeated', async () => {
+    const user = await createUser({ enrollment: '20181104010022' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user.id, user.id, user.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve if the user does not exists ', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user2.id + 1], // never will exists the next id user of the last user created
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve on the same date, schedule, room', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010039' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response1 = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const response2 = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response1.status).toBe(200);
+    expect(response2.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve on weekend', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const now = new Date();
+    const weekendMonthDay = now.getUTCDate() + (6 - now.getDay());
+
+    const reserve = {
+      year: now.getFullYear(),
+      month: now.getMonth(),
+      day: weekendMonthDay,
+
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve if the logged user is not on classmatesIds', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const nonUserId = user2.id + 1;
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, nonUserId],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+});
+
+describe('Reserve Delete', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able to delete a reserve', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/reserves/${reserve.id}`)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should have deleted the userReserve relations', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    await request(App)
+      .delete(`/reserves/${reserve.id}`)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const usersOfReserve = await prisma.userReserve.findMany({
+      where: {
+        Reserve: { id: reserve.id },
+      },
+    });
+
+    expect(usersOfReserve.length).toBe(0);
+  });
+
+  it('should not be able to delete a reserve with id that not exists', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+    const nonReserveId = reserve.id + 1;
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/reserves/${nonReserveId}`)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to delete a reserve if you are one that reserve', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+    const user4 = await createUser({ enrollment: '20181104010044' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const nonMemberToken = encodeToken(user4);
+
+    const response = await request(App)
+      .delete(`/reserves/${reserve.id}`)
+      .set({
+        authorization: `Bearer ${nonMemberToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to delete a reserve if you are not the leader', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const memberToken = encodeToken(user2);
+
+    const response = await request(App)
+      .delete(`/reserves/${reserve.id}`)
+      .set({
+        authorization: `Bearer ${memberToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to delete a reserve with invalid id', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/reserves/invalidId`)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+});

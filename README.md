@@ -19,17 +19,7 @@
 - [ ] Coming soon ...
 
 ## Coisas fazendo hoje
-<<<<<<< HEAD
 - [ ] retornar se a sala ta ocupada em todos os dias da semana
-=======
-- [ ] retornar lista dos dias e se a sala está reservada em cada horário
-- [ ] ao remover usuário do reserva, caso o usuario removido tenha sido o lider, outro usuario tera de ser o novo lider
-
-- [ ] Atualizar Reserva
- - Adicionar ou remover componentes
-
-- [ ] update do schdule
->>>>>>> master
 - [ ] Ver 'Deletar' user
 
 - [ ] 'should not be able to index invites where you are not the receiver' tests change message

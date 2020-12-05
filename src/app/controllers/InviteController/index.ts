@@ -1,10 +1,10 @@
 import { Response } from 'express';
 
+import friendConfig from '~/config/friend';
+
 import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
-
-import friendConfig from '~/config/friend';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
 import {
