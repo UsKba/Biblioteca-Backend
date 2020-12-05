@@ -68,49 +68,6 @@ git push heroku master
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    for (let i = 0; i < classmatesIDs.length; i += 1) {
-      const targetClassmate = classmatesIDs[i];
-
-      const userReserves = await prisma.userReserve.findMany({
-        where: {
-          userId: targetClassmate,
-        },
-      });
-
-      for (let j = 0; j < userReserves.length; j += 1) {
-        const targetUserReserve = userReserves[j];
-
-        const targetReserve = await prisma.reserve.findOne({
-          where: { id: targetUserReserve.reserveId,  },
-        });
-
-        // targetReserve?.date.getHours()
-
-
-        const schedule = targetReserve!.date.getHours();
-        const nowSchedule = reserveDate.getHours();
-
-        if( nowSchedule
-          )
-
-        // reserveConfig.turns.morning
-      }
-    }
-
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
