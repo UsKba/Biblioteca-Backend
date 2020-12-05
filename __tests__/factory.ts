@@ -70,20 +70,14 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-function getDayBasedOnSumDayAndWeekDay(weekDay: number, sumDay: number, date: Date) {
+function getDayBasedOnSumDayAndWeekDay(weekDay: number, date: Date) {
+  console.log(date);
+  console.log(date.getMonth());
   if (weekDay === 0) {
-    if (sumDay < 0) {
-      return date.getUTCDate() - 2;
-    }
-
     return date.getUTCDate() + 1;
   }
 
   if (weekDay === 6) {
-    if (sumDay < 0) {
-      return date.getUTCDate() - 1;
-    }
-
     return date.getUTCDate() + 2;
   }
 
@@ -97,13 +91,16 @@ export function generateDate(params?: GenerateDateParams) {
   const newMonth = now.getMonth() + Number(params?.sumMonth || 0);
   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
+  const TestDate = new Date(newYear, 11, newDay);
+  console.log("TestDate: " + TestDate);
+
   const newDate = new Date(newYear, newMonth, newDay);
   const weekDay = newDate.getDay();
-  const day = getDayBasedOnSumDayAndWeekDay(weekDay, params?.sumDay || 0, newDate);
+  const day = getDayBasedOnSumDayAndWeekDay(weekDay, newDate);
 
   return {
-    year: now.getFullYear() + Number(params?.sumYear || 0),
-    month: now.getMonth() + Number(params?.sumMonth || 0),
+    year: newYear ,
+    month: newMonth,
     day,
   };
 }
@@ -175,6 +172,7 @@ export async function createReserve(params: GenerateReserveParams) {
   const targetPeriod = period || (await createPeriod());
   const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriod.id }));
   const tomorrowDate = date || generateDate({ sumDay: 1 });
+  console.log(tomorrowDate);
 
   const reserve = {
     name: targetName,
@@ -203,7 +201,7 @@ export async function createInvite(params: GenerateInviteParams) {
 
   const response = await request(App)
     .post('/invites')
-    .send({ receiverId: user2.id })
+    .send({  receiverEnrollment: user2.enrollment  })
     .set({ authorization: `Bearer ${senderUserToken}` });
 
   return response.body as Invite;
@@ -217,7 +215,7 @@ export async function createFriend(params: GenerateFriendParams) {
 
   const inviteResponse = await request(App)
     .post('/invites')
-    .send({ receiverId: user2.id })
+    .send({  receiverEnrollment: user2.enrollment  })
     .set({ authorization: `Bearer ${tokenUser1}` });
 
   const { id } = inviteResponse.body;

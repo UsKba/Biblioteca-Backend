@@ -5,9 +5,9 @@ import * as Yup from 'yup';
 import { validateSchema } from '~/app/utils/yup';
 
 const InviteStoreSchema = Yup.object().shape({
-  receiverId: Yup.number()
-    .required('O id do destinatário é obrigatório.')
-    .typeError('O id do destinatário precisa ser um número'),
+  receiverEnrollment: Yup.number()
+    .required('A matrícula do destinatário é obrigatório.')
+    .typeError('A matrícula do destinatário precisa ser um número'),
 });
 
 export async function validateInviteStore(request: Request, response: Response, next: NextFunction) {

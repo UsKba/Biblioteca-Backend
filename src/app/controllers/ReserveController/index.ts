@@ -22,7 +22,7 @@ import {
 import { createRelationsBetweenUsersAndReserve, setScheduleHoursAndMinutes } from './utils';
 
 interface StoreReserve {
-  name: string;
+  name?: string;
   roomId: number;
   scheduleId: number;
   day: number;
@@ -72,7 +72,7 @@ class ReserveController {
 
   async store(request: StoreRequest, response: Response) {
     const userId = request.userId as number;
-    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body;
+    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body;// ... name = date
 
     const date = new Date(year, month, day);
 

@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { validateSchema } from '~/app/utils/yup';
 
 const ReserveSchema = Yup.object().shape({
-  name: Yup.string().required('O nome é requerido'),
+  name: Yup.string(),
   year: Yup.number().required('O ano é requerido').typeError('O ano precisa ser um número'),
   month: Yup.number().required('O mês é requerido').typeError('O mês precisa ser um número'),
   day: Yup.number().required('O dia é requerido').typeError('O dia precisa ser um número'),

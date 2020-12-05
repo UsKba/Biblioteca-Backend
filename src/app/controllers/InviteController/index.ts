@@ -6,7 +6,7 @@ import prisma from '~/prisma';
 
 import friendConfig from '~/config/friend';
 
-import { assertUserIdExists } from '../UserController/tradingRules';
+import { assertUserEnrollmentExists } from '../UserController/tradingRules';
 import {
   assertInviteExists,
   assertIsSenderOrReceiverId,
@@ -14,7 +14,7 @@ import {
 } from './tradingRules';
 
 interface StoreInvite {
-  receiverId: number;
+  receiverEnrollment: string;
 }
 
 type IndexRequest = RequestAuth;
@@ -27,9 +27,21 @@ class InviteController {
 
     const invites = await prisma.invite.findMany({
       where: { receiverId: userId },
+      include : {
+        UserReceiver : true,
+        UserSender : true,
+      }
     });
+    const invitesFormatted = invites.map(invite => {
+      return {
+        id : invite.id,
+        receiver: invite.UserReceiver,
+        sender: invite.UserSender,
+        status: invite.status,
+      }
+    })
 
-    return res.json(invites);
+    return res.json(invitesFormatted);
   }
 
   async indexPending(req: IndexRequest, res: Response) {
@@ -37,49 +49,64 @@ class InviteController {
 
     const invites = await prisma.invite.findMany({
       where: { senderId: userId },
+      include : {
+        UserReceiver : true,
+        UserSender : true,
+      },
     });
+    const invitesFormatted = invites.map(invite => {
+      return {
+        id : invite.id,
+        receiver: invite.UserReceiver,
+        sender: invite.UserSender,
+        status: invite.status,
+      }
+    })
 
-    return res.json(invites);
+    return res.json(invitesFormatted);
   }
 
   async store(req: StoreRequest, res: Response) {
-    const { receiverId} = req.body;
+
+    const { receiverEnrollment } = req.body;
+
     const userId = req.userId as number;
 
+
     try {
-      await assertUserIdExists(receiverId);
-      await assertUserIsNotFriend(userId, receiverId);
+      const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
+      await assertUserIsNotFriend(userId, userReceiver.id);
+
+      const [invite] = await prisma.invite.findMany({
+        where: { senderId: userId, receiverId: userReceiver.id },
+      });
+
+      if(invite == null){
+
+        const inviteCreated = await prisma.invite.create({
+          data: {
+            UserSender: { connect: { id: userId } },
+            UserReceiver: { connect: { id: userReceiver.id } },
+            status: friendConfig.statusPending ,
+          },
+        });
+
+        return res.json(inviteCreated);
+      }
+
+      const inviteUpdated = await prisma.invite.update({
+        where : {
+          id: invite.id ,
+        },
+        data: {
+          status: friendConfig.statusPending,
+        }
+      });
+
+      return res.json(inviteUpdated);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-
-    const [invite] = await prisma.invite.findMany({
-      where: { senderId: userId, receiverId },
-    });
-
-    if(invite == null){
-
-      const inviteCreated = await prisma.invite.create({
-        data: {
-          UserSender: { connect: { id: userId } },
-          UserReceiver: { connect: { id: receiverId } },
-          status: friendConfig.statusPending ,
-        },
-      });
-
-      return res.json(inviteCreated);
-    }
-
-    const inviteUpdated = await prisma.invite.update({
-      where : {
-        id: invite.id ,
-      },
-      data: {
-        status: friendConfig.statusPending,
-      }
-    });
-
-    return res.json(inviteUpdated);
   }
 
   async delete(req: DeleteRequest, res: Response) {
@@ -87,21 +114,19 @@ class InviteController {
     const userId = req.userId as number;
 
     try {
-      const inivite = await assertInviteExists(id);
-      await assertIsSenderOrReceiverId(userId, inivite);
+      const invite = await assertInviteExists(id);
+      await assertIsSenderOrReceiverId(userId, invite);
 
-      await prisma.invite.update({
+      const updatedInvite = await prisma.invite.update({
         where: { id },
-        data :  {
+        data: {
           status: friendConfig.statusDenied,
-        }
-
+        },
       });
-      return res.json({ id });
+      return res.json(updatedInvite);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
   }
 }
-
 export default new InviteController();
