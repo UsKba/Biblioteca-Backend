@@ -38,3 +38,8 @@ export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Dat
     throw new Error('A hora final não pode ser antes da de inicio');
   }
 }
+
+export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
+  const [hours, minutes] = splitSingleDate(scheduleHours);
+  date.setHours(hours, minutes);
+}

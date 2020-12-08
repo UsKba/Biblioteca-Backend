@@ -26,8 +26,8 @@ describe('invite store', () => {
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(200);
-    expect(response.body.receiverId).toBe(user2.id);
-    expect(response.body.senderId).toBe(user1.id);
+    expect(response.body.receiver.id).toBe(user2.id);
+    expect(response.body.sender.id).toBe(user1.id);
   });
 
   it('should be able to invite 2 different users', async () => {
@@ -50,11 +50,11 @@ describe('invite store', () => {
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(200);
 
-    expect(response1.body.senderId).toBe(user1.id);
-    expect(response1.body.receiverId).toBe(user2.id);
+    expect(response1.body.sender.id).toBe(user1.id);
+    expect(response1.body.receiver.id).toBe(user2.id);
 
-    expect(response2.body.senderId).toBe(user1.id);
-    expect(response2.body.receiverId).toBe(user3.id);
+    expect(response2.body.sender.id).toBe(user1.id);
+    expect(response2.body.receiver.id).toBe(user3.id);
   });
 
   it('should be able to invite a user with invalid receiverId', async () => {

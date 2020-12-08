@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
-
-import { splitSingleDate } from '~/app/utils/date';
+import { Reserve, Room, Schedule, User } from '@prisma/client';
 
 import prisma from '~/prisma';
 
@@ -14,10 +12,10 @@ interface CreateUserReserveParams {
   userId: number;
 }
 
-export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
-  const [hours, minutes] = splitSingleDate(scheduleHours);
-  date.setHours(hours, minutes);
-}
+type ReserveToFormat = Reserve & {
+  Schedule: Schedule;
+  Room: Room;
+};
 
 export async function createUserReserve(params: CreateUserReserveParams) {
   const { reserveId, userId } = params;
@@ -52,4 +50,15 @@ export async function createRelationsBetweenUsersAndReserve(params: CreateRelati
   }
 
   return users;
+}
+
+export function formatReserveToResponse(reserve: ReserveToFormat) {
+  return {
+    id: reserve.id,
+    name: reserve.name,
+    date: reserve.date,
+    adminId: reserve.adminId,
+    room: reserve.Room,
+    schedule: reserve.Schedule,
+  };
 }

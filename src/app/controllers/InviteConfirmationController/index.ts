@@ -27,11 +27,21 @@ class InviteConfirmationController {
           User1: { connect: { id: invite.senderId } },
           User2: { connect: { id: invite.receiverId } },
         },
+        include: {
+          User1: true,
+          User2: true,
+        },
       });
 
       await prisma.invite.delete({ where: { id } });
 
-      return res.json(friend);
+      const friendFormatted = {
+        id: friend.id,
+        user1: friend.User1,
+        user2: friend.User2,
+      };
+
+      return res.json(friendFormatted);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }

@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { setScheduleHoursAndMinutes } from '~/app/utils/date';
+
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
@@ -19,7 +21,7 @@ import {
   assertIsReserveLeader,
   assertUserIsOnReserve,
 } from './tradingRules';
-import { createRelationsBetweenUsersAndReserve, setScheduleHoursAndMinutes } from './utils';
+import { createRelationsBetweenUsersAndReserve, formatReserveToResponse } from './utils';
 
 interface StoreReserve {
   name?: string;
@@ -56,12 +58,7 @@ class ReserveController {
       const users = reserve.UserReserve.map((userReserve) => userReserve.User);
 
       const formattedReserve = {
-        id: reserve.id,
-        name: reserve.name,
-        date: reserve.date,
-        adminId: reserve.adminId,
-        room: reserve.Room,
-        schedule: reserve.Schedule,
+        ...formatReserveToResponse(reserve),
         users,
       };
 
@@ -115,15 +112,12 @@ class ReserveController {
       reserveId: reserve.id,
     });
 
-    return response.json({
-      id: reserve.id,
-      name: reserve.name,
-      date: reserve.date,
-      adminId: reserve.adminId,
-      room: reserve.Room,
-      schedule: reserve.Schedule,
+    const reserveFormatted = {
+      ...formatReserveToResponse(reserve),
       users: reserveUsers,
-    });
+    };
+
+    return response.json(reserveFormatted);
   }
 
   async delete(req: RequestAuthParamsId, res: Response) {

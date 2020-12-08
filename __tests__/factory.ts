@@ -94,9 +94,6 @@ export function generateDate(params?: GenerateDateParams) {
   const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
-  const TestDate = new Date(newYear, 11, newDay);
-  console.log(`TestDate: ${TestDate}`);
-
   const newDate = new Date(newYear, newMonth, newDay);
   const day = getNextWeekDay(newDate);
 
@@ -174,7 +171,6 @@ export async function createReserve(params: GenerateReserveParams) {
   const targetPeriod = period || (await createPeriod());
   const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriod.id }));
   const tomorrowDate = date || generateDate({ sumDay: 1 });
-  console.log(tomorrowDate);
 
   const reserve = {
     name: targetName,

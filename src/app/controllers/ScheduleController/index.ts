@@ -28,10 +28,10 @@ type StoreRequest = RequestBody<StoreSchedule>;
 type UpdateRequest = RequestBodyParamsId<UpdateSchedule>;
 
 class ScheduleController {
-  async index(request: Request, response: Response) {
+  async index(req: Request, res: Response) {
     const schedules = await prisma.schedule.findMany({});
 
-    return response.json(schedules[0].initialHour);
+    return res.json(schedules);
   }
 
   async store(request: StoreRequest, response: Response) {

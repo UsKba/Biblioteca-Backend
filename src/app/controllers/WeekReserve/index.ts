@@ -4,6 +4,8 @@ import { RequestQuery } from '~/types';
 
 import prisma from '~/prisma';
 
+import { formatReserveToResponse } from '../ReserveController/utils';
+
 type WeekReserveIndex = {
   startDate: string;
   endDate: string;
@@ -44,12 +46,7 @@ class WeekReserve {
       }));
 
       const formattedUser = {
-        id: reserve.id,
-        name: reserve.name,
-        date: reserve.date,
-        adminId: reserve.adminId,
-        room: reserve.Room,
-        schedule: reserve.Schedule,
+        ...formatReserveToResponse(reserve),
         users,
       };
 

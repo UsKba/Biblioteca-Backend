@@ -8,6 +8,7 @@ import prisma from '~/prisma';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
 import { assertInviteExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
+import { formatInviteToResponse } from './utils';
 
 interface StoreInvite {
   receiverEnrollment: string;
@@ -51,14 +52,8 @@ class InviteController {
         UserSender: true,
       },
     });
-    const invitesFormatted = invites.map((invite) => {
-      return {
-        id: invite.id,
-        receiver: invite.UserReceiver,
-        sender: invite.UserSender,
-        status: invite.status,
-      };
-    });
+
+    const invitesFormatted = invites.map(formatInviteToResponse);
 
     return res.json(invitesFormatted);
   }
@@ -73,7 +68,10 @@ class InviteController {
       await assertUserIsNotFriend(userId, userReceiver.id);
 
       const [invite] = await prisma.invite.findMany({
-        where: { senderId: userId, receiverId: userReceiver.id },
+        where: {
+          senderId: userId,
+          receiverId: userReceiver.id,
+        },
       });
 
       if (invite == null) {
@@ -83,21 +81,29 @@ class InviteController {
             UserReceiver: { connect: { id: userReceiver.id } },
             status: friendConfig.statusPending,
           },
+          include: {
+            UserReceiver: true,
+            UserSender: true,
+          },
         });
 
-        return res.json(inviteCreated);
+        const inviteFormatted = formatInviteToResponse(inviteCreated);
+
+        return res.json(inviteFormatted);
       }
 
       const inviteUpdated = await prisma.invite.update({
-        where: {
-          id: invite.id,
-        },
-        data: {
-          status: friendConfig.statusPending,
+        where: { id: invite.id },
+        data: { status: friendConfig.statusPending },
+        include: {
+          UserReceiver: true,
+          UserSender: true,
         },
       });
 
-      return res.json(inviteUpdated);
+      const inviteFormatted = formatInviteToResponse(inviteUpdated);
+
+      return res.json(inviteFormatted);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }

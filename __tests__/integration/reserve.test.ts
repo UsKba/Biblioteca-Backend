@@ -34,149 +34,150 @@ describe('Reserve Index', () => {
     expect(response.body[0].id).toBe(reserve.id);
   });
 
-  // it('should be able index one reserve with correct fields', async () => {
-  //   const user1 = await createUser({ enrollment: '20181104010011' });
-  //   const user2 = await createUser({ enrollment: '20181104010022' });
-  //   const user3 = await createUser({ enrollment: '20181104010033' });
+  it('should be able index one reserve with correct fields', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
-  //   const room = await createRoom();
-  //   const period = await createPeriod();
-  //   const schedule = await createSchedule({ periodId: period.id });
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
 
-  //   const tomorrowDate = generateDate({ sumDay: 1 });
+    const tomorrowDate = generateDate({ sumDay: 1 });
 
-  //   const reserve = await createReserve({
-  //     name: 'Trabalho de Portugues',
-  //     date: tomorrowDate,
-  //     period,
-  //     room,
-  //     schedule,
-  //     leader: user1,
-  //     users: [user1, user2, user3],
-  //   });
+    const reserve = await createReserve({
+      name: 'Trabalho de Portugues',
+      date: tomorrowDate,
+      period,
+      room,
+      schedule,
+      leader: user1,
+      users: [user1, user2, user3],
+    });
 
-  //   const leaderToken = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
 
-  //   const response = await request(App)
-  //     .get('/reserves')
-  //     .set({
-  //       authorization: `Bearer ${leaderToken}`,
-  //     });
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
 
-  //   const reserveCreated = response.body[0];
+    const reserveCreated = response.body[0];
 
-  //   const [hours, minutes] = splitSingleDate(schedule.initialHour);
-  //   const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.length).toBe(1);
-  //   expect(reserveCreated.id).toBe(reserve.id);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(reserveCreated.id).toBe(reserve.id);
 
-  //   expect(reserveCreated.name).toBe(reserve.name);
-  //   expect(reserveCreated.date).toBe(dateISO);
+    expect(reserveCreated.name).toBe(reserve.name);
+    expect(reserveCreated.date).toBe(dateISO);
+    expect(reserveCreated.adminId).toBe(user1.id);
 
-  //   expect(reserveCreated.room.id).toBe(room.id);
-  //   expect(reserveCreated.room.initials).toBe(room.initials);
+    expect(reserveCreated.room.id).toBe(room.id);
+    expect(reserveCreated.room.initials).toBe(room.initials);
 
-  //   expect(reserveCreated.schedule.id).toBe(schedule.id);
-  //   expect(reserveCreated.schedule.initialHour).toBe(schedule.initialHour);
-  //   expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
-  //   expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
+    expect(reserveCreated.schedule.id).toBe(schedule.id);
+    expect(reserveCreated.schedule.initialHour).toBe(schedule.initialHour);
+    expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
+    expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
 
-  //   expect(reserveCreated.users[0]).toHaveProperty('id');
-  //   expect(reserveCreated.users[0]).toHaveProperty('enrollment');
-  //   expect(reserveCreated.users[0]).toHaveProperty('email');
-  //   expect(reserveCreated.users[0]).toHaveProperty('name');
-  // });
+    expect(reserveCreated.users[0]).toHaveProperty('id');
+    expect(reserveCreated.users[0]).toHaveProperty('enrollment');
+    expect(reserveCreated.users[0]).toHaveProperty('email');
+    expect(reserveCreated.users[0]).toHaveProperty('name');
+  });
 
-  // it('should be able index the two reserves linked with user', async () => {
-  //   const user1 = await createUser({ enrollment: '20181104010022' });
-  //   const user2 = await createUser({ enrollment: '20181104010033' });
-  //   const user3 = await createUser({ enrollment: '20181104010098' });
+  it('should be able index the two reserves linked with user', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
 
-  //   const room = await createRoom();
-  //   const period = await createPeriod();
+    const room = await createRoom();
+    const period = await createPeriod();
 
-  //   const schedule1 = await createSchedule({ periodId: period.id, initialHour: '07:00', endHour: '08:00' });
-  //   const schedule2 = await createSchedule({ periodId: period.id, initialHour: '08:00', endHour: '09:00' });
+    const schedule1 = await createSchedule({ periodId: period.id, initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ periodId: period.id, initialHour: '08:00', endHour: '09:00' });
 
-  //   const reserve1 = await createReserve({
-  //     leader: user1,
-  //     users: [user1, user2, user3],
-  //     schedule: schedule1,
-  //     room,
-  //   });
+    const reserve1 = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+      schedule: schedule1,
+      room,
+    });
 
-  //   const reserve2 = await createReserve({
-  //     leader: user1,
-  //     users: [user1, user2, user3],
-  //     schedule: schedule2,
-  //     room,
-  //   });
+    const reserve2 = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+      schedule: schedule2,
+      room,
+    });
 
-  //   const leaderToken = encodeToken(user1);
+    const leaderToken = encodeToken(user1);
 
-  //   const response = await request(App)
-  //     .get('/reserves')
-  //     .set({
-  //       authorization: `Bearer ${leaderToken}`,
-  //     });
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.length).toBe(2);
-  //   expect(response.body[0].id).toBe(reserve1.id);
-  //   expect(response.body[1].id).toBe(reserve2.id);
-  // });
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(reserve1.id);
+    expect(response.body[1].id).toBe(reserve2.id);
+  });
 
-  // it('should be able index the two reserves linked with user even if are more reserves created of anothers users', async () => {
-  //   const user1 = await createUser({ enrollment: '20181104010011' });
-  //   const user2 = await createUser({ enrollment: '20181104010022' });
-  //   const user3 = await createUser({ enrollment: '20181104010033' });
-  //   const user4 = await createUser({ enrollment: '20181104010044' });
+  it('should be able index the two reserves linked with user even if are more reserves created of anothers users', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+    const user4 = await createUser({ enrollment: '20181104010044' });
 
-  //   const room = await createRoom();
+    const room = await createRoom();
 
-  //   const morningPeriod = await createPeriod({ initialHour: '07:00', endHour: '12:00' });
-  //   const afternoonPeriod = await createPeriod({ initialHour: '13:00', endHour: '18:00' });
-  //   const nightPeriod = await createPeriod({ initialHour: '19:00', endHour: '22:00' });
+    const morningPeriod = await createPeriod({ initialHour: '07:00', endHour: '12:00' });
+    const afternoonPeriod = await createPeriod({ initialHour: '13:00', endHour: '18:00' });
+    const nightPeriod = await createPeriod({ initialHour: '19:00', endHour: '22:00' });
 
-  //   const schedule1 = await createSchedule({ periodId: morningPeriod.id, initialHour: '07:00', endHour: '08:00' });
-  //   const schedule2 = await createSchedule({ periodId: afternoonPeriod.id, initialHour: '13:00', endHour: '14:00' });
-  //   const schedule3 = await createSchedule({ periodId: nightPeriod.id, initialHour: '18:00', endHour: '19:00' });
+    const schedule1 = await createSchedule({ periodId: morningPeriod.id, initialHour: '07:00', endHour: '08:00' });
+    const schedule2 = await createSchedule({ periodId: afternoonPeriod.id, initialHour: '13:00', endHour: '14:00' });
+    const schedule3 = await createSchedule({ periodId: nightPeriod.id, initialHour: '18:00', endHour: '19:00' });
 
-  //   const reserve1 = await createReserve({
-  //     leader: user1,
-  //     users: [user1, user2, user3],
-  //     schedule: schedule1,
-  //     room,
-  //   });
+    const reserve1 = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+      schedule: schedule1,
+      room,
+    });
 
-  //   const reserve2 = await createReserve({
-  //     leader: user1,
-  //     users: [user1, user2, user3],
-  //     schedule: schedule2,
-  //     room,
-  //   });
+    const reserve2 = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+      schedule: schedule2,
+      room,
+    });
 
-  //   await createReserve({
-  //     leader: user1,
-  //     users: [user2, user3, user4],
-  //     room,
-  //     schedule: schedule3,
-  //   });
+    await createReserve({
+      leader: user1,
+      users: [user2, user3, user4],
+      room,
+      schedule: schedule3,
+    });
 
-  //   const leaderToken = encodeToken(user1);
-  //   const response = await request(App)
-  //     .get('/reserves')
-  //     .set({
-  //       authorization: `Bearer ${leaderToken}`,
-  //     });
+    const leaderToken = encodeToken(user1);
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.length).toBe(2);
-  //   expect(response.body[0].id).toBe(reserve1.id);
-  //   expect(response.body[1].id).toBe(reserve2.id);
-  // });
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(reserve1.id);
+    expect(response.body[1].id).toBe(reserve2.id);
+  });
 });
 
 describe('Reserve Store', () => {
@@ -217,7 +218,6 @@ describe('Reserve Store', () => {
     expect(response.body.schedule.id).toBe(reserve.scheduleId);
   });
 
-  // CORRECT?
   it('should have correct fields on reserve creation', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
@@ -254,6 +254,7 @@ describe('Reserve Store', () => {
 
     expect(response.body.name).toBe('Trabalho de portugues');
     expect(response.body.date).toBe(dateISO);
+    expect(response.body.adminId).toBe(user1.id);
 
     expect(response.body.room.id).toBe(room.id);
     expect(response.body.room.initials).toBe(room.initials);
