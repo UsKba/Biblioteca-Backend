@@ -31,11 +31,3 @@ class FriendController {
 }
 
 export default new FriendController();
-
-// show user
-// index reserves
-// index friends
-// index invites
-// index invites/pending
-
-// setup

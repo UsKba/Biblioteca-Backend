@@ -31,7 +31,7 @@ class ScheduleController {
   async index(request: Request, response: Response) {
     const schedules = await prisma.schedule.findMany({});
 
-    return response.json(schedules);
+    return response.json(schedules[0].initialHour);
   }
 
   async store(request: StoreRequest, response: Response) {
@@ -89,12 +89,6 @@ class ScheduleController {
     });
 
     return response.json(newSchudule);
-  }
-
-  async deleteAll(req: Request, res: Response) {
-    await prisma.schedule.deleteMany({});
-
-    return res.json({ ok: true });
   }
 }
 

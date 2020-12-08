@@ -29,7 +29,6 @@ describe('Reserve Index', () => {
         authorization: `Bearer ${leaderToken}`,
       });
 
-      console.log(reserve);
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
     expect(response.body[0].id).toBe(reserve.id);
@@ -178,8 +177,6 @@ describe('Reserve Index', () => {
   //   expect(response.body[0].id).toBe(reserve1.id);
   //   expect(response.body[1].id).toBe(reserve2.id);
   // });
-
-
 });
 
 describe('Reserve Store', () => {

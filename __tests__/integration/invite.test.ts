@@ -2,11 +2,12 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import friendConfig from '~/config/friend';
+
 import App from '~/App';
 
 import { createInvite, createUser } from '../factory';
 import { cleanDatabase } from '../utils';
-import friendConfig from '~/config/friend';
 
 describe('invite store', () => {
   beforeEach(async () => {
@@ -24,8 +25,6 @@ describe('invite store', () => {
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
-    console.log(response.body);
-
     expect(response.status).toBe(200);
     expect(response.body.receiverId).toBe(user2.id);
     expect(response.body.senderId).toBe(user1.id);
@@ -40,12 +39,12 @@ describe('invite store', () => {
 
     const response1 = await request(App)
       .post('/invites')
-      .send({  receiverEnrollment: user2.enrollment  })
+      .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
     const response2 = await request(App)
       .post('/invites')
-      .send({  receiverEnrollment: user3.enrollment  })
+      .send({ receiverEnrollment: user3.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response1.status).toBe(200);
@@ -93,7 +92,7 @@ describe('invite store', () => {
 
     const responseInvite = await request(App)
       .post('/invites')
-      .send({ receiverEnrollment: user2.enrollment  })
+      .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const tokenUser2 = encodeToken(user2);
@@ -294,7 +293,7 @@ describe('invite confirmation store', () => {
 
     const inviteConfirmationResponse = await request(App)
       .post('/invites/confirmation')
-      .send({ id : inviteUpdated.id })
+      .send({ id: inviteUpdated.id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
     expect(inviteResponse.status).toBe(200);
@@ -341,7 +340,7 @@ describe('invite confirmation store', () => {
 
     const inviteResponse = await request(App)
       .post('/invites')
-      .send({  receiverEnrollment: user2.enrollment  })
+      .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const { id } = inviteResponse.body;
@@ -353,7 +352,7 @@ describe('invite confirmation store', () => {
 
     const errorInviteResponse = await request(App)
       .post('/invites')
-      .send({  receiverEnrollment: user2.enrollment  })
+      .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(inviteResponse.status).toBe(200);

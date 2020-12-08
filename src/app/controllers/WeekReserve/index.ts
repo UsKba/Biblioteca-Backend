@@ -45,7 +45,9 @@ class WeekReserve {
 
       const formattedUser = {
         id: reserve.id,
+        name: reserve.name,
         date: reserve.date,
+        adminId: reserve.adminId,
         room: reserve.Room,
         schedule: reserve.Schedule,
         users,

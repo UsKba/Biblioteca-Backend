@@ -7,11 +7,7 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
-import {
-  assertInviteExists,
-  assertIsSenderOrReceiverId,
-  assertUserIsNotFriend,
-} from './tradingRules';
+import { assertInviteExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
 
 interface StoreInvite {
   receiverEnrollment: string;
@@ -27,19 +23,20 @@ class InviteController {
 
     const invites = await prisma.invite.findMany({
       where: { receiverId: userId },
-      include : {
-        UserReceiver : true,
-        UserSender : true,
-      }
+      include: {
+        UserReceiver: true,
+        UserSender: true,
+      },
     });
-    const invitesFormatted = invites.map(invite => {
+
+    const invitesFormatted = invites.map((invite) => {
       return {
-        id : invite.id,
+        id: invite.id,
         receiver: invite.UserReceiver,
         sender: invite.UserSender,
         status: invite.status,
-      }
-    })
+      };
+    });
 
     return res.json(invitesFormatted);
   }
@@ -49,29 +46,27 @@ class InviteController {
 
     const invites = await prisma.invite.findMany({
       where: { senderId: userId },
-      include : {
-        UserReceiver : true,
-        UserSender : true,
+      include: {
+        UserReceiver: true,
+        UserSender: true,
       },
     });
-    const invitesFormatted = invites.map(invite => {
+    const invitesFormatted = invites.map((invite) => {
       return {
-        id : invite.id,
+        id: invite.id,
         receiver: invite.UserReceiver,
         sender: invite.UserSender,
         status: invite.status,
-      }
-    })
+      };
+    });
 
     return res.json(invitesFormatted);
   }
 
   async store(req: StoreRequest, res: Response) {
-
     const { receiverEnrollment } = req.body;
 
     const userId = req.userId as number;
-
 
     try {
       const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
@@ -81,13 +76,12 @@ class InviteController {
         where: { senderId: userId, receiverId: userReceiver.id },
       });
 
-      if(invite == null){
-
+      if (invite == null) {
         const inviteCreated = await prisma.invite.create({
           data: {
             UserSender: { connect: { id: userId } },
             UserReceiver: { connect: { id: userReceiver.id } },
-            status: friendConfig.statusPending ,
+            status: friendConfig.statusPending,
           },
         });
 
@@ -95,12 +89,12 @@ class InviteController {
       }
 
       const inviteUpdated = await prisma.invite.update({
-        where : {
-          id: invite.id ,
+        where: {
+          id: invite.id,
         },
         data: {
           status: friendConfig.statusPending,
-        }
+        },
       });
 
       return res.json(inviteUpdated);

@@ -59,6 +59,7 @@ class ReserveController {
         id: reserve.id,
         name: reserve.name,
         date: reserve.date,
+        adminId: reserve.adminId,
         room: reserve.Room,
         schedule: reserve.Schedule,
         users,
@@ -72,7 +73,7 @@ class ReserveController {
 
   async store(request: StoreRequest, response: Response) {
     const userId = request.userId as number;
-    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body;// ... name = date
+    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body; // ... name = date
 
     const date = new Date(year, month, day);
 

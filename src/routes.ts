@@ -49,7 +49,6 @@ routes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 routes.get('/schedules', ScheduleController.index);
 routes.post('/schedules', validateScheduleStore, ScheduleController.store);
 routes.put('/schedules/:id', validateParamsId, validateScheduleUpdate, ScheduleController.update);
-routes.delete('/schedules/', ScheduleController.deleteAll);
 
 routes.get('/periods', PeriodController.index);
 routes.post('/periods', validatePeriodStore, PeriodController.store);

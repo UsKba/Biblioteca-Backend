@@ -1,4 +1,3 @@
-import { number } from 'yup';
 import prisma from '~/prisma';
 
 export async function assertEmailNotExists(email: string) {
@@ -46,4 +45,3 @@ export async function assertUserIdExists(id: number) {
 
   return user;
 }
-

@@ -95,7 +95,7 @@ export function generateDate(params?: GenerateDateParams) {
   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
   const TestDate = new Date(newYear, 11, newDay);
-  console.log("TestDate: " + TestDate);
+  console.log(`TestDate: ${TestDate}`);
 
   const newDate = new Date(newYear, newMonth, newDay);
   const day = getNextWeekDay(newDate);
@@ -203,7 +203,7 @@ export async function createInvite(params: GenerateInviteParams) {
 
   const response = await request(App)
     .post('/invites')
-    .send({  receiverEnrollment: user2.enrollment  })
+    .send({ receiverEnrollment: user2.enrollment })
     .set({ authorization: `Bearer ${senderUserToken}` });
 
   return response.body as Invite;
@@ -217,7 +217,7 @@ export async function createFriend(params: GenerateFriendParams) {
 
   const inviteResponse = await request(App)
     .post('/invites')
-    .send({  receiverEnrollment: user2.enrollment  })
+    .send({ receiverEnrollment: user2.enrollment })
     .set({ authorization: `Bearer ${tokenUser1}` });
 
   const { id } = inviteResponse.body;
