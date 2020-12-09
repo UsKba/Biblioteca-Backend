@@ -35,6 +35,16 @@ describe('Room Store', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on room store', async () => {
+    const room = generateRoom();
+
+    const response = await request(App).post('/rooms').send(room);
+
+    const roomCreated = response.body;
+
+    expect(roomCreated.initials).toBe(room.initials);
+  });
 });
 
 describe('Room Index', () => {
@@ -65,11 +75,33 @@ describe('Room Index', () => {
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
   });
+
+  it('should have correct fields on room index', async () => {
+    const room = await createRoom();
+
+    const response = await request(App).get('/rooms');
+
+    const roomCreated = response.body[0];
+
+    expect(roomCreated.id).toBe(room.id);
+    expect(roomCreated.initials).toBe(room.initials);
+  });
 });
 
 describe('Room Update', () => {
   beforeEach(async () => {
     await cleanDatabase();
+  });
+
+  it('should be able to update the `available` of a room', async () => {
+    const room = await createRoom();
+
+    const response = await request(App).put(`/rooms/${room.id}`).send({
+      available: false,
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.available).toBe(false);
   });
 
   it('should not be able to update a room with incorrect id format', async () => {
@@ -89,28 +121,6 @@ describe('Room Update', () => {
     });
 
     expect(response.status).toBe(400);
-  });
-
-  it('should be able to update the `available` of a room', async () => {
-    const room = await createRoom();
-
-    const response = await request(App).put(`/rooms/${room.id}`).send({
-      available: false,
-    });
-
-    expect(response.status).toBe(200);
-    expect(response.body.available).toBe(false);
-  });
-
-  it('should be able to update the `initials` of a room to another', async () => {
-    const room = await createRoom({ initials: 'F1-1' });
-
-    const response = await request(App).put(`/rooms/${room.id}`).send({
-      initials: 'F1-2',
-    });
-
-    expect(response.status).toBe(200);
-    expect(response.body.initials).toBe('F1-2');
   });
 
   it('should not be able to update the `initials` of a room to another that already exists', async () => {
@@ -133,11 +143,33 @@ describe('Room Update', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on room update', async () => {
+    const room = await createRoom({ initials: 'F1-1' });
+
+    const response = await request(App).put(`/rooms/${room.id}`).send({
+      initials: 'F1-2',
+    });
+
+    const roomUpdated = response.body;
+
+    expect(roomUpdated.id).toBe(room.id);
+    expect(roomUpdated.initials).toBe('F1-2');
+  });
 });
 
 describe('Room Delete', () => {
   beforeEach(async () => {
     await cleanDatabase();
+  });
+
+  it('should be able to delete a room', async () => {
+    const room = await createRoom();
+
+    const response = await request(App).delete(`/rooms/${room.id}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.id).toBe(room.id);
   });
 
   it('should not be able to delete a room with incorrect id format', async () => {
@@ -155,12 +187,12 @@ describe('Room Delete', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to delete a room', async () => {
+  it('should have correct fields on room delete', async () => {
     const room = await createRoom();
 
     const response = await request(App).delete(`/rooms/${room.id}`);
+    const roomDeleted = response.body;
 
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(room.id);
+    expect(roomDeleted.id).toBe(room.id);
   });
 });

@@ -127,6 +127,18 @@ describe('Schedule Store', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields', async () => {
+    const period = await createPeriod();
+    const scheduleData = generateSchedule({ periodId: period.id });
+
+    const response = await request(App).post('/schedules').send(scheduleData);
+    const scheduleCreated = response.body;
+
+    expect(scheduleCreated.periodId).toBe(period.id);
+    expect(scheduleCreated.initialHour).toBe(scheduleData.initialHour);
+    expect(scheduleCreated.endHour).toBe(scheduleData.endHour);
+  });
 });
 
 describe('Schedule Index', () => {
@@ -163,6 +175,18 @@ describe('Schedule Index', () => {
 
     expect(response.body[1].initialHour).toBe(schedule2.initialHour);
     expect(response.body[1].endHour).toBe(schedule2.endHour);
+  });
+
+  it('should have correct on schedule index', async () => {
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const response = await request(App).get('/schedules');
+    const scheduleCreated = response.body[0];
+
+    expect(scheduleCreated.periodId).toBe(period.id);
+    expect(scheduleCreated.initialHour).toBe(schedule.initialHour);
+    expect(scheduleCreated.endHour).toBe(schedule.endHour);
   });
 });
 
@@ -263,5 +287,25 @@ describe('Schedule Update', () => {
     });
 
     expect(update.status).toBe(400);
+  });
+
+  it('should have correct fields on schedule update', async () => {
+    const period = await createPeriod();
+
+    const schedule = await createSchedule({
+      periodId: period.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
+      initialHour: '07:00',
+      endHour: '09:00',
+    });
+
+    expect(updateResponse.body.id).toBe(schedule.id);
+    expect(updateResponse.body.periodId).toBe(period.id);
+    expect(updateResponse.body.initialHour).toBe('07:00');
+    expect(updateResponse.body.endHour).toBe('09:00');
   });
 });

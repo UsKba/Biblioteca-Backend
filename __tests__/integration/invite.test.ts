@@ -84,7 +84,7 @@ describe('invite store', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to invite again a user that already denied ', async () => {
+  it('should be able to invite again a user that already denied', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
@@ -107,6 +107,33 @@ describe('invite store', () => {
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(responseReInvite.status).toBe(200);
+  });
+
+  it('should have correct fields on invite store ', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/invites')
+      .send({ receiverEnrollment: user2.enrollment })
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    const inviteCreated = response.body;
+
+    expect(inviteCreated).toHaveProperty('id');
+    expect(inviteCreated).toHaveProperty('status');
+
+    expect(inviteCreated.sender.id).toBe(user1.id);
+    expect(inviteCreated.sender.name).toBe(user1.name);
+    expect(inviteCreated.sender.email).toBe(user1.email);
+    expect(inviteCreated.sender.enrollment).toBe(user1.enrollment);
+
+    expect(inviteCreated.receiver.id).toBe(user2.id);
+    expect(inviteCreated.receiver.name).toBe(user2.name);
+    expect(inviteCreated.receiver.email).toBe(user2.email);
+    expect(inviteCreated.receiver.enrollment).toBe(user2.enrollment);
   });
 });
 
@@ -165,6 +192,34 @@ describe('invite index', () => {
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
+
+  it('should have correct fields on invite index', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+
+    await createInvite({ user1, user2 });
+
+    const tokenUser2 = encodeToken(user2);
+
+    const response = await request(App)
+      .get('/invites')
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const inviteCreated = response.body[0];
+
+    expect(inviteCreated).toHaveProperty('id');
+    expect(inviteCreated).toHaveProperty('status');
+
+    expect(inviteCreated.sender.id).toBe(user1.id);
+    expect(inviteCreated.sender.name).toBe(user1.name);
+    expect(inviteCreated.sender.email).toBe(user1.email);
+    expect(inviteCreated.sender.enrollment).toBe(user1.enrollment);
+
+    expect(inviteCreated.receiver.id).toBe(user2.id);
+    expect(inviteCreated.receiver.name).toBe(user2.name);
+    expect(inviteCreated.receiver.email).toBe(user2.email);
+    expect(inviteCreated.receiver.enrollment).toBe(user2.enrollment);
+  });
 });
 
 describe('invite delete', () => {
@@ -219,6 +274,22 @@ describe('invite delete', () => {
 
     expect(deleteResponse.status).toBe(400);
   });
+
+  it('should have correct fields on invite delete', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const invite = await createInvite({ user1, user2 });
+    const tokenUser2 = encodeToken(user2);
+
+    const deleteResponse = await request(App)
+      .delete(`/invites/${invite.id}`)
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const inviteDeleted = deleteResponse.body;
+
+    expect(inviteDeleted.id).toBe(invite.id);
+  });
 });
 
 describe('invite pending index', () => {
@@ -270,9 +341,36 @@ describe('invite pending index', () => {
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
+
+  it('should have correct fields on invite pending index', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    await createInvite({ user1, user2 });
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/invites/pending')
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    const invitePending = response.body[0];
+
+    expect(invitePending).toHaveProperty('id');
+    expect(invitePending).toHaveProperty('status');
+
+    expect(invitePending.sender.id).toBe(user1.id);
+    expect(invitePending.sender.name).toBe(user1.name);
+    expect(invitePending.sender.email).toBe(user1.email);
+    expect(invitePending.sender.enrollment).toBe(user1.enrollment);
+
+    expect(invitePending.receiver.id).toBe(user2.id);
+    expect(invitePending.receiver.name).toBe(user2.name);
+    expect(invitePending.receiver.email).toBe(user2.email);
+    expect(invitePending.receiver.enrollment).toBe(user2.enrollment);
+  });
 });
 
-describe('invite confirmation store', () => {
+describe('invite confirmation', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
@@ -358,5 +456,29 @@ describe('invite confirmation store', () => {
     expect(inviteResponse.status).toBe(200);
     expect(inviteConfirmationResponse.status).toBe(200);
     expect(errorInviteResponse.status).toBe(400);
+  });
+
+  it('should have correct fields on invite confirmation', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const tokenUser1 = encodeToken(user1);
+    const tokenUser2 = encodeToken(user2);
+
+    const inviteResponse = await request(App)
+      .post('/invites')
+      .send({ receiverEnrollment: user2.enrollment })
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    const invite = inviteResponse.body;
+
+    const inviteConfirmationResponse = await request(App)
+      .post('/invites/confirmation')
+      .send({ id: invite.id })
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const inviteConfirmed = inviteConfirmationResponse.body;
+
+    expect(inviteConfirmed).toStrictEqual({}); // toStrictEqual -> compare with empty object
   });
 });

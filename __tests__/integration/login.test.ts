@@ -62,4 +62,21 @@ describe('Login', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on login store', async () => {
+    const userData = {
+      name: 'Lonlon',
+      enrollment: '20181104010087',
+      email: 'Lonlon@gmail.com',
+    };
+
+    const response = await request(App).post('/login').send(userData);
+
+    expect(response.body).toHaveProperty('token');
+    expect(response.body.user).toHaveProperty('id');
+
+    expect(response.body.user.name).toBe(userData.name);
+    expect(response.body.user.email).toBe(userData.email);
+    expect(response.body.user.enrollment).toBe(userData.enrollment);
+  });
 });

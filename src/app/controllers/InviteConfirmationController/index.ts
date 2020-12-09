@@ -22,7 +22,7 @@ class InviteConfirmationController {
       const invite = await assertInviteExists(id);
       assertUserWhoIsConfirmingIsTheReceiver(userId, invite.receiverId);
 
-      const friend = await prisma.friend.create({
+      await prisma.friend.create({
         data: {
           User1: { connect: { id: invite.senderId } },
           User2: { connect: { id: invite.receiverId } },
@@ -35,13 +35,7 @@ class InviteConfirmationController {
 
       await prisma.invite.delete({ where: { id } });
 
-      const friendFormatted = {
-        id: friend.id,
-        user1: friend.User1,
-        user2: friend.User2,
-      };
-
-      return res.json(friendFormatted);
+      return res.status(200).send();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }

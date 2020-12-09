@@ -2,7 +2,7 @@ import request from 'supertest';
 
 import App from '~/App';
 
-import { generatePeriod } from '../factory';
+import { createPeriod, generatePeriod } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('period store', () => {
@@ -93,5 +93,37 @@ describe('period store', () => {
     });
 
     expect(response.status).toBe(400);
+  });
+
+  it('should have correct fields on period store', async () => {
+    const periodData = generatePeriod({});
+
+    const response = await request(App).post('/periods').send(periodData);
+
+    const periodCreated = response.body;
+
+    expect(periodCreated).toHaveProperty('id');
+
+    expect(periodCreated.name).toBe(periodData.name);
+    expect(periodCreated.initialHour).toBe(periodData.initialHour);
+    expect(periodCreated.endHour).toBe(periodData.endHour);
+  });
+});
+
+describe('period store', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should have correct fields on period store', async () => {
+    const period = await createPeriod();
+
+    const response = await request(App).get('/periods');
+    const periodCreated = response.body[0];
+
+    expect(periodCreated.id).toBe(period.id);
+    expect(periodCreated.name).toBe(period.name);
+    expect(periodCreated.initialHour).toBe(period.initialHour);
+    expect(periodCreated.endHour).toBe(period.endHour);
   });
 });

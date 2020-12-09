@@ -46,6 +46,17 @@ describe('User store', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on user store', async () => {
+    const userData = generateUser();
+
+    const response = await request(App).post('/users').send(userData);
+
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.name).toBe(userData.name);
+    expect(response.body.email).toBe(userData.email);
+    expect(response.body.enrollment).toBe(userData.enrollment);
+  });
 });
 
 describe('User index', () => {
@@ -81,6 +92,18 @@ describe('User index', () => {
 
     expect(response.body[0].id).toBe(user1.id);
     expect(response.body[1].id).toBe(user2.id);
+  });
+
+  it('should have correct fields on user index', async () => {
+    const user = await createUser();
+
+    const response = await request(App).get('/users');
+    const userIndexed = response.body[0];
+
+    expect(userIndexed.id).toBe(user.id);
+    expect(userIndexed.name).toBe(user.name);
+    expect(userIndexed.email).toBe(user.email);
+    expect(userIndexed.enrollment).toBe(user.enrollment);
   });
 });
 
@@ -145,6 +168,19 @@ describe('User Update', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on user update', async () => {
+    const user = await createUser({ name: 'Kalon' });
+
+    const response = await request(App).put(`/users/${user.id}`).send({
+      name: 'LonKa',
+    });
+
+    expect(response.body.id).toBe(user.id);
+    expect(response.body.name).toBe('LonKa');
+    expect(response.body.email).toBe(user.email);
+    expect(response.body.enrollment).toBe(user.enrollment);
+  });
 });
 
 describe('User show', () => {
@@ -152,12 +188,16 @@ describe('User show', () => {
     await cleanDatabase();
   });
 
-  it('should be able show one user', async () => {
-    const { id } = await createUser({ enrollment: '20181104010048' });
+  it('should have correct fields on user show', async () => {
+    const user = await createUser({ enrollment: '20181104010048' });
 
-    const response = await request(App).get(`/users/${id}`);
+    const response = await request(App).get(`/users/${user.id}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.enrollment).toBe('20181104010048');
+
+    expect(response.body.id).toBe(user.id);
+    expect(response.body.name).toBe(user.name);
+    expect(response.body.email).toBe(user.email);
+    expect(response.body.enrollment).toBe(user.enrollment);
   });
 });

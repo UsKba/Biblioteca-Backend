@@ -34,62 +34,6 @@ describe('Reserve Index', () => {
     expect(response.body[0].id).toBe(reserve.id);
   });
 
-  it('should be able index one reserve with correct fields', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
-
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
-
-    const tomorrowDate = generateDate({ sumDay: 1 });
-
-    const reserve = await createReserve({
-      name: 'Trabalho de Portugues',
-      date: tomorrowDate,
-      period,
-      room,
-      schedule,
-      leader: user1,
-      users: [user1, user2, user3],
-    });
-
-    const leaderToken = encodeToken(user1);
-
-    const response = await request(App)
-      .get('/reserves')
-      .set({
-        authorization: `Bearer ${leaderToken}`,
-      });
-
-    const reserveCreated = response.body[0];
-
-    const [hours, minutes] = splitSingleDate(schedule.initialHour);
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
-
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
-    expect(reserveCreated.id).toBe(reserve.id);
-
-    expect(reserveCreated.name).toBe(reserve.name);
-    expect(reserveCreated.date).toBe(dateISO);
-    expect(reserveCreated.adminId).toBe(user1.id);
-
-    expect(reserveCreated.room.id).toBe(room.id);
-    expect(reserveCreated.room.initials).toBe(room.initials);
-
-    expect(reserveCreated.schedule.id).toBe(schedule.id);
-    expect(reserveCreated.schedule.initialHour).toBe(schedule.initialHour);
-    expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
-    expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
-
-    expect(reserveCreated.users[0]).toHaveProperty('id');
-    expect(reserveCreated.users[0]).toHaveProperty('enrollment');
-    expect(reserveCreated.users[0]).toHaveProperty('email');
-    expect(reserveCreated.users[0]).toHaveProperty('name');
-  });
-
   it('should be able index the two reserves linked with user', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
@@ -178,6 +122,62 @@ describe('Reserve Index', () => {
     expect(response.body[0].id).toBe(reserve1.id);
     expect(response.body[1].id).toBe(reserve2.id);
   });
+
+  it('should have correct fields on reserve index', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = await createReserve({
+      name: 'Trabalho de Portugues',
+      date: tomorrowDate,
+      period,
+      room,
+      schedule,
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const reserveCreated = response.body[0];
+
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(reserveCreated.id).toBe(reserve.id);
+
+    expect(reserveCreated.name).toBe(reserve.name);
+    expect(reserveCreated.date).toBe(dateISO);
+    expect(reserveCreated.adminId).toBe(user1.id);
+
+    expect(reserveCreated.room.id).toBe(room.id);
+    expect(reserveCreated.room.initials).toBe(room.initials);
+
+    expect(reserveCreated.schedule.id).toBe(schedule.id);
+    expect(reserveCreated.schedule.initialHour).toBe(schedule.initialHour);
+    expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
+    expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
+
+    expect(reserveCreated.users[0]).toHaveProperty('id');
+    expect(reserveCreated.users[0]).toHaveProperty('enrollment');
+    expect(reserveCreated.users[0]).toHaveProperty('email');
+    expect(reserveCreated.users[0]).toHaveProperty('name');
+  });
 });
 
 describe('Reserve Store', () => {
@@ -216,58 +216,6 @@ describe('Reserve Store', () => {
     expect(response.status).toBe(200);
     expect(response.body.room.id).toBe(reserve.roomId);
     expect(response.body.schedule.id).toBe(reserve.scheduleId);
-  });
-
-  it('should have correct fields on reserve creation', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
-
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
-
-    const tomorrowDate = generateDate({ sumDay: 1 });
-
-    const reserve = {
-      name: 'Trabalho de portugues',
-      roomId: room.id,
-      scheduleId: schedule.id,
-      classmatesIDs: [user1.id, user2.id, user3.id],
-      ...tomorrowDate,
-    };
-
-    const leaderToken = encodeToken(user1);
-
-    const response = await request(App)
-      .post('/reserves')
-      .send(reserve)
-      .set({
-        authorization: `Bearer ${leaderToken}`,
-      });
-
-    const [hours, minutes] = splitSingleDate(schedule.initialHour);
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('id');
-
-    expect(response.body.name).toBe('Trabalho de portugues');
-    expect(response.body.date).toBe(dateISO);
-    expect(response.body.adminId).toBe(user1.id);
-
-    expect(response.body.room.id).toBe(room.id);
-    expect(response.body.room.initials).toBe(room.initials);
-
-    expect(response.body.schedule.id).toBe(schedule.id);
-    expect(response.body.schedule.initialHour).toBe(schedule.initialHour);
-    expect(response.body.schedule.endHour).toBe(schedule.endHour);
-    expect(response.body.schedule.periodId).toBe(schedule.periodId);
-
-    expect(response.body.users[0]).toHaveProperty('id');
-    expect(response.body.users[0]).toHaveProperty('enrollment');
-    expect(response.body.users[0]).toHaveProperty('email');
-    expect(response.body.users[0]).toHaveProperty('name');
   });
 
   it('should not be able to create a reserve on a schedule that does not exists', async () => {
@@ -568,6 +516,58 @@ describe('Reserve Store', () => {
 
     expect(response.status).toBe(400);
   });
+
+  it('should have correct fields on reserve store', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesIDs: [user1.id, user2.id, user3.id],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const [hours, minutes] = splitSingleDate(schedule.initialHour);
+    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+
+    expect(response.body.name).toBe('Trabalho de portugues');
+    expect(response.body.date).toBe(dateISO);
+    expect(response.body.adminId).toBe(user1.id);
+
+    expect(response.body.room.id).toBe(room.id);
+    expect(response.body.room.initials).toBe(room.initials);
+
+    expect(response.body.schedule.id).toBe(schedule.id);
+    expect(response.body.schedule.initialHour).toBe(schedule.initialHour);
+    expect(response.body.schedule.endHour).toBe(schedule.endHour);
+    expect(response.body.schedule.periodId).toBe(schedule.periodId);
+
+    expect(response.body.users[0]).toHaveProperty('id');
+    expect(response.body.users[0]).toHaveProperty('enrollment');
+    expect(response.body.users[0]).toHaveProperty('email');
+    expect(response.body.users[0]).toHaveProperty('name');
+  });
 });
 
 describe('Reserve Delete', () => {
@@ -707,5 +707,28 @@ describe('Reserve Delete', () => {
       });
 
     expect(response.status).toBe(400);
+  });
+
+  it('should be able to delete a reserve', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/reserves/${reserve.id}`)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    const reserveDeleted = response.body;
+
+    expect(reserveDeleted.id).toBe(reserve.id);
   });
 });
