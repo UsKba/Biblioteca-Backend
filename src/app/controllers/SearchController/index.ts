@@ -1,26 +1,30 @@
 import { Response } from 'express';
 
-import { RequestAuthParams } from '~/types/auth';
+import { RequestAuthQuery } from '~/types/auth';
 
-import { assertUserEnrollmentExists } from '../UserController/tradingRules';
+import prisma from '~/prisma';
 
 type ShowSearch = {
-  enrollment: string;
+  name?: string;
+  enrollment?: string;
+  email?: string;
 };
 
-type ShowRequest = RequestAuthParams<ShowSearch>;
+type ShowRequest = RequestAuthQuery<ShowSearch>;
 
 class SeachController {
-  async show(req: ShowRequest, res: Response) {
-    const { enrollment } = req.params;
+  async index(req: ShowRequest, res: Response) {
+    const { name, email, enrollment } = req.query;
 
-    try {
-      const user = await assertUserEnrollmentExists(enrollment);
+    const users = await prisma.user.findMany({
+      where: {
+        name: { contains: name },
+        enrollment: { contains: enrollment },
+        email: { contains: email },
+      },
+    });
 
-      return res.json(user);
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
+    return res.json(users);
   }
 }
 

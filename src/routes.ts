@@ -22,7 +22,7 @@ import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
 import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations/schedule';
-import { validateSeachShow } from '~/app/validations/search';
+import { validateSeachIndex } from '~/app/validations/search';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 import { validateReserveDeleteParams } from '~/app/validations/userReserve';
 
@@ -59,14 +59,6 @@ routes.get('/reserves/week', WeekReserve.index);
 
 routes.use(authMiddleware);
 
-routes.get('/reserves', ReserveController.index);
-routes.post('/reserves', validateReserveStore, ReserveController.store);
-routes.delete('/reserves/:id', validateParamsId, ReserveController.delete);
-
-routes.delete('/reserves/:reserveId/users/:userId', validateReserveDeleteParams, UserReserveController.delete);
-
-routes.get('/friends', FriendController.index);
-
 routes.get('/invites', InviteController.index);
 routes.post('/invites', validateInviteStore, InviteController.store);
 routes.delete('/invites/:id', validateParamsId, InviteController.delete);
@@ -74,6 +66,14 @@ routes.delete('/invites/:id', validateParamsId, InviteController.delete);
 routes.get('/invites/pending', InviteController.indexPending);
 routes.post('/invites/confirmation', InviteConfirmationController.store);
 
-routes.get('/search/:enrollment', validateSeachShow, SearchController.show);
+routes.get('/friends', FriendController.index);
+
+routes.get('/reserves', ReserveController.index);
+routes.post('/reserves', validateReserveStore, ReserveController.store);
+routes.delete('/reserves/:id', validateParamsId, ReserveController.delete);
+
+routes.delete('/reserves/:reserveId/users/:userId', validateReserveDeleteParams, UserReserveController.delete);
+
+routes.get('/search', validateSeachIndex, SearchController.index);
 
 export default routes;
