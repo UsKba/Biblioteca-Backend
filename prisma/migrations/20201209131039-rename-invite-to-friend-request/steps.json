@@ -1,0 +1,271 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateModel",
+      "model": "FriendRequest"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "status",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "UserSender",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserSender"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"sender\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[senderId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "UserReceiver",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserReceiver"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"receiver\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[receiverId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "UserReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "senderId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "receiverId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteModel",
+      "model": "Invite"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "FriendRequestSender",
+      "type": "FriendRequest",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "FriendRequestSender"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "FriendRequestSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"sender\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "FriendRequestReceiver",
+      "type": "FriendRequest",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "FriendRequestReceiver"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "FriendRequestReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"receiver\""
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "InviteSender"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "InviteReceiver"
+    }
+  ]
+}

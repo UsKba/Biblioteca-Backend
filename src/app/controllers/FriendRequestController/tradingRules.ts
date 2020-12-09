@@ -1,4 +1,4 @@
-import { Invite } from '@prisma/client';
+import { FriendRequest } from '@prisma/client';
 
 import prisma from '~/prisma';
 
@@ -14,22 +14,22 @@ export async function assertUserIsNotFriend(senderId: number, receiverId: number
   return friends[0];
 }
 
-export async function assertIsSenderOrReceiverId(senderId: number, invite: Invite) {
-  if (invite?.senderId !== senderId && invite?.receiverId !== senderId) {
+export async function assertIsSenderOrReceiverId(senderId: number, friendRequest: FriendRequest) {
+  if (friendRequest?.senderId !== senderId && friendRequest?.receiverId !== senderId) {
     throw new Error('Você não tem permissão para deletar o convite');
   }
 
-  return invite;
+  return friendRequest;
 }
 
-export async function assertInviteExists(id: number) {
-  const invite = await prisma.invite.findOne({
+export async function assertFriendRequestExists(id: number) {
+  const friendRequest = await prisma.friendRequest.findOne({
     where: { id },
   });
 
-  if (!invite) {
+  if (!friendRequest) {
     throw new Error('Convite não encontrado');
   }
 
-  return invite;
+  return friendRequest;
 }

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import FriendController from '~/app/controllers/FriendController';
-import InviteConfirmationController from '~/app/controllers/InviteConfirmationController';
-import InviteController from '~/app/controllers/InviteController';
+import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
+import FriendRequestController from '~/app/controllers/FriendRequestController';
 import LoginController from '~/app/controllers/LoginController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
@@ -16,7 +16,7 @@ import WeekReserve from '~/app/controllers/WeekReserve';
 import authMiddleware from '~/app/middlewares/auth';
 
 import { validateParamsId } from '~/app/validations';
-import { validateInviteStore } from '~/app/validations/invite';
+import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateLoginStore } from '~/app/validations/login';
 import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
@@ -59,12 +59,12 @@ routes.get('/reserves/week', WeekReserve.index);
 
 routes.use(authMiddleware);
 
-routes.get('/invites', InviteController.index);
-routes.post('/invites', validateInviteStore, InviteController.store);
-routes.delete('/invites/:id', validateParamsId, InviteController.delete);
+routes.get('/friends/request', FriendRequestController.index);
+routes.post('/friends/request', validateFriendRequestStore, FriendRequestController.store);
+routes.delete('/friends/request/:id', validateParamsId, FriendRequestController.delete);
 
-routes.get('/invites/pending', InviteController.indexPending);
-routes.post('/invites/confirmation', InviteConfirmationController.store);
+routes.get('/friends/request/pending', FriendRequestController.indexPending);
+routes.post('/friends/request/confirmation', FriendRequestConfirmationController.store);
 
 routes.get('/friends', FriendController.index);
 

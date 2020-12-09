@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friend, Invite, Period, Reserve, Room, Schedule, User } from '@prisma/client';
+import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User } from '@prisma/client';
 import faker from 'faker';
 import request from 'supertest';
 
@@ -51,7 +51,7 @@ interface GenerateReserveParams {
   };
 }
 
-interface GenerateInviteParams {
+interface GenerateFriendRequestParams {
   user1: User;
   user2: User;
 }
@@ -192,17 +192,17 @@ export async function createReserve(params: GenerateReserveParams) {
   return response.body as Reserve;
 }
 
-export async function createInvite(params: GenerateInviteParams) {
+export async function createFriendRequest(params: GenerateFriendRequestParams) {
   const { user1, user2 } = params;
 
   const senderUserToken = encodeToken(user1);
 
   const response = await request(App)
-    .post('/invites')
+    .post('/friends/request')
     .send({ receiverEnrollment: user2.enrollment })
     .set({ authorization: `Bearer ${senderUserToken}` });
 
-  return response.body as Invite;
+  return response.body as FriendRequest;
 }
 
 export async function createFriend(params: GenerateFriendParams) {
@@ -211,17 +211,17 @@ export async function createFriend(params: GenerateFriendParams) {
   const tokenUser1 = encodeToken(user1);
   const tokenUser2 = encodeToken(user2);
 
-  const inviteResponse = await request(App)
-    .post('/invites')
+  const friendRequestResponse = await request(App)
+    .post('/friends/request')
     .send({ receiverEnrollment: user2.enrollment })
     .set({ authorization: `Bearer ${tokenUser1}` });
 
-  const { id } = inviteResponse.body;
+  const { id } = friendRequestResponse.body;
 
-  const inviteConfirmationResponse = await request(App)
-    .post('/invites/confirmation')
+  const friendRequestConfirmationResponse = await request(App)
+    .post('/friends/request/confirmation')
     .send({ id })
     .set({ authorization: `Bearer ${tokenUser2}` });
 
-  return inviteConfirmationResponse.body as Friend;
+  return friendRequestConfirmationResponse.body as Friend;
 }

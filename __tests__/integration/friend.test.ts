@@ -4,7 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
-import { createUser, createFriend, createInvite } from '../factory';
+import { createUser, createFriend, createFriendRequest } from '../factory';
 import { cleanDatabase } from '../utils';
 
 describe('friend index', () => {
@@ -12,7 +12,7 @@ describe('friend index', () => {
     await cleanDatabase();
   });
 
-  it('should be able index one friend when you send the invite', async () => {
+  it('should be able index one friend when you send the friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
 
@@ -28,7 +28,7 @@ describe('friend index', () => {
     expect(response.body.length).toBe(1);
   });
 
-  it('should be able index one friend when you receive the invite', async () => {
+  it('should be able index one friend when you receive the friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
 
@@ -79,11 +79,11 @@ describe('friend index', () => {
     expect(response.body.length).toBe(0);
   });
 
-  it('should not be able index one friend when him not accepted the invite', async () => {
+  it('should not be able index one friend when him not accepted the friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
 
-    await createInvite({ user1, user2 });
+    await createFriendRequest({ user1, user2 });
 
     const tokenUser1 = encodeToken(user1);
 
@@ -95,11 +95,11 @@ describe('friend index', () => {
     expect(response.body.length).toBe(0);
   });
 
-  it('should not be able index one friend when you not accepted the invite', async () => {
+  it('should not be able index one friend when you not accepted the friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
 
-    await createInvite({ user1: user2, user2: user1 });
+    await createFriendRequest({ user1: user2, user2: user1 });
 
     const tokenUser1 = encodeToken(user1);
 

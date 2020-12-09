@@ -7,22 +7,22 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
-import { assertInviteExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
-import { formatInviteToResponse } from './utils';
+import { assertFriendRequestExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
+import { formatFriendRequestToResponse } from './utils';
 
-interface StoreInvite {
+interface StoreFriendRequest {
   receiverEnrollment: string;
 }
 
 type IndexRequest = RequestAuth;
-type StoreRequest = RequestAuthBody<StoreInvite>;
+type StoreRequest = RequestAuthBody<StoreFriendRequest>;
 type DeleteRequest = RequestAuthParamsId;
 
-class InviteController {
+class FriendRequestController {
   async index(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const invites = await prisma.invite.findMany({
+    const friendRequests = await prisma.friendRequest.findMany({
       where: { receiverId: userId },
       include: {
         UserReceiver: true,
@@ -30,22 +30,22 @@ class InviteController {
       },
     });
 
-    const invitesFormatted = invites.map((invite) => {
+    const friendRequestsFormatted = friendRequests.map((friendRequest) => {
       return {
-        id: invite.id,
-        receiver: invite.UserReceiver,
-        sender: invite.UserSender,
-        status: invite.status,
+        id: friendRequest.id,
+        receiver: friendRequest.UserReceiver,
+        sender: friendRequest.UserSender,
+        status: friendRequest.status,
       };
     });
 
-    return res.json(invitesFormatted);
+    return res.json(friendRequestsFormatted);
   }
 
   async indexPending(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const invites = await prisma.invite.findMany({
+    const friendRequests = await prisma.friendRequest.findMany({
       where: { senderId: userId },
       include: {
         UserReceiver: true,
@@ -53,9 +53,9 @@ class InviteController {
       },
     });
 
-    const invitesFormatted = invites.map(formatInviteToResponse);
+    const friendRequestsFormatted = friendRequests.map(formatFriendRequestToResponse);
 
-    return res.json(invitesFormatted);
+    return res.json(friendRequestsFormatted);
   }
 
   async store(req: StoreRequest, res: Response) {
@@ -67,15 +67,15 @@ class InviteController {
       const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
       await assertUserIsNotFriend(userId, userReceiver.id);
 
-      const [invite] = await prisma.invite.findMany({
+      const [friendRequest] = await prisma.friendRequest.findMany({
         where: {
           senderId: userId,
           receiverId: userReceiver.id,
         },
       });
 
-      if (invite == null) {
-        const inviteCreated = await prisma.invite.create({
+      if (friendRequest == null) {
+        const friendRequestCreated = await prisma.friendRequest.create({
           data: {
             UserSender: { connect: { id: userId } },
             UserReceiver: { connect: { id: userReceiver.id } },
@@ -87,13 +87,13 @@ class InviteController {
           },
         });
 
-        const inviteFormatted = formatInviteToResponse(inviteCreated);
+        const friendRequestFormatted = formatFriendRequestToResponse(friendRequestCreated);
 
-        return res.json(inviteFormatted);
+        return res.json(friendRequestFormatted);
       }
 
-      const inviteUpdated = await prisma.invite.update({
-        where: { id: invite.id },
+      const friendRequestUpdated = await prisma.friendRequest.update({
+        where: { id: friendRequest.id },
         data: { status: friendConfig.statusPending },
         include: {
           UserReceiver: true,
@@ -101,9 +101,9 @@ class InviteController {
         },
       });
 
-      const inviteFormatted = formatInviteToResponse(inviteUpdated);
+      const friendRequestFormatted = formatFriendRequestToResponse(friendRequestUpdated);
 
-      return res.json(inviteFormatted);
+      return res.json(friendRequestFormatted);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -114,19 +114,19 @@ class InviteController {
     const userId = req.userId as number;
 
     try {
-      const invite = await assertInviteExists(id);
-      await assertIsSenderOrReceiverId(userId, invite);
+      const friendRequest = await assertFriendRequestExists(id);
+      await assertIsSenderOrReceiverId(userId, friendRequest);
 
-      const updatedInvite = await prisma.invite.update({
+      const friendRequestUpdated = await prisma.friendRequest.update({
         where: { id },
         data: {
           status: friendConfig.statusDenied,
         },
       });
-      return res.json(updatedInvite);
+      return res.json(friendRequestUpdated);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
   }
 }
-export default new InviteController();
+export default new FriendRequestController();

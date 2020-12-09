@@ -6,22 +6,22 @@ import friendConfig from '~/config/friend';
 
 import App from '~/App';
 
-import { createInvite, createUser } from '../factory';
+import { createFriendRequest, createUser } from '../factory';
 import { cleanDatabase } from '../utils';
 
-describe('invite store', () => {
+describe('friendRequest store', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able to invite a user', async () => {
+  it('should be able to make a friendRequest with a user', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const token = encodeToken(user1);
 
     const response = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
@@ -30,7 +30,7 @@ describe('invite store', () => {
     expect(response.body.sender.id).toBe(user1.id);
   });
 
-  it('should be able to invite 2 different users', async () => {
+  it('should be able to make a friendRequest with 2 different users', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181004010033' });
@@ -38,12 +38,12 @@ describe('invite store', () => {
     const token = encodeToken(user1);
 
     const response1 = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
     const response2 = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment: user3.enrollment })
       .set({ authorization: `Bearer ${token}` });
 
@@ -57,428 +57,428 @@ describe('invite store', () => {
     expect(response2.body.receiver.id).toBe(user3.id);
   });
 
-  it('should be able to invite a user with invalid receiverId', async () => {
+  it('should be able to make a friendRequest with a user with invalid receiverId', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
 
     const token = encodeToken(user1);
 
     const response = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment: 'invalidReceiverEnrollment' })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(400);
   });
 
-  it('should be able to invite a user with receiverId that not exists', async () => {
+  it('should be able to make a friendRequest with a user with receiverId that not exists', async () => {
     const user = await createUser({ enrollment: '20181104010022' });
     const receiverEnrollment = '20181104010023';
 
     const token = encodeToken(user);
 
     const response = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment })
       .set({ authorization: `Bearer ${token}` });
 
     expect(response.status).toBe(400);
   });
 
-  it('should be able to invite again a user that already denied', async () => {
+  it('should be able to make a friendRequest with again a user that already denied', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
 
-    const responseInvite = await request(App)
-      .post('/invites')
+    const responseFriendRequest = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     const tokenUser2 = encodeToken(user2);
 
     await request(App)
-      .delete(`/invites/${responseInvite.body.id}`)
+      .delete(`/friends/request/${responseFriendRequest.body.id}`)
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const responseReInvite = await request(App)
-      .post('/invites')
+    const responseReFriendRequest = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(responseReInvite.status).toBe(200);
+    expect(responseReFriendRequest.status).toBe(200);
   });
 
-  it('should have correct fields on invite store ', async () => {
+  it('should have correct fields on friendRequest store ', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
 
     const response = await request(App)
-      .post('/invites')
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const inviteCreated = response.body;
+    const friendRequestCreated = response.body;
 
-    expect(inviteCreated).toHaveProperty('id');
-    expect(inviteCreated).toHaveProperty('status');
+    expect(friendRequestCreated).toHaveProperty('id');
+    expect(friendRequestCreated).toHaveProperty('status');
 
-    expect(inviteCreated.sender.id).toBe(user1.id);
-    expect(inviteCreated.sender.name).toBe(user1.name);
-    expect(inviteCreated.sender.email).toBe(user1.email);
-    expect(inviteCreated.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestCreated.sender.id).toBe(user1.id);
+    expect(friendRequestCreated.sender.name).toBe(user1.name);
+    expect(friendRequestCreated.sender.email).toBe(user1.email);
+    expect(friendRequestCreated.sender.enrollment).toBe(user1.enrollment);
 
-    expect(inviteCreated.receiver.id).toBe(user2.id);
-    expect(inviteCreated.receiver.name).toBe(user2.name);
-    expect(inviteCreated.receiver.email).toBe(user2.email);
-    expect(inviteCreated.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestCreated.receiver.id).toBe(user2.id);
+    expect(friendRequestCreated.receiver.name).toBe(user2.name);
+    expect(friendRequestCreated.receiver.email).toBe(user2.email);
+    expect(friendRequestCreated.receiver.enrollment).toBe(user2.enrollment);
   });
 });
 
-describe('invite index', () => {
+describe('friendRequest index', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able to index one invite', async () => {
+  it('should be able to index one friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
+    await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
 
     const response = await request(App)
-      .get('/invites')
+      .get('/friends/request')
       .set({ authorization: `Bearer ${tokenUser2}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
   });
 
-  it('should be able to index two invites', async () => {
+  it('should be able to index two friendRequests', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1: user3, user2 });
+    await createFriendRequest({ user1, user2 });
+    await createFriendRequest({ user1: user3, user2 });
 
     const tokenUser2 = encodeToken(user2);
 
     const response = await request(App)
-      .get('/invites')
+      .get('/friends/request')
       .set({ authorization: `Bearer ${tokenUser2}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
   });
 
-  it('should not be able to index invites where you are not the receiver', async () => {
+  it('should not be able to index friendRequests where you are not the receiver', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1: user3, user2 });
+    await createFriendRequest({ user1, user2 });
+    await createFriendRequest({ user1: user3, user2 });
 
     const tokenUser1 = encodeToken(user1);
 
     const response = await request(App)
-      .get('/invites')
+      .get('/friends/request')
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
 
-  it('should have correct fields on invite index', async () => {
+  it('should have correct fields on friendRequest index', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
 
-    await createInvite({ user1, user2 });
+    await createFriendRequest({ user1, user2 });
 
     const tokenUser2 = encodeToken(user2);
 
     const response = await request(App)
-      .get('/invites')
+      .get('/friends/request')
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const inviteCreated = response.body[0];
+    const friendRequestCreated = response.body[0];
 
-    expect(inviteCreated).toHaveProperty('id');
-    expect(inviteCreated).toHaveProperty('status');
+    expect(friendRequestCreated).toHaveProperty('id');
+    expect(friendRequestCreated).toHaveProperty('status');
 
-    expect(inviteCreated.sender.id).toBe(user1.id);
-    expect(inviteCreated.sender.name).toBe(user1.name);
-    expect(inviteCreated.sender.email).toBe(user1.email);
-    expect(inviteCreated.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestCreated.sender.id).toBe(user1.id);
+    expect(friendRequestCreated.sender.name).toBe(user1.name);
+    expect(friendRequestCreated.sender.email).toBe(user1.email);
+    expect(friendRequestCreated.sender.enrollment).toBe(user1.enrollment);
 
-    expect(inviteCreated.receiver.id).toBe(user2.id);
-    expect(inviteCreated.receiver.name).toBe(user2.name);
-    expect(inviteCreated.receiver.email).toBe(user2.email);
-    expect(inviteCreated.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestCreated.receiver.id).toBe(user2.id);
+    expect(friendRequestCreated.receiver.name).toBe(user2.name);
+    expect(friendRequestCreated.receiver.email).toBe(user2.email);
+    expect(friendRequestCreated.receiver.enrollment).toBe(user2.enrollment);
   });
 });
 
-describe('invite delete', () => {
+describe('friendRequest delete', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able to delete one invite when you are the sender', async () => {
+  it('should be able to delete one friendRequest when you are the sender', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
+    const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
 
     const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
+      .delete(`/friends/request/${friendRequest.id}`)
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(deleteResponse.status).toBe(200);
     expect(deleteResponse.body.status).toBe(friendConfig.statusDenied);
-    expect(deleteResponse.body.id).toBe(invite.id);
+    expect(deleteResponse.body.id).toBe(friendRequest.id);
   });
 
-  it('should be able to delete one invite when you are the receiver', async () => {
+  it('should be able to delete one friendRequest when you are the receiver', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
+    const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
 
     const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
+      .delete(`/friends/request/${friendRequest.id}`)
       .set({ authorization: `Bearer ${tokenUser2}` });
 
     expect(deleteResponse.status).toBe(200);
     expect(deleteResponse.body.status).toBe(friendConfig.statusDenied);
-    expect(deleteResponse.body.id).toBe(invite.id);
+    expect(deleteResponse.body.id).toBe(friendRequest.id);
   });
 
-  it('should not be able to delete invite when you are not the sender or the receiver', async () => {
+  it('should not be able to delete friendRequest when you are not the sender or the receiver', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
+    const friendRequest = await createFriendRequest({ user1, user2 });
 
     const tokenUser3 = encodeToken(user3);
 
     const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
+      .delete(`/friends/request/${friendRequest.id}`)
       .set({ authorization: `Bearer ${tokenUser3}` });
 
     expect(deleteResponse.status).toBe(400);
   });
 
-  it('should have correct fields on invite delete', async () => {
+  it('should have correct fields on friendRequest delete', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    const invite = await createInvite({ user1, user2 });
+    const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
 
     const deleteResponse = await request(App)
-      .delete(`/invites/${invite.id}`)
+      .delete(`/friends/request/${friendRequest.id}`)
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const inviteDeleted = deleteResponse.body;
+    const friendRequestDeleted = deleteResponse.body;
 
-    expect(inviteDeleted.id).toBe(invite.id);
+    expect(friendRequestDeleted.id).toBe(friendRequest.id);
   });
 });
 
-describe('invite pending index', () => {
+describe('friendRequest pending index', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able to index one pending invite', async () => {
+  it('should be able to index one pending friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
+    await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
 
     const response = await request(App)
-      .get('/invites/pending')
+      .get('/friends/request/pending')
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
   });
 
-  it('should be able to index two pending invite', async () => {
+  it('should be able to index two pending friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
-    await createInvite({ user1, user2: user3 });
+    await createFriendRequest({ user1, user2 });
+    await createFriendRequest({ user1, user2: user3 });
     const tokenUser1 = encodeToken(user1);
 
     const response = await request(App)
-      .get('/invites/pending')
+      .get('/friends/request/pending')
       .set({ authorization: `Bearer ${tokenUser1}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
   });
 
-  it('should not be able to index one pending invite when you do not have', async () => {
+  it('should not be able to index one pending friendRequest when you do not have', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
 
     const tokenUser = encodeToken(user1);
 
     const response = await request(App)
-      .get('/invites/pending')
+      .get('/friends/request/pending')
       .set({ authorization: `Bearer ${tokenUser}` });
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
 
-  it('should have correct fields on invite pending index', async () => {
+  it('should have correct fields on friendRequest pending index', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
-    await createInvite({ user1, user2 });
+    await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
 
     const response = await request(App)
-      .get('/invites/pending')
+      .get('/friends/request/pending')
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const invitePending = response.body[0];
+    const friendRequestPending = response.body[0];
 
-    expect(invitePending).toHaveProperty('id');
-    expect(invitePending).toHaveProperty('status');
+    expect(friendRequestPending).toHaveProperty('id');
+    expect(friendRequestPending).toHaveProperty('status');
 
-    expect(invitePending.sender.id).toBe(user1.id);
-    expect(invitePending.sender.name).toBe(user1.name);
-    expect(invitePending.sender.email).toBe(user1.email);
-    expect(invitePending.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestPending.sender.id).toBe(user1.id);
+    expect(friendRequestPending.sender.name).toBe(user1.name);
+    expect(friendRequestPending.sender.email).toBe(user1.email);
+    expect(friendRequestPending.sender.enrollment).toBe(user1.enrollment);
 
-    expect(invitePending.receiver.id).toBe(user2.id);
-    expect(invitePending.receiver.name).toBe(user2.name);
-    expect(invitePending.receiver.email).toBe(user2.email);
-    expect(invitePending.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestPending.receiver.id).toBe(user2.id);
+    expect(friendRequestPending.receiver.name).toBe(user2.name);
+    expect(friendRequestPending.receiver.email).toBe(user2.email);
+    expect(friendRequestPending.receiver.enrollment).toBe(user2.enrollment);
   });
 });
 
-describe('invite confirmation', () => {
+describe('friendRequest confirmation', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able to confirm invite', async () => {
+  it('should be able to confirm friendRequest', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
+    const friendRequestResponse = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const inviteUpdated = inviteResponse.body;
+    const friendRequestUpdated = friendRequestResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
-      .send({ id: inviteUpdated.id })
+    const friendRequestConfirmationResponse = await request(App)
+      .post('/friends/request/confirmation')
+      .send({ id: friendRequestUpdated.id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
+    expect(friendRequestResponse.status).toBe(200);
+    expect(friendRequestConfirmationResponse.status).toBe(200);
   });
 
-  it('should delete invite when it is confirmed', async () => {
+  it('should delete friendRequest when it is confirmed', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
+    const friendRequestResponse = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const { id } = inviteResponse.body;
+    const { id } = friendRequestResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
+    const friendRequestConfirmationResponse = await request(App)
+      .post('/friends/request/confirmation')
       .send({ id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
     const indexResponse = await request(App)
-      .get('/invites/pending')
+      .get('/friends/request/pending')
       .send({ id })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
+    expect(friendRequestResponse.status).toBe(200);
+    expect(friendRequestConfirmationResponse.status).toBe(200);
 
     expect(indexResponse.status).toBe(200);
     expect(indexResponse.body.length).toBe(0);
   });
 
-  it('should not be able to invite a user who already is your friend', async () => {
+  it('should not be able to friendRequest a user who already is your friend', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
+    const friendRequestResponse = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const { id } = inviteResponse.body;
+    const { id } = friendRequestResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
+    const friendRequestConfirmationResponse = await request(App)
+      .post('/friends/request/confirmation')
       .send({ id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const errorInviteResponse = await request(App)
-      .post('/invites')
+    const errorFriendRequestResponse = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    expect(inviteResponse.status).toBe(200);
-    expect(inviteConfirmationResponse.status).toBe(200);
-    expect(errorInviteResponse.status).toBe(400);
+    expect(friendRequestResponse.status).toBe(200);
+    expect(friendRequestConfirmationResponse.status).toBe(200);
+    expect(errorFriendRequestResponse.status).toBe(400);
   });
 
-  it('should have correct fields on invite confirmation', async () => {
+  it('should have correct fields on friendRequest confirmation', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
 
-    const inviteResponse = await request(App)
-      .post('/invites')
+    const friendRequestResponse = await request(App)
+      .post('/friends/request')
       .send({ receiverEnrollment: user2.enrollment })
       .set({ authorization: `Bearer ${tokenUser1}` });
 
-    const invite = inviteResponse.body;
+    const friendRequest = friendRequestResponse.body;
 
-    const inviteConfirmationResponse = await request(App)
-      .post('/invites/confirmation')
-      .send({ id: invite.id })
+    const friendRequestConfirmationResponse = await request(App)
+      .post('/friends/request/confirmation')
+      .send({ id: friendRequest.id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const inviteConfirmed = inviteConfirmationResponse.body;
+    const friendRequestConfirmed = friendRequestConfirmationResponse.body;
 
-    expect(inviteConfirmed).toStrictEqual({}); // toStrictEqual -> compare with empty object
+    expect(friendRequestConfirmed).toStrictEqual({}); // toStrictEqual -> compare with empty object
   });
 });
