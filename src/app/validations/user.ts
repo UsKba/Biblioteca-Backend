@@ -14,9 +14,7 @@ const UserUpdateSchema = Yup.object().shape({
   name: Yup.string(),
   email: Yup.string().email('Email inválido'),
   enrollment: Yup.number()
-    .test('should not pass enrollment', 'Você não pode atualizar a matrícula', (enrollment?: string) => {
-      return enrollment === undefined;
-    })
+    .test('should not pass enrollment', 'Você não pode atualizar a matrícula', (enrollment) => !enrollment)
     .typeError('A matrícula precisa ser um número'),
 });
 
