@@ -7,18 +7,18 @@ import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
 
-async function checkUsersExists(userIds: number[]) {
-  for (let i = 0; i < userIds.length; i += 1) {
-    const userId = userIds[i];
+async function checkUsersExists(userEnrollments: string[]) {
+  for (let i = 0; i < userEnrollments.length; i += 1) {
+    const userEnrollment = userEnrollments[i];
 
     const userExists = await prisma.user.findOne({
-      where: { id: userId },
+      where: { enrollment: userEnrollment },
     });
 
     if (!userExists) {
       return {
         allUsersExists: false,
-        nonUserId: userId,
+        nonUserEnrollment: userEnrollment,
       };
     }
   }
@@ -26,11 +26,11 @@ async function checkUsersExists(userIds: number[]) {
   return { allUsersExists: true };
 }
 
-export async function assertUsersExistsOnDatabase(userIds: number[]) {
-  const { allUsersExists, nonUserId } = await checkUsersExists(userIds);
+export async function assertUsersExistsOnDatabase(usersEnrollments: string[]) {
+  const { allUsersExists, nonUserEnrollment } = await checkUsersExists(usersEnrollments);
 
   if (!allUsersExists) {
-    throw new Error(`Usuário ${nonUserId} não encontrado`);
+    throw new Error(`Usuário ${nonUserEnrollment} não encontrado`);
   }
 }
 
@@ -44,32 +44,33 @@ export async function assertRoomIsOpenOnThisDateAndSchedule(scheduleId: number, 
   }
 }
 
-export function assertIfHaveTheMinimunClassmatesRequired(classmatesIDs: number[]) {
+export function assertIfHaveTheMinimunClassmatesRequired(classmatesEnrollments: string[]) {
   const { minClassmatesPerRoom } = reserveConfig;
 
-  if (classmatesIDs.length < minClassmatesPerRoom) {
+  if (classmatesEnrollments.length < minClassmatesPerRoom) {
     throw new Error(`São necessários ao menos ${minClassmatesPerRoom} alunos`);
   }
 }
 
-export function assertIfHaveTheMaximumClassmatesRequired(classmatesIDs: number[]) {
+export function assertIfHaveTheMaximumClassmatesRequired(classmatesEnrollments: string[]) {
   const { maxClassmatesPerRoom } = reserveConfig;
 
-  if (classmatesIDs.length > maxClassmatesPerRoom) {
+  if (classmatesEnrollments.length > maxClassmatesPerRoom) {
     throw new Error(`São necessários no máximo ${maxClassmatesPerRoom} alunos`);
   }
 }
 
-export function assertUserIsOnClassmatesIds(userId: number, classmatesIDs: number[]) {
-  const userExists = classmatesIDs.includes(userId);
+export function assertUserIsOnClassmatesEnrollments(userId: number, classmatesEnrollments: string[]) {
+  const userIdString = String(userId);
+  const userExists = classmatesEnrollments.includes(userIdString);
 
   if (!userExists) {
     throw new Error('Somente o usuario autenticado pode realizar a reserva');
   }
 }
 
-export function assertClassmatesIdsAreDiferent(classmatesIDs: number[]) {
-  const haveIdsDuplicated = haveDuplicates(classmatesIDs);
+export function assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments: string[]) {
+  const haveIdsDuplicated = haveDuplicates(classmatesEnrollments);
 
   if (haveIdsDuplicated) {
     throw new Error('Não pode repetir o mesmo usuário');
@@ -108,6 +109,12 @@ export async function assertReserveExists(id: number) {
 export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
   if (reserve.adminId !== userId) {
     throw new Error('Somente o líder da reserva pode realizar esta ação');
+  }
+}
+
+export async function assertIfUserIsHisSelf(userId: number, userToDelete: number) {
+  if (  userToDelete !== userId) {
+    throw new Error('Somente o lider da reserva pode remover outros usuários da reserva');
   }
 }
 
