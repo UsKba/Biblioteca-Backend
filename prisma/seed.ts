@@ -5,38 +5,38 @@ async function run() {
 
   const users = [
     {
-      enrollment: '20181104010010',
-      name: 'Lonlon',
-      email: 'lonlon@gmail.com',
+      name: 'Idaslon Garcia',
+      enrollment: '20181104010048',
+      email: 'idaslon.g@academico.ifrn.edu.br',
     },
     {
-      enrollment: '20181104010011',
-      name: 'Zanzan',
-      email: 'zanzan@gmail.com',
+      name: 'Fellipe Souza',
+      enrollment: '20181104010027',
+      email: 'z.santos@academico.ifrn.edu.br',
     },
     {
-      enrollment: '20181104010012',
-      name: 'Nana',
-      email: 'nana@gmail.com',
+      name: 'NATHAN MARQUES',
+      enrollment: '20181104010009',
+      email: 'nathan.araujo@academico.ifrn.edu.br',
     },
     {
-      enrollment: '20181104010023',
+      name: 'Alceu Nascimento',
+      enrollment: '20181104010039',
+      email: 'alceu.guilherme@academico.ifrn.edu.br',
+    },
+    {
       name: 'Kadu',
+      enrollment: '20181104010023',
       email: 'kadu@gmail.com',
     },
     {
-      enrollment: '20181104010014',
-      name: 'Alce',
-      email: 'alce@gmail.com',
-    },
-    {
-      enrollment: '20181104010015',
       name: 'Cisco',
+      enrollment: '20181104010015',
       email: 'cisco@gmail.com',
     },
     {
-      enrollment: '20181104010016',
       name: 'Bubu',
+      enrollment: '20181104010016',
       email: 'bubu@gmail.com',
     },
   ];

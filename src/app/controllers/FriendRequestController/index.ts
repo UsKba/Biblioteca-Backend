@@ -22,30 +22,7 @@ class FriendRequestController {
   async index(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const friendRequests = await prisma.friendRequest.findMany({
-      where: { receiverId: userId },
-      include: {
-        UserReceiver: true,
-        UserSender: true,
-      },
-    });
-
-    const friendRequestsFormatted = friendRequests.map((friendRequest) => {
-      return {
-        id: friendRequest.id,
-        receiver: friendRequest.UserReceiver,
-        sender: friendRequest.UserSender,
-        status: friendRequest.status,
-      };
-    });
-
-    return res.json(friendRequestsFormatted);
-  }
-
-  async indexPending(req: IndexRequest, res: Response) {
-    const userId = req.userId as number;
-
-    const friendRequests = await prisma.friendRequest.findMany({
+    const friendRequestsSent = await prisma.friendRequest.findMany({
       where: { senderId: userId },
       include: {
         UserReceiver: true,
@@ -53,9 +30,21 @@ class FriendRequestController {
       },
     });
 
-    const friendRequestsFormatted = friendRequests.map(formatFriendRequestToResponse);
+    const friendRequestsReceived = await prisma.friendRequest.findMany({
+      where: { receiverId: userId },
+      include: {
+        UserReceiver: true,
+        UserSender: true,
+      },
+    });
 
-    return res.json(friendRequestsFormatted);
+    const friendRequestsSentFormatted = friendRequestsSent.map(formatFriendRequestToResponse);
+    const friendRequestsReceivedFormatted = friendRequestsReceived.map(formatFriendRequestToResponse);
+
+    return res.json({
+      sent: friendRequestsSentFormatted,
+      received: friendRequestsReceivedFormatted,
+    });
   }
 
   async store(req: StoreRequest, res: Response) {
