@@ -9,10 +9,10 @@ import prisma from '~/prisma';
 import { assertRoomIdExists } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import {
-  assertUserIsOnClassmatesIds,
+  assertUserIsOnClassmatesEnrollments,
   assertIfHaveTheMinimunClassmatesRequired,
   assertIfHaveTheMaximumClassmatesRequired,
-  assertClassmatesIdsAreDiferent,
+  assertClassmatesEnrollmentsAreDiferent,
   assertRoomIsOpenOnThisDateAndSchedule,
   assertUsersExistsOnDatabase,
   assertIfTheReserveIsNotOnWeekend,
@@ -30,7 +30,7 @@ interface StoreReserve {
   day: number;
   month: number;
   year: number;
-  classmatesIDs: number[];
+  classmatesEnrollments: string[];
 }
 
 type IndexRequest = RequestAuth;
@@ -70,15 +70,17 @@ class ReserveController {
 
   async store(request: StoreRequest, response: Response) {
     const userId = request.userId as number;
-    const { roomId, scheduleId, year, month, day, classmatesIDs, name } = request.body; // ... name = date
+    const userEnrollment = request.userEnrollment as string;
+
+    const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body; // ... name = date
 
     const date = new Date(year, month, day);
 
     try {
-      assertUserIsOnClassmatesIds(userId, classmatesIDs);
-      assertIfHaveTheMinimunClassmatesRequired(classmatesIDs);
-      assertIfHaveTheMaximumClassmatesRequired(classmatesIDs);
-      assertClassmatesIdsAreDiferent(classmatesIDs);
+      assertUserIsOnClassmatesEnrollments(userEnrollment, classmatesEnrollments);
+      assertIfHaveTheMinimunClassmatesRequired(classmatesEnrollments);
+      assertIfHaveTheMaximumClassmatesRequired(classmatesEnrollments);
+      assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments);
 
       const schedule = await assertIfScheduleExists(scheduleId);
       setScheduleHoursAndMinutes(date, schedule.initialHour);
@@ -88,7 +90,7 @@ class ReserveController {
 
       await assertRoomIdExists(roomId);
       await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, date);
-      await assertUsersExistsOnDatabase(classmatesIDs);
+      await assertUsersExistsOnDatabase(classmatesEnrollments);
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }
@@ -108,7 +110,7 @@ class ReserveController {
     });
 
     const reserveUsers = await createRelationsBetweenUsersAndReserve({
-      classmatesIDs,
+      classmatesEnrollments,
       reserveId: reserve.id,
     });
 

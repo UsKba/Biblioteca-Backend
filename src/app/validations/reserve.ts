@@ -11,10 +11,10 @@ const ReserveSchema = Yup.object().shape({
   day: Yup.number().required('O dia é requerido').typeError('O dia precisa ser um número'),
   roomId: Yup.number().required('O id da sala é requerido').typeError('O id da sala precisa ser um número'),
   scheduleId: Yup.number().required('O id do hórario é requerido').typeError('O id do horário precisa ser um número'),
-  classmatesIDs: Yup.array()
+  classmatesEnrollments: Yup.array()
     .of(Yup.number())
-    .required('Os ids dos alunos são requeridos')
-    .typeError('Os ids dos usuários precisam ser números'),
+    .required('As matrículas dos alunos são requeridas')
+    .typeError('As matrículas dos usuários precisam ser números'),
 });
 
 export async function validateReserveStore(request: Request, response: Response, next: NextFunction) {

@@ -164,7 +164,7 @@ export async function createSchedule(params: GenerateScheduleParams) {
 export async function createReserve(params: GenerateReserveParams) {
   const { leader, users, room, period, schedule, date, name } = params;
 
-  const classmatesIDs = users.map((user) => user.id);
+  const classmatesEnrollments = users.map((user) => user.enrollment);
 
   const targetName = name || 'Reuniao';
   const targetRoom = room || (await createRoom());
@@ -176,7 +176,7 @@ export async function createReserve(params: GenerateReserveParams) {
     name: targetName,
     roomId: targetRoom.id,
     scheduleId: targetSchedule.id,
-    classmatesIDs,
+    classmatesEnrollments,
     ...tomorrowDate,
   };
 

@@ -6,6 +6,7 @@ import { decodeToken } from '../utils/auth';
 
 interface AuthRequest extends Request {
   userId?: number;
+  userEnrollent?: string;
 }
 
 export default async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -30,6 +31,7 @@ export default async (req: AuthRequest, res: Response, next: NextFunction) => {
     return res.status(401).json({ error: 'Usuário não encontrado' });
   }
 
-  req.userId = tokenDecoded.id;
+  req.userId = user.id;
+  req.userEnrollment = user.enrollment;
   return next();
 };

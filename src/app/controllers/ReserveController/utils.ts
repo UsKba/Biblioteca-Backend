@@ -4,12 +4,12 @@ import prisma from '~/prisma';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
   reserveId: number;
-  classmatesIDs: number[];
+  classmatesEnrollments: string[];
 }
 
 interface CreateUserReserveParams {
   reserveId: number;
-  userId: number;
+  userEnrollment: string;
 }
 
 type ReserveToFormat = Reserve & {
@@ -18,12 +18,12 @@ type ReserveToFormat = Reserve & {
 };
 
 export async function createUserReserve(params: CreateUserReserveParams) {
-  const { reserveId, userId } = params;
+  const { reserveId, userEnrollment } = params;
 
   const userReserve = await prisma.userReserve.create({
     data: {
       Reserve: { connect: { id: reserveId } },
-      User: { connect: { id: userId } },
+      User: { connect: { enrollment: userEnrollment } },
     },
     include: {
       User: true,
@@ -34,13 +34,13 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 }
 
 export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
-  const { reserveId, classmatesIDs } = params;
+  const { reserveId, classmatesEnrollments } = params;
 
   const users = [] as User[];
 
-  for (let i = 0; i < classmatesIDs.length; i += 1) {
+  for (let i = 0; i < classmatesEnrollments.length; i += 1) {
     const userReserve = await createUserReserve({
-      userId: classmatesIDs[i],
+      userEnrollment: classmatesEnrollments[i],
       reserveId,
     });
 

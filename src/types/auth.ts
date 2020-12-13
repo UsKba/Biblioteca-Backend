@@ -4,22 +4,26 @@ import { ParamsDictionary, Query } from '.';
 
 export interface RequestAuthBody<B> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
   body: B;
 }
 
 export interface RequestAuthParams<P extends ParamsDictionary> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
   params: P;
 }
 
 export interface RequestAuthQuery<Q extends Query> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
   query: Q;
 }
 
 export interface RequestAuth<B = never, Q extends Query = never, P extends ParamsDictionary = never>
   extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
 
   body: B;
   params: P;
@@ -28,6 +32,7 @@ export interface RequestAuth<B = never, Q extends Query = never, P extends Param
 
 export interface RequestAuthBodyQueryParamsId<B, Q extends Query> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
 
   body: B;
   query: Q;
@@ -39,6 +44,7 @@ export interface RequestAuthBodyQueryParamsId<B, Q extends Query> extends Defaul
 
 export interface RequestAuthBodyParamsId<B> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
   body: B;
 
   params: {
@@ -48,6 +54,7 @@ export interface RequestAuthBodyParamsId<B> extends DefaultRequest {
 
 export interface RequestAuthQueryParamsId<Q extends Query> extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
   query: Q;
 
   params: {
@@ -57,6 +64,7 @@ export interface RequestAuthQueryParamsId<Q extends Query> extends DefaultReques
 
 export interface RequestAuthParamsId extends DefaultRequest {
   userId?: number;
+  userEnrollment?: string;
 
   params: {
     id: string;
