@@ -109,6 +109,19 @@ describe('friendRequest store', () => {
     expect(responseReFriendRequest.status).toBe(200);
   });
 
+  it('should not be able to make a friendRequest with yourself', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+
+    const tokenUser1 = encodeToken(user1);
+
+    const responseFriendRequest = await request(App)
+      .post('/friends/request')
+      .send({ receiverEnrollment: user1.enrollment })
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(responseFriendRequest.status).toBe(400);
+  });
+
   it('should have correct fields on friendRequest store ', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });

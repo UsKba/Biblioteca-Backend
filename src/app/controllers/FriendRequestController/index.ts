@@ -7,7 +7,12 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
-import { assertFriendRequestExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
+import {
+  assertFriendRequestExists,
+  assertIsSenderOrReceiverId,
+  assertUserIsNotFriend,
+  assertUserLoggedAndFriendRequestReceiverAreDifferent,
+} from './tradingRules';
 import { formatFriendRequestToResponse } from './utils';
 
 interface StoreFriendRequest {
@@ -51,8 +56,11 @@ class FriendRequestController {
     const { receiverEnrollment } = req.body;
 
     const userId = req.userId as number;
+    const userEnrollment = req.userEnrollment as string;
 
     try {
+      assertUserLoggedAndFriendRequestReceiverAreDifferent(userEnrollment, receiverEnrollment);
+
       const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
       await assertUserIsNotFriend(userId, userReceiver.id);
 
