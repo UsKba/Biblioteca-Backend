@@ -60,9 +60,8 @@ export function assertIfHaveTheMaximumClassmatesRequired(classmatesEnrollments: 
   }
 }
 
-export function assertUserIsOnClassmatesEnrollments(userId: number, classmatesEnrollments: string[]) {
-  const userIdString = String(userId);
-  const userExists = classmatesEnrollments.includes(userIdString);
+export function assertUserIsOnClassmatesEnrollments(userEnrollment: string, classmatesEnrollments: string[]) {
+  const userExists = classmatesEnrollments.includes(userEnrollment);
 
   if (!userExists) {
     throw new Error('Somente o usuario autenticado pode realizar a reserva');
@@ -113,7 +112,7 @@ export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
 }
 
 export async function assertIfUserIsHisSelf(userId: number, userToDelete: number) {
-  if (  userToDelete !== userId) {
+  if (userToDelete !== userId) {
     throw new Error('Somente o lider da reserva pode remover outros usuários da reserva');
   }
 }

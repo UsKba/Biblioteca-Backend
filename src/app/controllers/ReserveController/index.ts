@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { setScheduleHoursAndMinutes } from '~/app/utils/date';
+import { setScheduleHoursAndMinutesAndRemoveTimezone } from '~/app/utils/date';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
@@ -75,6 +75,7 @@ class ReserveController {
     const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body; // ... name = date
 
     const date = new Date(year, month, day);
+    let dateWithoutTimezone: Date;
 
     try {
       assertUserIsOnClassmatesEnrollments(userEnrollment, classmatesEnrollments);
@@ -83,13 +84,13 @@ class ReserveController {
       assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments);
 
       const schedule = await assertIfScheduleExists(scheduleId);
-      setScheduleHoursAndMinutes(date, schedule.initialHour);
+      dateWithoutTimezone = setScheduleHoursAndMinutesAndRemoveTimezone(date, schedule.initialHour);
 
-      assertIfTheReserveIsNotOnWeekend(date);
-      assertIfTheReserveIsNotBeforeOfNow(schedule.initialHour, date);
+      assertIfTheReserveIsNotOnWeekend(dateWithoutTimezone);
+      assertIfTheReserveIsNotBeforeOfNow(schedule.initialHour, dateWithoutTimezone);
 
       await assertRoomIdExists(roomId);
-      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, date);
+      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithoutTimezone);
       await assertUsersExistsOnDatabase(classmatesEnrollments);
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -98,7 +99,7 @@ class ReserveController {
     const reserve = await prisma.reserve.create({
       data: {
         name,
-        date,
+        date: dateWithoutTimezone,
         Admin: { connect: { id: userId } },
         Room: { connect: { id: roomId } },
         Schedule: { connect: { id: scheduleId } },

@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { splitSingleDate } from '~/app/utils/date';
+import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import App from '~/App';
 
@@ -96,7 +96,8 @@ describe('weekReser index', () => {
     const reserveIndexed = response.body[0];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+    const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
+    const dateISO = removeDateTimezoneOffset(tempDate).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);

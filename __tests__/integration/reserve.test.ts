@@ -1,7 +1,7 @@
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
-import { splitSingleDate } from '~/app/utils/date';
+import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import App from '~/App';
 import prisma from '~/prisma';
@@ -155,7 +155,8 @@ describe('Reserve Index', () => {
     const reserveCreated = response.body[0];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+    const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
+    const dateISO = removeDateTimezoneOffset(tempDate).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
@@ -546,7 +547,8 @@ describe('Reserve Store', () => {
       });
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
-    const dateISO = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes).toISOString();
+    const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
+    const dateISO = removeDateTimezoneOffset(tempDate).toISOString();
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');

@@ -39,7 +39,17 @@ export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Dat
   }
 }
 
-export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
+export function removeDateTimezoneOffset(date: Date) {
+  const dateWithoutTimezone = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+  return dateWithoutTimezone;
+}
+
+export function setScheduleHoursAndMinutesAndRemoveTimezone(date: Date, scheduleHours: string) {
   const [hours, minutes] = splitSingleDate(scheduleHours);
-  date.setHours(hours, minutes);
+
+  const tempDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hours, minutes);
+  const dateWithoutTimezone = removeDateTimezoneOffset(tempDate);
+
+  return dateWithoutTimezone;
 }
