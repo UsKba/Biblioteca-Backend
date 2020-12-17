@@ -7,7 +7,12 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth'
 import prisma from '~/prisma';
 
 import { assertUserEnrollmentExists } from '../UserController/tradingRules';
-import { assertFriendRequestExists, assertIsSenderOrReceiverId, assertUserIsNotFriend } from './tradingRules';
+import {
+  assertFriendRequestExists,
+  assertIsSenderOrReceiverId,
+  assertUserIsNotFriend,
+  assertUserLoggedAndFriendRequestReceiverAreDifferent,
+} from './tradingRules';
 import { formatFriendRequestToResponse } from './utils';
 
 interface StoreFriendRequest {
@@ -22,30 +27,7 @@ class FriendRequestController {
   async index(req: IndexRequest, res: Response) {
     const userId = req.userId as number;
 
-    const friendRequests = await prisma.friendRequest.findMany({
-      where: { receiverId: userId },
-      include: {
-        UserReceiver: true,
-        UserSender: true,
-      },
-    });
-
-    const friendRequestsFormatted = friendRequests.map((friendRequest) => {
-      return {
-        id: friendRequest.id,
-        receiver: friendRequest.UserReceiver,
-        sender: friendRequest.UserSender,
-        status: friendRequest.status,
-      };
-    });
-
-    return res.json(friendRequestsFormatted);
-  }
-
-  async indexPending(req: IndexRequest, res: Response) {
-    const userId = req.userId as number;
-
-    const friendRequests = await prisma.friendRequest.findMany({
+    const friendRequestsSent = await prisma.friendRequest.findMany({
       where: { senderId: userId },
       include: {
         UserReceiver: true,
@@ -53,17 +35,32 @@ class FriendRequestController {
       },
     });
 
-    const friendRequestsFormatted = friendRequests.map(formatFriendRequestToResponse);
+    const friendRequestsReceived = await prisma.friendRequest.findMany({
+      where: { receiverId: userId },
+      include: {
+        UserReceiver: true,
+        UserSender: true,
+      },
+    });
 
-    return res.json(friendRequestsFormatted);
+    const friendRequestsSentFormatted = friendRequestsSent.map(formatFriendRequestToResponse);
+    const friendRequestsReceivedFormatted = friendRequestsReceived.map(formatFriendRequestToResponse);
+
+    return res.json({
+      sent: friendRequestsSentFormatted,
+      received: friendRequestsReceivedFormatted,
+    });
   }
 
   async store(req: StoreRequest, res: Response) {
     const { receiverEnrollment } = req.body;
 
     const userId = req.userId as number;
+    const userEnrollment = req.userEnrollment as string;
 
     try {
+      assertUserLoggedAndFriendRequestReceiverAreDifferent(userEnrollment, receiverEnrollment);
+
       const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
       await assertUserIsNotFriend(userId, userReceiver.id);
 

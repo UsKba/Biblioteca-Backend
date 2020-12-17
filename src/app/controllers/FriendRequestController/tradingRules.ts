@@ -2,6 +2,15 @@ import { FriendRequest } from '@prisma/client';
 
 import prisma from '~/prisma';
 
+export function assertUserLoggedAndFriendRequestReceiverAreDifferent(
+  userEnrollment: string,
+  receiverEnrollment: string
+) {
+  if (userEnrollment === receiverEnrollment) {
+    throw new Error('Você não pode enviar solicitação de amizade para sigo mesmo');
+  }
+}
+
 export async function assertUserIsNotFriend(senderId: number, receiverId: number) {
   const friends = await prisma.friend.findMany({
     where: { userId1: senderId, userId2: receiverId },

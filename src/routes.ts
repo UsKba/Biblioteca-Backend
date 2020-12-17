@@ -63,7 +63,6 @@ routes.get('/friends/request', FriendRequestController.index);
 routes.post('/friends/request', validateFriendRequestStore, FriendRequestController.store);
 routes.delete('/friends/request/:id', validateParamsId, FriendRequestController.delete);
 
-routes.get('/friends/request/pending', FriendRequestController.indexPending);
 routes.post('/friends/request/confirmation', FriendRequestConfirmationController.store);
 
 routes.get('/friends', FriendController.index);
