@@ -70,24 +70,21 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-function getNextWeekDay(date: Date) {
+function getNextWeekDay(date: Date, sumDay: number) {
   const weekDay = date.getDay();
 
   if (weekDay === 0) {
-    return date.getUTCDate() + 1;
+    return date.getUTCDate() + 1 + sumDay;
   }
 
   if (weekDay === 6) {
-    return date.getUTCDate() + 2;
+    return date.getUTCDate() + 2 + sumDay;
   }
 
   return date.getUTCDate();
 }
 
 export function generateDate(params?: GenerateDateParams) {
-  // Remove timezone
-  // targetDate.getTime() - targetDate.getTimezoneOffset() * 60000
-
   const now = new Date();
 
   const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
@@ -95,7 +92,7 @@ export function generateDate(params?: GenerateDateParams) {
   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
   const newDate = new Date(newYear, newMonth, newDay);
-  const day = getNextWeekDay(newDate);
+  const day = getNextWeekDay(newDate, Number(params?.sumDay || 0));
 
   return {
     year: newDate.getUTCFullYear(),

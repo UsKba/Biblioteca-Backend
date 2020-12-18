@@ -260,7 +260,7 @@ describe('Reserve Store', () => {
     const schedule = await createSchedule({ periodId: period.id });
 
     const tomorrowDate = generateDate({ sumDay: 1 });
-    const afterTomorrowDate = generateDate({ sumDay: 4 });
+    const afterTomorrowDate = generateDate({ sumDay: 2 });
 
     const tomorrowReserve = {
       name: 'Trabalho de portugues',

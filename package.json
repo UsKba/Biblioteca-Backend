@@ -18,6 +18,8 @@
     "migrate:test": "dotenv -e .env.test -- prisma migrate save -c --experimental && dotenv -e .env.test -- prisma migrate up --experimental && dotenv -e .env.test -- prisma generate",
 
     "pretest": "yarn migrate:test",
+    "pretest:win": "yarn migrate:test",
+
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
     "test:win": "SET NODE_ENV=TEST && dotenv -e .env.test -- jest --runInBand" ,
 

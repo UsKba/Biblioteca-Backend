@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { removeDateTimezoneOffset } from '~/app/utils/date';
+
 import { RequestQuery } from '~/types';
 
 import prisma from '~/prisma';
@@ -17,17 +19,20 @@ class WeekReserve {
   async index(req: IndexRequest, res: Response) {
     const { startDate, endDate } = req.query;
 
-    const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
-    const [endDay, endMonth, endYear] = endDate.split('/').map(Number);
+    const [startYear, startMonth, startDay] = startDate.split('/').map(Number);
+    const [endYear, endMonth, endDay] = endDate.split('/').map(Number);
 
-    const startDate1 = new Date(startYear, startMonth, startDay);
-    const endDate1 = new Date(endYear, endMonth, endDay);
+    const tempStartDate = new Date(startYear, startMonth, startDay);
+    const tempEndDate = new Date(endYear, endMonth, endDay);
+
+    const startDateWithoutTimezone = removeDateTimezoneOffset(tempStartDate);
+    const endDateWithoutTimezone = removeDateTimezoneOffset(tempEndDate);
 
     const reserves = await prisma.reserve.findMany({
       where: {
         date: {
-          gte: startDate1,
-          lt: endDate1,
+          gte: startDateWithoutTimezone,
+          lt: endDateWithoutTimezone,
         },
       },
       include: {
@@ -41,9 +46,7 @@ class WeekReserve {
     });
 
     const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map((userReserve) => ({
-        ...userReserve.User,
-      }));
+      const users = reserve.UserReserve.map((userReserve) => userReserve.User);
 
       const formattedUser = {
         ...formatReserveToResponse(reserve),

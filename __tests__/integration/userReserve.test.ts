@@ -219,7 +219,6 @@ describe('UserReserve reserve delete', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
@@ -234,20 +233,18 @@ describe('UserReserve reserve delete', () => {
       });
 
     const deletedReserve = await prisma.reserve.findOne({
-      where: { id: reserve.id }
+      where: { id: reserve.id },
     });
 
     expect(deletedReserve).toBe(null);
     expect(response.status).toBe(200);
     expect(response.body.reserveId).toBe(reserve.id);
-
   });
 
   it('should be able to delete the reserve when leader is about to delete a member and if has not less than the min users required', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
-
 
     const reserve = await createReserve({
       leader: user1,
@@ -263,20 +260,18 @@ describe('UserReserve reserve delete', () => {
       });
 
     const deletedReserve = await prisma.reserve.findOne({
-      where: { id: reserve.id }
+      where: { id: reserve.id },
     });
 
     expect(deletedReserve).toBe(null);
     expect(response.status).toBe(200);
     expect(response.body.reserveId).toBe(reserve.id);
-
   });
 
   it('should be able to delete the reserve when member is about to auto-delete and if has not less than the min users required', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
-
 
     const reserve = await createReserve({
       leader: user1,
@@ -292,13 +287,11 @@ describe('UserReserve reserve delete', () => {
       });
 
     const deletedReserve = await prisma.reserve.findOne({
-      where: { id: reserve.id }
+      where: { id: reserve.id },
     });
 
     expect(deletedReserve).toBe(null);
     expect(response.status).toBe(200);
     expect(response.body.reserveId).toBe(reserve.id);
-
   });
-
 });
