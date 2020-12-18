@@ -10,7 +10,9 @@ import {
   assertCanRemoveUserFromReserve,
   assertUserIsOnReserve,
   uptateReserveLeader,
+  checkIfHaveMinUsersOnReserve,
 } from '../ReserveController/tradingRules';
+import { deleteReserve } from '../ReserveController/utils';
 
 type UserReserveDelete = {
   reserveId: string;
@@ -29,34 +31,46 @@ class UserReserveController {
     try {
       const reserve = await assertReserveExists(reserveId);
       const userLoggedIsLeader = reserve.adminId === userId;
-
       assertUserIsOnReserve(userIdToDelete, reserve.UserReserve);
       // assertCanRemoveUserFromReserve(reserve.UserReserve); se tiver menos de 3 pessoas deletar a reserva
       // lista de espera ????????
 
+
+      const haveMinUsersOnReserve = checkIfHaveMinUsersOnReserve(reserve.UserReserve);
+
       if (userId === userIdToDelete) {
+
+        if(haveMinUsersOnReserve){
+          await deleteReserve(reserveId);
+        }else{
+
+          await prisma.userReserve.deleteMany({
+            where: {
+              reserveId: reserve.id,
+              userId: userIdToDelete,
+            },
+          });
+
+          if (userLoggedIsLeader) {
+            await uptateReserveLeader(reserve);
+          }
+        }
+        return res.json({ reserveId, userId: userIdToDelete });
+      }
+
+      await assertIsReserveLeader(userId, reserve);
+
+      if(haveMinUsersOnReserve){
+        await deleteReserve(reserveId);
+      }else{
         await prisma.userReserve.deleteMany({
           where: {
             reserveId: reserve.id,
             userId: userIdToDelete,
           },
         });
-
-        if (userLoggedIsLeader) {
-          await uptateReserveLeader(reserve);
-        }
-
-        return res.json({ reserveId, userId: userIdToDelete });
       }
 
-      await assertIsReserveLeader(userId, reserve);
-
-      await prisma.userReserve.deleteMany({
-        where: {
-          reserveId: reserve.id,
-          userId: userIdToDelete,
-        },
-      });
 
       // if (reserve.adminId === userIdToDelete) {
       //   await uptateReserveLeader(reserve);

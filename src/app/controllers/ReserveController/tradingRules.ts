@@ -143,3 +143,12 @@ export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
     throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
   }
 }
+
+export function checkIfHaveMinUsersOnReserve(userReserves: UserReserve[]) {
+  if (userReserves.length === reserveConfig.minClassmatesPerRoom) {
+    return true;
+  }
+    return false;
+}
+
+

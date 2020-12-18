@@ -62,3 +62,14 @@ export function formatReserveToResponse(reserve: ReserveToFormat) {
     schedule: reserve.Schedule,
   };
 }
+
+export async function deleteReserve (reserveId: number){
+  await prisma.userReserve.deleteMany({
+    where: { reserveId },
+  });
+
+  await prisma.reserve.delete({
+    where: { id: reserveId },
+  });
+
+}

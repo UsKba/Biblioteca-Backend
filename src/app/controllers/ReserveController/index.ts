@@ -21,7 +21,7 @@ import {
   assertIsReserveLeader,
   assertUserIsOnReserve,
 } from './tradingRules';
-import { createRelationsBetweenUsersAndReserve, formatReserveToResponse } from './utils';
+import { createRelationsBetweenUsersAndReserve, deleteReserve, formatReserveToResponse } from './utils';
 
 interface StoreReserve {
   name?: string;
@@ -137,13 +137,7 @@ class ReserveController {
       return res.status(400).json({ error: e.message });
     }
 
-    await prisma.userReserve.deleteMany({
-      where: { reserveId },
-    });
-
-    await prisma.reserve.delete({
-      where: { id: reserveId },
-    });
+    await deleteReserve(reserveId);
 
     return res.json({ id: reserveId });
   }
