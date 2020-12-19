@@ -66,6 +66,7 @@ routes.delete('/friends/request/:id', validateParamsId, FriendRequestController.
 routes.post('/friends/request/confirmation', FriendRequestConfirmationController.store);
 
 routes.get('/friends', FriendController.index);
+routes.delete('/friends/:id', validateParamsId, FriendController.delete);
 
 routes.get('/reserves', ReserveController.index);
 routes.post('/reserves', validateReserveStore, ReserveController.store);

@@ -131,3 +131,57 @@ describe('friend index', () => {
     expect(friendCreated.enrollment).toBe(user2.enrollment);
   });
 });
+
+describe('friend delete', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able to delete a friend', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+
+    const friend = await createFriend({ user1, user2 });
+
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/friends/${friend.id}`)
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(response.status).toBe(200);
+
+    expect(response.body.id).toBe(friend.id);
+    expect(response.body.userId1).toBe(friend.userId1);
+    expect(response.body.userId2).toBe(friend.userId2);
+  });
+
+  it('should not be able to delete a friend that not exists', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+
+    const friend = await createFriend({ user1, user2 });
+    const nonFriendId = friend.id + 1;
+
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/friends/${nonFriendId}`)
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Amigo não encontrado');
+  });
+
+  it('should not be able to delete a friend with invalid id', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const tokenUser1 = encodeToken(user1);
+
+    const response = await request(App)
+      .delete(`/friends/invalidId`)
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('O id precisa ser um número');
+  });
+});

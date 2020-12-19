@@ -6,7 +6,7 @@ import { decodeToken } from '../utils/auth';
 
 interface AuthRequest extends Request {
   userId?: number;
-  userEnrollent?: string;
+  userEnrollment?: string;
 }
 
 export default async (req: AuthRequest, res: Response, next: NextFunction) => {

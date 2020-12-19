@@ -71,7 +71,7 @@ class FriendRequestController {
         },
       });
 
-      if (friendRequest == null) {
+      if (!friendRequest) {
         const friendRequestCreated = await prisma.friendRequest.create({
           data: {
             UserSender: { connect: { id: userId } },
