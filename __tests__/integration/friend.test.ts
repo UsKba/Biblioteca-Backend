@@ -5,7 +5,7 @@ import { encodeToken } from '~/app/utils/auth';
 import App from '~/App';
 
 import { createUser, createFriend, createFriendRequest } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('friend index', () => {
   beforeEach(async () => {

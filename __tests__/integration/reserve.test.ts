@@ -6,8 +6,9 @@ import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createUser, createRoom, createSchedule, generateDate, createReserve, createPeriod } from '../factory';
-import { cleanDatabase } from '../utils';
+import { createUser, createRoom, createSchedule, createReserve, createPeriod } from '../factory';
+import { cleanDatabase } from '../utils/database';
+import { generateDate, generateDateList } from '../utils/date';
 
 describe('Reserve Index', () => {
   beforeEach(async () => {
@@ -259,8 +260,7 @@ describe('Reserve Store', () => {
     const period = await createPeriod();
     const schedule = await createSchedule({ periodId: period.id });
 
-    const tomorrowDate = generateDate({ sumDay: 1 });
-    const afterTomorrowDate = generateDate({ sumDay: 2 });
+    const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
     const tomorrowReserve = {
       name: 'Trabalho de portugues',
@@ -269,6 +269,7 @@ describe('Reserve Store', () => {
       classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
       ...tomorrowDate,
     };
+
     const afterTomorrowReserve = {
       name: 'Trabalho de portugues2',
       roomId: room.id,

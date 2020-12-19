@@ -5,7 +5,7 @@ import { encodeToken } from '~/app/utils/auth';
 import App from '~/App';
 
 import { createUser } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('Seach Index (validate data)', () => {
   beforeEach(async () => {

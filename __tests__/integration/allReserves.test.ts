@@ -4,10 +4,11 @@ import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import App from '~/App';
 
-import { createUser, createReserve, generateDate, createRoom, createSchedule, createPeriod } from '../factory';
-import { cleanDatabase } from '../utils';
+import { createUser, createReserve, createRoom, createSchedule, createPeriod } from '../factory';
+import { cleanDatabase } from '../utils/database';
+import { generateDateList } from '../utils/date';
 
-describe('weekReserve index', () => {
+describe('allReserves index', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
@@ -21,8 +22,7 @@ describe('weekReserve index', () => {
     const period = await createPeriod();
     const schedule = await createSchedule({ periodId: period.id });
 
-    const tomorrowDate = generateDate({ sumDay: 1 });
-    const afterTomorrowDate = generateDate({ sumDay: 2 });
+    const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
     const reserve1 = await createReserve({
       leader: user1,
@@ -46,7 +46,7 @@ describe('weekReserve index', () => {
     const formattedStartDate = `${reserveDate1.getUTCFullYear()}/${reserveDate1.getUTCMonth()}/${reserveDate1.getUTCDate()}`;
     const formattedEndDate = `${reserveDate2.getUTCFullYear()}/${reserveDate2.getUTCMonth()}/${reserveDate2.getUTCDate()}`;
 
-    const response = await request(App).get('/reserves/week').query({
+    const response = await request(App).get('/reserves/all').query({
       startDate: formattedStartDate,
       endDate: formattedEndDate,
     });
@@ -63,8 +63,7 @@ describe('weekReserve index', () => {
     const period = await createPeriod();
     const schedule = await createSchedule({ periodId: period.id });
 
-    const tomorrowDate = generateDate({ sumDay: 1 });
-    const afterTomorrowDate = generateDate({ sumDay: 2 });
+    const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
     const reserve1 = await createReserve({
       leader: user1,
@@ -88,7 +87,7 @@ describe('weekReserve index', () => {
     const formattedStartDate = `${reserveDate1.getUTCFullYear()}/${reserveDate1.getUTCMonth()}/${reserveDate1.getUTCDate()}`;
     const formattedEndDate = `${reserveDate2.getUTCFullYear()}/${reserveDate2.getUTCMonth()}/${reserveDate2.getUTCDate()}`;
 
-    const response = await request(App).get('/reserves/week').query({
+    const response = await request(App).get('/reserves/all').query({
       startDate: formattedStartDate,
       endDate: formattedEndDate,
     });

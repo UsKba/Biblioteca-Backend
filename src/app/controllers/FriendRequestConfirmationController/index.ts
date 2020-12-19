@@ -27,10 +27,6 @@ class FriendRequestConfirmationController {
           User1: { connect: { id: friendRequest.senderId } },
           User2: { connect: { id: friendRequest.receiverId } },
         },
-        include: {
-          User1: true,
-          User2: true,
-        },
       });
 
       await prisma.friendRequest.delete({ where: { id } });

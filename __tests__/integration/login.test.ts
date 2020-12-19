@@ -2,7 +2,7 @@ import request from 'supertest';
 
 import App from '~/App';
 
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('Login', () => {
   beforeEach(async () => {

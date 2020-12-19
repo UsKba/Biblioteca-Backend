@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 
 import { generateRoom, createRoom } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('Room Store', () => {
   beforeEach(async () => {

@@ -8,14 +8,14 @@ import prisma from '~/prisma';
 
 import { formatReserveToResponse } from '../ReserveController/utils';
 
-type WeekReserveIndex = {
+type AllReservesIndex = {
   startDate: string;
   endDate: string;
 };
 
-type IndexRequest = RequestQuery<WeekReserveIndex>;
+type IndexRequest = RequestQuery<AllReservesIndex>;
 
-class WeekReserve {
+class AllReserves {
   async index(req: IndexRequest, res: Response) {
     const { startDate, endDate } = req.query;
 
@@ -60,4 +60,4 @@ class WeekReserve {
   }
 }
 
-export default new WeekReserve();
+export default new AllReserves();

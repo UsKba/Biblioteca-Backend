@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 
 import { generateSchedule, createSchedule, createPeriod } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('Schedule Store', () => {
   beforeEach(async () => {

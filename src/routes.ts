@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import AllReserves from '~/app/controllers/AllReserves';
 import FriendController from '~/app/controllers/FriendController';
 import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
 import FriendRequestController from '~/app/controllers/FriendRequestController';
@@ -11,7 +12,6 @@ import ScheduleController from '~/app/controllers/ScheduleController';
 import SearchController from '~/app/controllers/SearchController';
 import UserController from '~/app/controllers/UserController';
 import UserReserveController from '~/app/controllers/UserReserveController';
-import WeekReserve from '~/app/controllers/WeekReserve';
 
 import authMiddleware from '~/app/middlewares/auth';
 
@@ -53,7 +53,7 @@ routes.put('/schedules/:id', validateParamsId, validateScheduleUpdate, ScheduleC
 routes.get('/periods', PeriodController.index);
 routes.post('/periods', validatePeriodStore, PeriodController.store);
 
-routes.get('/reserves/week', WeekReserve.index);
+routes.get('/reserves/all', AllReserves.index);
 
 // Usuário Privada
 

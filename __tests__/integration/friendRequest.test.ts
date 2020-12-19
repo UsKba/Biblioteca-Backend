@@ -7,7 +7,7 @@ import friendConfig from '~/config/friend';
 import App from '~/App';
 
 import { createFriendRequest, createUser } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('friendRequest store', () => {
   beforeEach(async () => {
@@ -442,8 +442,8 @@ describe('friendRequest confirmation', () => {
       .send({ id: friendRequest.id })
       .set({ authorization: `Bearer ${tokenUser2}` });
 
-    const friendRequestConfirmed = friendRequestConfirmationResponse.body;
-
-    expect(friendRequestConfirmed).toStrictEqual({}); // toStrictEqual -> compare with empty object
+    expect(friendRequestConfirmationResponse.body).toHaveProperty('id');
+    expect(friendRequestConfirmationResponse.body.userId1).toBe(friendRequest.sender.id);
+    expect(friendRequestConfirmationResponse.body.userId2).toBe(friendRequest.receiver.id);
   });
 });

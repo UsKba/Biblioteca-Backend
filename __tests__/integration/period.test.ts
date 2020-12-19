@@ -3,7 +3,7 @@ import request from 'supertest';
 import App from '~/App';
 
 import { createPeriod, generatePeriod } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('period store', () => {
   beforeEach(async () => {

@@ -6,7 +6,7 @@ import App from '~/App';
 import prisma from '~/prisma';
 
 import { createReserve, createUser } from '../factory';
-import { cleanDatabase } from '../utils';
+import { cleanDatabase } from '../utils/database';
 
 describe('UserReserve delete', () => {
   beforeEach(async () => {

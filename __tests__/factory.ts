@@ -8,16 +8,12 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
+import { generateDate } from './utils/date';
+
 interface GenerateUserParams {
   name?: string | any;
   email?: string | any;
   enrollment?: string | any;
-}
-
-interface GenerateDateParams {
-  sumYear?: number | any;
-  sumMonth?: number | any;
-  sumDay?: number | any;
 }
 
 interface GenerateRoomParams {
@@ -70,36 +66,36 @@ export function generateUser(params?: GenerateUserParams) {
   };
 }
 
-function getNextWeekDay(date: Date, sumDay: number) {
-  const weekDay = date.getDay();
+// function getNextWeekDay(date: Date, sumDay: number) {
+//   const weekDay = date.getDay();
 
-  if (weekDay === 0) {
-    return date.getUTCDate() + 1 + sumDay;
-  }
+//   if (weekDay === 0) {
+//     return date.getUTCDate() + 1 + sumDay;
+//   }
 
-  if (weekDay === 6) {
-    return date.getUTCDate() + 2 + sumDay;
-  }
+//   if (weekDay === 6) {
+//     return date.getUTCDate() + 2 + sumDay;
+//   }
 
-  return date.getUTCDate();
-}
+//   return date.getUTCDate();
+// }
 
-export function generateDate(params?: GenerateDateParams) {
-  const now = new Date();
+// export function generateDate(params?: GenerateDateParams) {
+//   const now = new Date();
 
-  const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
-  const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
-  const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
+//   const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
+//   const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
+//   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
 
-  const newDate = new Date(newYear, newMonth, newDay);
-  const day = getNextWeekDay(newDate, Number(params?.sumDay || 0));
+//   const newDate = new Date(newYear, newMonth, newDay);
+//   const day = getNextWeekDay(newDate, Number(params?.sumDay || 0));
 
-  return {
-    year: newDate.getUTCFullYear(),
-    month: newDate.getUTCMonth(),
-    day,
-  };
-}
+//   return {
+//     year: newDate.getUTCFullYear(),
+//     month: newDate.getUTCMonth(),
+//     day,
+//   };
+// }
 
 export function generateRoom(params?: GenerateRoomParams) {
   return {
