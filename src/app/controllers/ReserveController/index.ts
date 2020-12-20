@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { setScheduleHoursAndMinutesAndRemoveTimezone } from '~/app/utils/date';
+import { setScheduleHoursAndMinutesAndRemoveTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
@@ -9,6 +9,7 @@ import prisma from '~/prisma';
 import { assertRoomIdExists } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import {
+
   assertUserIsOnClassmatesEnrollments,
   assertIfHaveTheMinimunClassmatesRequired,
   assertIfHaveTheMaximumClassmatesRequired,
@@ -40,9 +41,14 @@ class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number;
 
+    const startDateWithoutTimezone = removeDateTimezoneOffset(new Date());
+
     const reserves = await prisma.reserve.findMany({
       where: {
         UserReserve: { some: { userId } },
+        date: {
+          gte: startDateWithoutTimezone,
+        },
       },
       include: {
         Room: true,

@@ -2,6 +2,7 @@
 
 import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User } from '@prisma/client';
 import faker from 'faker';
+import MockDate from 'mockdate';
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
@@ -183,6 +184,17 @@ export async function createReserve(params: GenerateReserveParams) {
     });
 
   return response.body as Reserve;
+}
+
+export async function createOldReserve(params: GenerateReserveParams) {
+  // 2019.03.22
+  MockDate.set(1555902000000);
+
+  const oldReserve = await createReserve(params);
+
+  MockDate.reset();
+
+  return oldReserve;
 }
 
 export async function createFriendRequest(params: GenerateFriendRequestParams) {

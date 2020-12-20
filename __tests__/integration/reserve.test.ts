@@ -6,7 +6,7 @@ import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createUser, createRoom, createSchedule, createReserve, createPeriod } from '../factory';
+import { createUser, createRoom, createSchedule, createReserve, createPeriod, createOldReserve } from '../factory';
 import { cleanDatabase } from '../utils/database';
 import { generateDate, generateDateList } from '../utils/date';
 
@@ -733,5 +733,49 @@ describe('Reserve Delete', () => {
     const reserveDeleted = response.body;
 
     expect(reserveDeleted.id).toBe(reserve.id);
+  });
+});
+
+describe('Reserve Index old', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able index the one reserve linked with user', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+    const room = await createRoom();
+
+    await createOldReserve({
+      period,
+      schedule,
+      room,
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const reserve = await createReserve({
+      period,
+      schedule,
+      room,
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .get('/reserves')
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].id).toBe(reserve.id);
   });
 });
