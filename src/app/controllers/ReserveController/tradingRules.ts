@@ -2,6 +2,7 @@ import { Reserve, UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
+import { removeDateTimezoneOffset } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
@@ -82,10 +83,11 @@ export function assertIfTheReserveIsNotOnWeekend(date: Date) {
   }
 }
 
-export function assertIfTheReserveIsNotBeforeOfNow(initialHour: string, date: Date) {
+export function assertIfTheReserveIsNotBeforeOfNow(date: Date) {
   const now = new Date();
+  const nowWithoutTimezone = removeDateTimezoneOffset(now);
 
-  if (isBefore(date, now)) {
+  if (isBefore(date, nowWithoutTimezone)) {
     throw new Error('A Data não pode ser anterior a atual');
   }
 }
@@ -148,7 +150,5 @@ export function checkIfHaveMinUsersOnReserve(userReserves: UserReserve[]) {
   if (userReserves.length === reserveConfig.minClassmatesPerRoom) {
     return true;
   }
-    return false;
+  return false;
 }
-
-

@@ -9,7 +9,6 @@ import prisma from '~/prisma';
 import { assertRoomIdExists } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import {
-
   assertUserIsOnClassmatesEnrollments,
   assertIfHaveTheMinimunClassmatesRequired,
   assertIfHaveTheMaximumClassmatesRequired,
@@ -93,7 +92,7 @@ class ReserveController {
       dateWithoutTimezone = setScheduleHoursAndMinutesAndRemoveTimezone(date, schedule.initialHour);
 
       assertIfTheReserveIsNotOnWeekend(dateWithoutTimezone);
-      assertIfTheReserveIsNotBeforeOfNow(schedule.initialHour, dateWithoutTimezone);
+      assertIfTheReserveIsNotBeforeOfNow(dateWithoutTimezone);
 
       await assertRoomIdExists(roomId);
       await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithoutTimezone);
