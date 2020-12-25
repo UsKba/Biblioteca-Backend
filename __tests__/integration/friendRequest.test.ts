@@ -334,6 +334,71 @@ describe('friendRequest delete', () => {
   });
 });
 
+describe('friendRequest index after delete', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should not list the user when you cancel the friend request that you sent', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const friendRequest = await createFriendRequest({ user1, user2 });
+    const tokenUser1 = encodeToken(user1);
+
+    const deleteResponse = await request(App)
+      .delete(`/friends/request/${friendRequest.id}`)
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    const indexResponse = await request(App)
+      .get('/friends/request')
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(deleteResponse.status).toBe(200);
+    expect(indexResponse.body.sent.length).toBe(0);
+  });
+
+  it('should not list the user that already denied the friend request', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const friendRequest = await createFriendRequest({ user1, user2 });
+
+    const tokenUser1 = encodeToken(user1);
+    const tokenUser2 = encodeToken(user2);
+
+    const deleteResponse = await request(App)
+      .delete(`/friends/request/${friendRequest.id}`)
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const indexResponse = await request(App)
+      .get('/friends/request')
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    expect(deleteResponse.status).toBe(200);
+    expect(indexResponse.body.sent.length).toBe(0);
+  });
+
+  it('should not list the user when you deny the friend request', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+
+    const friendRequest = await createFriendRequest({ user1, user2 });
+    const tokenUser2 = encodeToken(user2);
+
+    const deleteResponse = await request(App)
+      .delete(`/friends/request/${friendRequest.id}`)
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    const indexResponse = await request(App)
+      .get('/friends/request')
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    expect(deleteResponse.status).toBe(200);
+    expect(indexResponse.body.received.length).toBe(0);
+  });
+});
+
 describe('friendRequest confirmation', () => {
   beforeEach(async () => {
     await cleanDatabase();

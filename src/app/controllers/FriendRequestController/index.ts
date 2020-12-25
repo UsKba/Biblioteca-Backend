@@ -28,7 +28,10 @@ class FriendRequestController {
     const userId = req.userId as number;
 
     const friendRequestsSent = await prisma.friendRequest.findMany({
-      where: { senderId: userId },
+      where: {
+        senderId: userId,
+        NOT: { status: friendConfig.statusDenied },
+      },
       include: {
         UserReceiver: true,
         UserSender: true,
@@ -36,7 +39,10 @@ class FriendRequestController {
     });
 
     const friendRequestsReceived = await prisma.friendRequest.findMany({
-      where: { receiverId: userId },
+      where: {
+        receiverId: userId,
+        NOT: { status: friendConfig.statusDenied },
+      },
       include: {
         UserReceiver: true,
         UserSender: true,

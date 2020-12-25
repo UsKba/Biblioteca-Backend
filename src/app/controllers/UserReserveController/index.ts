@@ -35,15 +35,12 @@ class UserReserveController {
       // assertCanRemoveUserFromReserve(reserve.UserReserve); se tiver menos de 3 pessoas deletar a reserva
       // lista de espera ????????
 
-
       const haveMinUsersOnReserve = checkIfHaveMinUsersOnReserve(reserve.UserReserve);
 
       if (userId === userIdToDelete) {
-
-        if(haveMinUsersOnReserve){
+        if (haveMinUsersOnReserve) {
           await deleteReserve(reserveId);
-        }else{
-
+        } else {
           await prisma.userReserve.deleteMany({
             where: {
               reserveId: reserve.id,
@@ -60,9 +57,9 @@ class UserReserveController {
 
       await assertIsReserveLeader(userId, reserve);
 
-      if(haveMinUsersOnReserve){
+      if (haveMinUsersOnReserve) {
         await deleteReserve(reserveId);
-      }else{
+      } else {
         await prisma.userReserve.deleteMany({
           where: {
             reserveId: reserve.id,
@@ -70,11 +67,6 @@ class UserReserveController {
           },
         });
       }
-
-
-      // if (reserve.adminId === userIdToDelete) {
-      //   await uptateReserveLeader(reserve);
-      // }
 
       return res.json({ reserveId, userId: userIdToDelete });
     } catch (e) {
