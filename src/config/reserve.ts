@@ -7,7 +7,7 @@ const reserveConfig = {
   userReserve: {
     statusWaiting: 0,
     statusAccepted: 1,
-    statusDenied: 2,
+    statusRefused: 2,
   },
 };
 

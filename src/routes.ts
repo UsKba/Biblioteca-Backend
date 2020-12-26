@@ -12,6 +12,7 @@ import ScheduleController from '~/app/controllers/ScheduleController';
 import SearchController from '~/app/controllers/SearchController';
 import UserController from '~/app/controllers/UserController';
 import UserReserveController from '~/app/controllers/UserReserveController';
+import UserReserveStatusController from '~/app/controllers/UserReserveStatusController';
 
 import authMiddleware from '~/app/middlewares/auth';
 
@@ -25,6 +26,7 @@ import { validateScheduleStore, validateScheduleUpdate } from '~/app/validations
 import { validateSeachIndex } from '~/app/validations/search';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 import { validateReserveDeleteParams } from '~/app/validations/userReserve';
+import { validateUserReserveStatusPostParams } from '~/app/validations/userReserveStatus';
 
 const routes = Router();
 
@@ -73,6 +75,9 @@ routes.post('/reserves', validateReserveStore, ReserveController.store);
 routes.delete('/reserves/:id', validateParamsId, ReserveController.delete);
 
 routes.delete('/reserves/:reserveId/users/:userId', validateReserveDeleteParams, UserReserveController.delete);
+
+routes.post('/reserves/:reserveId/accept', validateUserReserveStatusPostParams, UserReserveStatusController.accept);
+routes.post('/reserves/:reserveId/refuse', validateUserReserveStatusPostParams, UserReserveStatusController.refuse);
 
 routes.get('/search', validateSeachIndex, SearchController.index);
 

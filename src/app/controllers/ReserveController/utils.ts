@@ -5,6 +5,7 @@ import reserveConfig from '~/config/reserve';
 import prisma from '~/prisma';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
+  loggedUserEnrollment: string;
   reserveId: number;
   classmatesEnrollments: string[];
 }
@@ -12,6 +13,7 @@ interface CreateRelationsBetweenUsersAndReserveParams {
 interface CreateUserReserveParams {
   reserveId: number;
   userEnrollment: string;
+  status?: number;
 }
 
 type ReserveToFormat = Reserve & {
@@ -42,11 +44,11 @@ export function formatReserveToResponse(reserve: ReserveToFormat) {
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {
-  const { reserveId, userEnrollment } = params;
+  const { reserveId, userEnrollment, status } = params;
 
   const userReserve = await prisma.userReserve.create({
     data: {
-      status: reserveConfig.userReserve.statusWaiting,
+      status: status || reserveConfig.userReserve.statusWaiting,
 
       Reserve: { connect: { id: reserveId } },
       User: { connect: { enrollment: userEnrollment } },
@@ -60,14 +62,18 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 }
 
 export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
-  const { reserveId, classmatesEnrollments } = params;
+  const { loggedUserEnrollment, reserveId, classmatesEnrollments } = params;
 
   const users = [];
 
   for (let i = 0; i < classmatesEnrollments.length; i += 1) {
+    const isAdmin = classmatesEnrollments[i] === loggedUserEnrollment;
+    const status = isAdmin ? reserveConfig.userReserve.statusAccepted : undefined;
+
     const userReserve = await createUserReserve({
       userEnrollment: classmatesEnrollments[i],
       reserveId,
+      status,
     });
 
     const userFormatted = formatUsersReserveToResponse(userReserve);

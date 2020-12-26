@@ -123,6 +123,7 @@ class ReserveController {
     const reserveUsers = await createRelationsBetweenUsersAndReserve({
       classmatesEnrollments,
       reserveId: reserve.id,
+      loggedUserEnrollment: userEnrollment,
     });
 
     const reserveFormatted = {

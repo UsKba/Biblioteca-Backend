@@ -95,6 +95,8 @@ describe('allReserves index', () => {
     });
 
     const reserveIndexed = response.body[0];
+    const reserveAdmin = reserveIndexed.users[0];
+    const reserveMember = reserveIndexed.users[1];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
     const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
@@ -116,11 +118,16 @@ describe('allReserves index', () => {
     expect(reserveIndexed.schedule.endHour).toBe(schedule.endHour);
     expect(reserveIndexed.schedule.periodId).toBe(schedule.periodId);
 
-    expect(reserveIndexed.users[0].id).toBe(user1.id);
-    expect(reserveIndexed.users[0].name).toBe(user1.name);
-    expect(reserveIndexed.users[0].email).toBe(user1.email);
-    expect(reserveIndexed.users[0].enrollment).toBe(user1.enrollment);
+    expect(reserveAdmin.id).toBe(user1.id);
+    expect(reserveAdmin.name).toBe(user1.name);
+    expect(reserveAdmin.email).toBe(user1.email);
+    expect(reserveAdmin.enrollment).toBe(user1.enrollment);
+    expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
 
-    expect(reserveIndexed.users[0].status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember.id).toBe(user2.id);
+    expect(reserveMember.name).toBe(user2.name);
+    expect(reserveMember.email).toBe(user2.email);
+    expect(reserveMember.enrollment).toBe(user2.enrollment);
+    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
   });
 });
