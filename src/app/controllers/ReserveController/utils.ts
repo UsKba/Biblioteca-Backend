@@ -1,5 +1,7 @@
 import { Reserve, Room, Schedule, User } from '@prisma/client';
 
+import reserveConfig from '~/config/reserve';
+
 import prisma from '~/prisma';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
@@ -22,6 +24,8 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 
   const userReserve = await prisma.userReserve.create({
     data: {
+      status: reserveConfig.userReserve.statusWaiting,
+
       Reserve: { connect: { id: reserveId } },
       User: { connect: { enrollment: userEnrollment } },
     },
@@ -63,7 +67,7 @@ export function formatReserveToResponse(reserve: ReserveToFormat) {
   };
 }
 
-export async function deleteReserve (reserveId: number){
+export async function deleteReserve(reserveId: number) {
   await prisma.userReserve.deleteMany({
     where: { reserveId },
   });
@@ -71,5 +75,4 @@ export async function deleteReserve (reserveId: number){
   await prisma.reserve.delete({
     where: { id: reserveId },
   });
-
 }

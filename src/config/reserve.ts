@@ -3,6 +3,12 @@ const reserveConfig = {
   maxClassmatesPerRoom: 6,
 
   maxReservesPerTurn: 2,
+
+  userReserve: {
+    statusWaiting: 0,
+    statusAccepted: 1,
+    statusDenied: 2,
+  },
 };
 
 export default reserveConfig;
