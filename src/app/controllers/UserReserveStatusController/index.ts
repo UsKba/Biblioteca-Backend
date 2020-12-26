@@ -4,6 +4,9 @@ import reserveConfig from '~/config/reserve';
 
 import { RequestAuthParams } from '~/types/auth';
 
+import { assertReserveExists, assertUserIsOnReserve } from '../ReserveController/tradingRules';
+import { deleteReserve } from '../ReserveController/utils';
+import { assertUserAlreadyNotRefusedReserve, checkHaveTheMinimumRequiredUsersThatNotRefused } from './tradingRules';
 import { updateUserReserveStatus } from './utils';
 
 type UserReserveDelete = {
@@ -35,6 +38,18 @@ class UserReserveController {
     const reserveId = Number(req.params.reserveId);
 
     try {
+      const reserve = await assertReserveExists(reserveId);
+      assertUserIsOnReserve(userId, reserve.UserReserve);
+      assertUserAlreadyNotRefusedReserve(userId, reserve);
+
+      const haveMinimumUsersRequired = checkHaveTheMinimumRequiredUsersThatNotRefused(reserve);
+
+      if (!haveMinimumUsersRequired) {
+        await deleteReserve(reserveId);
+
+        return res.json({ reserveId });
+      }
+
       const userReserveFormatted = await updateUserReserveStatus(
         reserveId,
         userId,

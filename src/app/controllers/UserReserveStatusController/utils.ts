@@ -6,9 +6,9 @@ export async function updateUserReserveStatus(reserveId: number, userId: number,
     where: { reserveId, userId },
   });
 
-  if (data.count === 0) {
-    throw new Error('Usuário e/ou Reserva não encotrados');
-  }
+  // if (data.count === 0) {
+  //   throw new Error('Usuário não pertence a reserva');
+  // }
 
   return {
     userId,
