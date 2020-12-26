@@ -21,7 +21,12 @@ import {
   assertIsReserveLeader,
   assertUserIsOnReserve,
 } from './tradingRules';
-import { createRelationsBetweenUsersAndReserve, deleteReserve, formatReserveToResponse } from './utils';
+import {
+  createRelationsBetweenUsersAndReserve,
+  deleteReserve,
+  formatReserveToResponse,
+  formatUsersReserveToResponse,
+} from './utils';
 
 interface StoreReserve {
   name?: string;
@@ -60,7 +65,7 @@ class ReserveController {
     });
 
     const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map((userReserve) => userReserve.User);
+      const users = reserve.UserReserve.map(formatUsersReserveToResponse);
 
       const formattedReserve = {
         ...formatReserveToResponse(reserve),

@@ -3,6 +3,8 @@ import request from 'supertest';
 import { encodeToken } from '~/app/utils/auth';
 import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
+import reserveConfig from '~/config/reserve';
+
 import App from '~/App';
 import prisma from '~/prisma';
 
@@ -175,10 +177,12 @@ describe('Reserve Index', () => {
     expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
     expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
 
-    expect(reserveCreated.users[0]).toHaveProperty('id');
-    expect(reserveCreated.users[0]).toHaveProperty('enrollment');
-    expect(reserveCreated.users[0]).toHaveProperty('email');
-    expect(reserveCreated.users[0]).toHaveProperty('name');
+    expect(reserveCreated.users[0].id).toBe(user1.id);
+    expect(reserveCreated.users[0].name).toBe(user1.name);
+    expect(reserveCreated.users[0].email).toBe(user1.email);
+    expect(reserveCreated.users[0].enrollment).toBe(user1.enrollment);
+
+    expect(reserveCreated.users[0].status).toBe(reserveConfig.userReserve.statusWaiting);
   });
 });
 
@@ -218,37 +222,6 @@ describe('Reserve Store', () => {
     expect(response.status).toBe(200);
     expect(response.body.room.id).toBe(reserve.roomId);
     expect(response.body.schedule.id).toBe(reserve.scheduleId);
-  });
-
-  it('should not be able to create a reserve on a schedule that does not exists', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
-
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
-
-    const tomorrowDate = generateDate({ sumDay: 1 });
-
-    const reserve = {
-      name: 'Trabalho de portugues',
-      roomId: room.id,
-      scheduleId: schedule.id + 1, // ID that not exists
-      classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
-      ...tomorrowDate,
-    };
-
-    const leaderToken = encodeToken(user1);
-
-    const response = await request(App)
-      .post('/reserves')
-      .send(reserve)
-      .set({
-        authorization: `Bearer ${leaderToken}`,
-      });
-
-    expect(response.status).toBe(400);
   });
 
   it('should be able to create various reserves on the same room on diferents days', async () => {
@@ -296,6 +269,37 @@ describe('Reserve Store', () => {
 
     expect(tomorrowResponse.status).toBe(200);
     expect(afterTomorrowResponse.status).toBe(200);
+  });
+
+  it('should not be able to create a reserve on a schedule that does not exists', async () => {
+    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user3 = await createUser({ enrollment: '20181104010098' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id + 1, // ID that not exists
+      classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
+      ...tomorrowDate,
+    };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
   });
 
   it('should not be able to create a reserve if the room not exists', async () => {
@@ -566,10 +570,12 @@ describe('Reserve Store', () => {
     expect(response.body.schedule.endHour).toBe(schedule.endHour);
     expect(response.body.schedule.periodId).toBe(schedule.periodId);
 
-    expect(response.body.users[0]).toHaveProperty('id');
-    expect(response.body.users[0]).toHaveProperty('enrollment');
-    expect(response.body.users[0]).toHaveProperty('email');
-    expect(response.body.users[0]).toHaveProperty('name');
+    expect(response.body.users[0].id).toBe(user1.id);
+    expect(response.body.users[0].name).toBe(user1.name);
+    expect(response.body.users[0].email).toBe(user1.email);
+    expect(response.body.users[0].enrollment).toBe(user1.enrollment);
+
+    expect(response.body.users[0].status).toBe(reserveConfig.userReserve.statusWaiting);
   });
 });
 

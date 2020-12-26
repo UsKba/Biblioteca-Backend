@@ -2,6 +2,8 @@ import request from 'supertest';
 
 import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
+import reserveConfig from '~/config/reserve';
+
 import App from '~/App';
 
 import { createUser, createReserve, createRoom, createSchedule, createPeriod } from '../factory';
@@ -114,9 +116,11 @@ describe('allReserves index', () => {
     expect(reserveIndexed.schedule.endHour).toBe(schedule.endHour);
     expect(reserveIndexed.schedule.periodId).toBe(schedule.periodId);
 
-    expect(reserveIndexed.users[0]).toHaveProperty('id');
-    expect(reserveIndexed.users[0]).toHaveProperty('enrollment');
-    expect(reserveIndexed.users[0]).toHaveProperty('email');
-    expect(reserveIndexed.users[0]).toHaveProperty('name');
+    expect(reserveIndexed.users[0].id).toBe(user1.id);
+    expect(reserveIndexed.users[0].name).toBe(user1.name);
+    expect(reserveIndexed.users[0].email).toBe(user1.email);
+    expect(reserveIndexed.users[0].enrollment).toBe(user1.enrollment);
+
+    expect(reserveIndexed.users[0].status).toBe(reserveConfig.userReserve.statusWaiting);
   });
 });

@@ -1,4 +1,4 @@
-import { Reserve, Room, Schedule, User } from '@prisma/client';
+import { Reserve, Room, Schedule, User, UserReserve } from '@prisma/client';
 
 import reserveConfig from '~/config/reserve';
 
@@ -18,6 +18,28 @@ type ReserveToFormat = Reserve & {
   Schedule: Schedule;
   Room: Room;
 };
+
+type UserReserveToFormat = UserReserve & {
+  User: User;
+};
+
+export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
+  return {
+    status: userReserve.status,
+    ...userReserve.User,
+  };
+}
+
+export function formatReserveToResponse(reserve: ReserveToFormat) {
+  return {
+    id: reserve.id,
+    name: reserve.name,
+    date: reserve.date,
+    adminId: reserve.adminId,
+    room: reserve.Room,
+    schedule: reserve.Schedule,
+  };
+}
 
 export async function createUserReserve(params: CreateUserReserveParams) {
   const { reserveId, userEnrollment } = params;
@@ -40,7 +62,7 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
   const { reserveId, classmatesEnrollments } = params;
 
-  const users = [] as User[];
+  const users = [];
 
   for (let i = 0; i < classmatesEnrollments.length; i += 1) {
     const userReserve = await createUserReserve({
@@ -48,23 +70,11 @@ export async function createRelationsBetweenUsersAndReserve(params: CreateRelati
       reserveId,
     });
 
-    users.push({
-      ...userReserve.User,
-    });
+    const userFormatted = formatUsersReserveToResponse(userReserve);
+    users.push(userFormatted);
   }
 
   return users;
-}
-
-export function formatReserveToResponse(reserve: ReserveToFormat) {
-  return {
-    id: reserve.id,
-    name: reserve.name,
-    date: reserve.date,
-    adminId: reserve.adminId,
-    room: reserve.Room,
-    schedule: reserve.Schedule,
-  };
 }
 
 export async function deleteReserve(reserveId: number) {
