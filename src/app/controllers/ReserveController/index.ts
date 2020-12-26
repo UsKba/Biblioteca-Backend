@@ -2,6 +2,8 @@ import { Response } from 'express';
 
 import { setScheduleHoursAndMinutesAndRemoveTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
 
+import reserveConfig from '~/config/reserve';
+
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
@@ -49,7 +51,12 @@ class ReserveController {
 
     const reserves = await prisma.reserve.findMany({
       where: {
-        UserReserve: { some: { userId } },
+        UserReserve: {
+          some: {
+            userId,
+            NOT: { status: reserveConfig.userReserve.statusRefused },
+          },
+        },
         date: {
           gte: startDateWithoutTimezone,
         },
