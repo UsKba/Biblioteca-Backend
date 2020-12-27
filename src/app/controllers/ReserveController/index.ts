@@ -27,7 +27,7 @@ import {
   createRelationsBetweenUsersAndReserve,
   deleteReserve,
   formatReserveToResponse,
-  formatUsersReserveToResponse,
+  formatReservesToResponse,
 } from './utils';
 
 interface StoreReserve {
@@ -46,7 +46,6 @@ type StoreRequest = RequestAuthBody<StoreReserve>;
 class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number;
-
     const startDateWithoutTimezone = removeDateTimezoneOffset(new Date());
 
     const reserves = await prisma.reserve.findMany({
@@ -61,26 +60,26 @@ class ReserveController {
           gte: startDateWithoutTimezone,
         },
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        date: true,
+        adminId: true,
         room: true,
         schedule: true,
-        userReserve: { include: { user: true } },
+        userReserve: {
+          select: { status: true, user: true },
+          where: {
+            NOT: { status: reserveConfig.userReserve.statusRefused },
+          },
+        },
       },
       orderBy: {
         id: 'asc',
       },
     });
 
-    const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.userReserve.map(formatUsersReserveToResponse);
-
-      const formattedReserve = {
-        ...formatReserveToResponse(reserve),
-        users,
-      };
-
-      return formattedReserve;
-    });
+    const reservesFormatted = formatReservesToResponse(reserves);
 
     return response.json(reservesFormatted);
   }
@@ -121,9 +120,16 @@ class ReserveController {
         room: { connect: { id: roomId } },
         schedule: { connect: { id: scheduleId } },
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        date: true,
+        adminId: true,
         room: true,
         schedule: true,
+        userReserve: {
+          select: { status: true, user: true },
+        },
       },
     });
 

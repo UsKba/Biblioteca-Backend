@@ -6,7 +6,7 @@ import { RequestQuery } from '~/types';
 
 import prisma from '~/prisma';
 
-import { formatReserveToResponse, formatUsersReserveToResponse } from '../ReserveController/utils';
+import { formatReservesToResponse } from '../ReserveController/utils';
 
 type AllReservesIndex = {
   startDate: string;
@@ -45,16 +45,7 @@ class AllReserves {
       },
     });
 
-    const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.userReserve.map(formatUsersReserveToResponse);
-
-      const formattedUser = {
-        ...formatReserveToResponse(reserve),
-        users,
-      };
-
-      return formattedUser;
-    });
+    const reservesFormatted = formatReservesToResponse(reserves);
 
     return res.json(reservesFormatted);
   }

@@ -16,12 +16,18 @@ interface CreateUserReserveParams {
   status?: number;
 }
 
-type ReserveToFormat = Reserve & {
+type ReserveToFormat = {
+  id: number;
+  name: string | null;
+  date: Date;
+  adminId: number;
   schedule: Schedule;
   room: Room;
+  userReserve: { status: number; user: User }[];
 };
 
-type UserReserveToFormat = UserReserve & {
+type UserReserveToFormat = {
+  status: number;
   user: User;
 };
 
@@ -33,14 +39,23 @@ export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
 }
 
 export function formatReserveToResponse(reserve: ReserveToFormat) {
-  return {
-    id: reserve.id,
-    name: reserve.name,
-    date: reserve.date,
-    adminId: reserve.adminId,
-    room: reserve.room,
-    schedule: reserve.schedule,
+  const users = reserve.userReserve.map(formatUsersReserveToResponse);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { userReserve, ...rest } = reserve;
+
+  const formattedReserve = {
+    ...rest,
+    users,
   };
+
+  return formattedReserve;
+}
+
+export function formatReservesToResponse(reserves: ReserveToFormat[]) {
+  const reservesFormatted = reserves.map(formatReserveToResponse);
+
+  return reservesFormatted;
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {
