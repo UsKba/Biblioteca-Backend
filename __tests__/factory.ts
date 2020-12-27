@@ -6,10 +6,11 @@ import MockDate from 'mockdate';
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
+import { removeDateTimezoneOffset } from '~/app/utils/date';
 
 import App from '~/App';
 
-import { generateDate } from './utils/date';
+import { generateDate, GenerateDateParams } from './utils/date';
 
 interface GenerateUserParams {
   name?: string | any;
@@ -66,37 +67,6 @@ export function generateUser(params?: GenerateUserParams) {
     ...params,
   };
 }
-
-// function getNextWeekDay(date: Date, sumDay: number) {
-//   const weekDay = date.getDay();
-
-//   if (weekDay === 0) {
-//     return date.getUTCDate() + 1 + sumDay;
-//   }
-
-//   if (weekDay === 6) {
-//     return date.getUTCDate() + 2 + sumDay;
-//   }
-
-//   return date.getUTCDate();
-// }
-
-// export function generateDate(params?: GenerateDateParams) {
-//   const now = new Date();
-
-//   const newYear = now.getUTCFullYear() + Number(params?.sumYear || 0);
-//   const newMonth = now.getUTCMonth() + Number(params?.sumMonth || 0);
-//   const newDay = now.getUTCDate() + Number(params?.sumDay || 0);
-
-//   const newDate = new Date(newYear, newMonth, newDay);
-//   const day = getNextWeekDay(newDate, Number(params?.sumDay || 0));
-
-//   return {
-//     year: newDate.getUTCFullYear(),
-//     month: newDate.getUTCMonth(),
-//     day,
-//   };
-// }
 
 export function generateRoom(params?: GenerateRoomParams) {
   return {

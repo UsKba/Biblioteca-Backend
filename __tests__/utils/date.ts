@@ -1,24 +1,10 @@
-interface GenerateDateParams {
-  sumYear?: number | any;
-  sumMonth?: number | any;
-  sumDay?: number | any;
+export interface GenerateDateParams {
+  sumYear?: number;
+  sumMonth?: number;
+  sumDay?: number;
 }
 
 type GenerateDateListParams = GenerateDateParams[];
-
-function getNextWeekDay(date: Date) {
-  const weekDay = date.getDay();
-
-  if (weekDay === 0) {
-    return date.getUTCDate() + 1;
-  }
-
-  if (weekDay === 6) {
-    return date.getUTCDate() + 2;
-  }
-
-  return date.getUTCDate();
-}
 
 function formatDate(date: Date) {
   return {
@@ -29,6 +15,20 @@ function formatDate(date: Date) {
 }
 
 function getNextWeekDayDate(params?: GenerateDateParams, rootDate?: Date) {
+  function getNextWeekDay(date: Date) {
+    const weekDay = date.getDay();
+
+    if (weekDay === 0) {
+      return date.getUTCDate() + 1;
+    }
+
+    if (weekDay === 6) {
+      return date.getUTCDate() + 2;
+    }
+
+    return date.getUTCDate();
+  }
+
   const date = rootDate || new Date();
 
   const newYear = date.getUTCFullYear() + Number(params?.sumYear || 0);

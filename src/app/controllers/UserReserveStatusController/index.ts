@@ -6,14 +6,18 @@ import { RequestAuthParams } from '~/types/auth';
 
 import { assertReserveExists, assertUserIsOnReserve } from '../ReserveController/tradingRules';
 import { deleteReserve } from '../ReserveController/utils';
-import { assertUserAlreadyNotRefusedReserve, checkHaveTheMinimumRequiredUsersThatNotRefused } from './tradingRules';
+import {
+  assertNowIsBeforeOfReserve,
+  assertUserAlreadyNotRefusedReserve,
+  checkHaveTheMinimumRequiredUsersThatNotRefused,
+} from './tradingRules';
 import { updateUserReserveStatus } from './utils';
 
-type UserReserveDelete = {
+type UserReserveStatusPost = {
   reserveId: string;
 };
 
-type PostRequest = RequestAuthParams<UserReserveDelete>;
+type PostRequest = RequestAuthParams<UserReserveStatusPost>;
 
 class UserReserveController {
   async accept(req: PostRequest, res: Response) {
@@ -21,6 +25,10 @@ class UserReserveController {
     const reserveId = Number(req.params.reserveId);
 
     try {
+      const reserve = await assertReserveExists(reserveId);
+      assertUserIsOnReserve(userId, reserve.UserReserve);
+      assertNowIsBeforeOfReserve(reserve);
+
       const userReserveFormatted = await updateUserReserveStatus(
         reserveId,
         userId,

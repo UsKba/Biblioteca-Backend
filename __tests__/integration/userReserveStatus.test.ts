@@ -7,8 +7,10 @@ import reserveConfig from '~/config/reserve';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createReserve, createUser } from '../factory';
+import { createOldReserve, createReserve, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
+
+// ao recusar remover da reserva
 
 // describe('userReserveStatus accept', () => {
 //   beforeEach(async () => {
@@ -40,6 +42,28 @@ import { cleanDatabase } from '../utils/database';
 //     expect(response.body.status).toBe(reserveConfig.userReserve.statusAccepted);
 //   });
 
+//   it('should not be able to accept partipate of a reserve that is already finished', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
+
+//     const reserve = await createOldReserve({
+//       leader: user1,
+//       users: [user1, user2, user3],
+//     });
+
+//     const memberToken = encodeToken(user2);
+
+//     const response = await request(App)
+//       .post(`/reserves/${reserve.id}/accept`)
+//       .set({
+//         authorization: `Bearer ${memberToken}`,
+//       });
+
+//     expect(response.status).toBe(400);
+//     expect(response.body.error).toBe('Você está atrasado para fazer isso');
+//   });
+
 //   it('should not be able to accept partipate of a reserve that not exists', async () => {
 //     const user1 = await createUser({ enrollment: '20181104010011' });
 //     const user2 = await createUser({ enrollment: '20181104010022' });
@@ -61,7 +85,7 @@ import { cleanDatabase } from '../utils/database';
 //       });
 
 //     expect(response.status).toBe(400);
-//     expect(response.body.error).toBe('Usuário e/ou Reserva não encotrados');
+//     expect(response.body.error).toBe('Reserva não encontrada');
 //   });
 
 //   it('should not be able to accept partipate of a reserve that you were not invited', async () => {
@@ -84,7 +108,7 @@ import { cleanDatabase } from '../utils/database';
 //       });
 
 //     expect(response.status).toBe(400);
-//     expect(response.body.error).toBe('Usuário e/ou Reserva não encotrados');
+//     expect(response.body.error).toBe('Usuário não pertence a reserva');
 //   });
 
 //   it('should not be able to accept partipate of a reserve with invalid `reserveId`', async () => {
@@ -242,67 +266,67 @@ describe('userReserveStatus refuse', () => {
   });
 });
 
-describe('userReserveStatus refuse, reserve index', () => {
-  beforeEach(async () => {
-    await cleanDatabase();
-  });
+// describe('userReserveStatus refuse, reserve index', () => {
+//   beforeEach(async () => {
+//     await cleanDatabase();
+//   });
 
-  it('should not index the reserves that you refused', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
-    const user4 = await createUser({ enrollment: '20181104010044' });
+//   it('should not index the reserves that you refused', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
+//     const user4 = await createUser({ enrollment: '20181104010044' });
 
-    const reserve = await createReserve({
-      leader: user1,
-      users: [user1, user2, user3, user4],
-    });
+//     const reserve = await createReserve({
+//       leader: user1,
+//       users: [user1, user2, user3, user4],
+//     });
 
-    const memberToken = encodeToken(user2);
+//     const memberToken = encodeToken(user2);
 
-    const refuseResponse = await request(App)
-      .post(`/reserves/${reserve.id}/refuse`)
-      .set({
-        authorization: `Bearer ${memberToken}`,
-      });
+//     const refuseResponse = await request(App)
+//       .post(`/reserves/${reserve.id}/refuse`)
+//       .set({
+//         authorization: `Bearer ${memberToken}`,
+//       });
 
-    const indexReservesResponse = await request(App)
-      .get(`/reserves`)
-      .set({
-        authorization: `Bearer ${memberToken}`,
-      });
+//     const indexReservesResponse = await request(App)
+//       .get(`/reserves`)
+//       .set({
+//         authorization: `Bearer ${memberToken}`,
+//       });
 
-    expect(refuseResponse.status).toBe(200);
-    expect(indexReservesResponse.status).toBe(200);
+//     expect(refuseResponse.status).toBe(200);
+//     expect(indexReservesResponse.status).toBe(200);
 
-    expect(indexReservesResponse.body.length).toBe(0);
-  });
+//     expect(indexReservesResponse.body.length).toBe(0);
+//   });
 
-  it('should delete reserve if the count of users that not refused is less than the minimum required', async () => {
-    const user1 = await createUser({ enrollment: '20181104010011' });
-    const user2 = await createUser({ enrollment: '20181104010022' });
-    const user3 = await createUser({ enrollment: '20181104010033' });
+//   it('should delete reserve if the count of users that not refused is less than the minimum required', async () => {
+//     const user1 = await createUser({ enrollment: '20181104010011' });
+//     const user2 = await createUser({ enrollment: '20181104010022' });
+//     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const reserve = await createReserve({
-      leader: user1,
-      users: [user1, user2, user3],
-    });
+//     const reserve = await createReserve({
+//       leader: user1,
+//       users: [user1, user2, user3],
+//     });
 
-    const memberToken = encodeToken(user2);
+//     const memberToken = encodeToken(user2);
 
-    const refuseResponse = await request(App)
-      .post(`/reserves/${reserve.id}/refuse`)
-      .set({
-        authorization: `Bearer ${memberToken}`,
-      });
+//     const refuseResponse = await request(App)
+//       .post(`/reserves/${reserve.id}/refuse`)
+//       .set({
+//         authorization: `Bearer ${memberToken}`,
+//       });
 
-    const reseves = await prisma.reserve.findMany({
-      where: {
-        UserReserve: { some: { userId: user2.id } },
-      },
-    });
+//     const reseves = await prisma.reserve.findMany({
+//       where: {
+//         UserReserve: { some: { userId: user2.id } },
+//       },
+//     });
 
-    expect(refuseResponse.status).toBe(200);
-    expect(reseves.length).toBe(0);
-  });
-});
+//     expect(refuseResponse.status).toBe(200);
+//     expect(reseves.length).toBe(0);
+//   });
+// });

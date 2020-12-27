@@ -77,3 +77,106 @@ datasource db {
   provider = "sqlite"
   url      = "file:./database.sqlite"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const reserves = await prisma.reserve.findMany({
+      select: {
+        id: true,
+        name: true,
+        date: true,
+        adminId: true,
+        Schedule: true,
+        Room: {
+          select: { id: true, initials: true },
+        },
+        UserReserve: {
+          select: {
+            User: true,
+            status: true,
+          },
+          where: {
+            OR: [
+              {
+                userId,
+                NOT: { status: reserveConfig.userReserve.statusRefused },
+              },
+              {
+                NOT: { status: reserveConfig.userReserve.statusRefused },
+              },
+            ],
+          },
+        },
+      },
+      where: {
+        date: {
+          gte: startDateWithoutTimezone,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
