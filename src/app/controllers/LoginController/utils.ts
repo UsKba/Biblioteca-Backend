@@ -19,7 +19,7 @@ export async function findUserOrCreate(userData: UserData) {
     return users[0];
   }
 
-  const color = getNextUserColor();
+  const color = await getNextUserColor();
 
   const user = await prisma.user.create({
     data: {

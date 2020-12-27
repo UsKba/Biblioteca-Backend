@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import colors from '~/config/colors';
+import colorsConfig from '~/config/colors';
 
 async function run() {
   const prisma = new PrismaClient();
@@ -10,25 +10,25 @@ async function run() {
       name: 'Idaslon Garcia',
       enrollment: '20181104010048',
       email: 'idaslon.g@academico.ifrn.edu.br',
-      color: colors.purple,
+      color: colorsConfig.purple,
     },
     {
       name: 'Fellipe Souza',
       enrollment: '20181104010027',
       email: 'z.santos@academico.ifrn.edu.br',
-      color: colors.red,
+      color: colorsConfig.red,
     },
     {
       name: 'NATHAN MARQUES',
       enrollment: '20181104010009',
       email: 'nathan.araujo@academico.ifrn.edu.br',
-      color: colors.green,
+      color: colorsConfig.green,
     },
     {
       name: 'Alceu Nascimento',
       enrollment: '20181104010039',
       email: 'alceu.guilherme@academico.ifrn.edu.br',
-      color: colors.blue,
+      color: colorsConfig.blue,
     },
   ];
 
@@ -159,6 +159,13 @@ async function run() {
       data: room,
     });
   }
+
+  await prisma.userColor.create({
+    data: {
+      colors: '',
+    },
+  });
+
   prisma.disconnect();
 }
 

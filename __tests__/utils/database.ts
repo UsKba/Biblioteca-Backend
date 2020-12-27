@@ -10,4 +10,6 @@ export async function cleanDatabase() {
   await prisma.user.deleteMany({});
   await prisma.room.deleteMany({});
   await prisma.period.deleteMany({});
+
+  // await prisma.userColor.deleteMany({});
 }

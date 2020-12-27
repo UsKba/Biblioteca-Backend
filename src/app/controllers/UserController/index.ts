@@ -53,7 +53,7 @@ class UserController {
       return response.status(400).json({ error: e.message });
     }
 
-    const color = getNextUserColor();
+    const color = await getNextUserColor();
 
     const user = await prisma.user.create({
       data: {

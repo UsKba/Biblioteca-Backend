@@ -14,3 +14,15 @@ export function haveDuplicates<T = never>(array: T[]) {
 
   return false;
 }
+
+export function subtractElements<T>(array1: T[], array2: T[]) {
+  const subtractedArray = array1.filter((element) => !array2.includes(element));
+
+  return subtractedArray;
+}
+
+export function getRandomItem<T>(array: T[]) {
+  const item = array[Math.floor(Math.random() * array.length)];
+
+  return item;
+}
