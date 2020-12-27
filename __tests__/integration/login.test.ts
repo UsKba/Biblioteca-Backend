@@ -78,5 +78,7 @@ describe('Login', () => {
     expect(response.body.user.name).toBe(userData.name);
     expect(response.body.user.email).toBe(userData.email);
     expect(response.body.user.enrollment).toBe(userData.enrollment);
+
+    expect(response.body.user).toHaveProperty('color');
   });
 });

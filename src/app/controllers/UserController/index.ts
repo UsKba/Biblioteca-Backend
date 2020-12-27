@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 
+import { getNextUserColor } from '~/app/utils/colors';
+
 import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
@@ -51,11 +53,14 @@ class UserController {
       return response.status(400).json({ error: e.message });
     }
 
+    const color = getNextUserColor();
+
     const user = await prisma.user.create({
       data: {
         enrollment,
         email,
         name,
+        color,
       },
     });
 

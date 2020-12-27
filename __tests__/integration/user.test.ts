@@ -56,6 +56,8 @@ describe('User store', () => {
     expect(response.body.name).toBe(userData.name);
     expect(response.body.email).toBe(userData.email);
     expect(response.body.enrollment).toBe(userData.enrollment);
+
+    expect(response.body).toHaveProperty('color');
   });
 });
 
@@ -104,6 +106,8 @@ describe('User index', () => {
     expect(userIndexed.name).toBe(user.name);
     expect(userIndexed.email).toBe(user.email);
     expect(userIndexed.enrollment).toBe(user.enrollment);
+
+    expect(userIndexed).toHaveProperty('color');
   });
 });
 
@@ -180,6 +184,8 @@ describe('User Update', () => {
     expect(response.body.name).toBe('LonKa');
     expect(response.body.email).toBe(user.email);
     expect(response.body.enrollment).toBe(user.enrollment);
+
+    expect(response.body).toHaveProperty('color');
   });
 });
 
@@ -199,5 +205,7 @@ describe('User show', () => {
     expect(response.body.name).toBe(user.name);
     expect(response.body.email).toBe(user.email);
     expect(response.body.enrollment).toBe(user.enrollment);
+
+    expect(response.body).toHaveProperty('color');
   });
 });
