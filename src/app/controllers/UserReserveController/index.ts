@@ -7,7 +7,6 @@ import prisma from '~/prisma';
 import {
   assertIsReserveLeader,
   assertReserveExists,
-  assertCanRemoveUserFromReserve,
   assertUserIsOnReserve,
   uptateReserveLeader,
   checkIfHaveMinUsersOnReserve,
@@ -31,11 +30,11 @@ class UserReserveController {
     try {
       const reserve = await assertReserveExists(reserveId);
       const userLoggedIsLeader = reserve.adminId === userId;
-      assertUserIsOnReserve(userIdToDelete, reserve.UserReserve);
+      assertUserIsOnReserve(userIdToDelete, reserve.userReserve);
       // assertCanRemoveUserFromReserve(reserve.UserReserve); se tiver menos de 3 pessoas deletar a reserva
       // lista de espera ????????
 
-      const haveMinUsersOnReserve = checkIfHaveMinUsersOnReserve(reserve.UserReserve);
+      const haveMinUsersOnReserve = checkIfHaveMinUsersOnReserve(reserve.userReserve);
 
       if (userId === userIdToDelete) {
         if (haveMinUsersOnReserve) {

@@ -640,7 +640,7 @@ describe('Reserve Delete', () => {
 
     const usersOfReserve = await prisma.userReserve.findMany({
       where: {
-        Reserve: { id: reserve.id },
+        reserve: { id: reserve.id },
       },
     });
 

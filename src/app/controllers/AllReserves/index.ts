@@ -36,9 +36,9 @@ class AllReserves {
         },
       },
       include: {
-        Room: true,
-        Schedule: true,
-        UserReserve: { include: { User: true } },
+        room: true,
+        schedule: true,
+        userReserve: { include: { user: true } },
       },
       orderBy: {
         id: 'asc',
@@ -46,7 +46,7 @@ class AllReserves {
     });
 
     const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map(formatUsersReserveToResponse);
+      const users = reserve.userReserve.map(formatUsersReserveToResponse);
 
       const formattedUser = {
         ...formatReserveToResponse(reserve),

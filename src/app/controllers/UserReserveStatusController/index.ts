@@ -26,7 +26,7 @@ class UserReserveController {
 
     try {
       const reserve = await assertReserveExists(reserveId);
-      assertUserIsOnReserve(userId, reserve.UserReserve);
+      assertUserIsOnReserve(userId, reserve.userReserve);
       assertNowIsBeforeOfReserve(reserve);
 
       const userReserveFormatted = await updateUserReserveStatus(
@@ -47,7 +47,7 @@ class UserReserveController {
 
     try {
       const reserve = await assertReserveExists(reserveId);
-      assertUserIsOnReserve(userId, reserve.UserReserve);
+      assertUserIsOnReserve(userId, reserve.userReserve);
       assertUserAlreadyNotRefusedReserve(userId, reserve);
 
       const haveMinimumUsersRequired = checkHaveTheMinimumRequiredUsersThatNotRefused(reserve);

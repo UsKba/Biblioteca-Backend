@@ -96,7 +96,7 @@ export async function assertReserveExists(id: number) {
   const reserve = await prisma.reserve.findOne({
     where: { id },
     include: {
-      UserReserve: true,
+      userReserve: true,
     },
   });
 
@@ -127,7 +127,7 @@ export async function uptateReserveLeader(reserve: Reserve) {
   await prisma.reserve.update({
     where: { id: reserve.id },
     data: {
-      Admin: { connect: { id: usersReserve[0].userId } },
+      admin: { connect: { id: usersReserve[0].userId } },
     },
   });
 }
@@ -140,11 +140,11 @@ export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[
   }
 }
 
-export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
-  if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
-    throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
-  }
-}
+// export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
+//   if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
+//     throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
+//   }
+// }
 
 export function checkIfHaveMinUsersOnReserve(userReserves: UserReserve[]) {
   if (userReserves.length === reserveConfig.minClassmatesPerRoom) {

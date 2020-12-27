@@ -20,10 +20,10 @@ class FriendController {
       where: {
         OR: [
           {
-            FriendUser1: { some: { userId2: userId } },
+            friendUser1: { some: { userId2: userId } },
           },
           {
-            FriendUser2: { some: { userId1: userId } },
+            friendUser2: { some: { userId1: userId } },
           },
         ],
       },

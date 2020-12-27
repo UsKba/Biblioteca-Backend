@@ -24,8 +24,8 @@ class FriendRequestConfirmationController {
 
       const friend = await prisma.friend.create({
         data: {
-          User1: { connect: { id: friendRequest.senderId } },
-          User2: { connect: { id: friendRequest.receiverId } },
+          user1: { connect: { id: friendRequest.senderId } },
+          user2: { connect: { id: friendRequest.receiverId } },
         },
       });
 

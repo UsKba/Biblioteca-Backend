@@ -51,7 +51,7 @@ class ReserveController {
 
     const reserves = await prisma.reserve.findMany({
       where: {
-        UserReserve: {
+        userReserve: {
           some: {
             userId,
             NOT: { status: reserveConfig.userReserve.statusRefused },
@@ -62,9 +62,9 @@ class ReserveController {
         },
       },
       include: {
-        Room: true,
-        Schedule: true,
-        UserReserve: { include: { User: true } },
+        room: true,
+        schedule: true,
+        userReserve: { include: { user: true } },
       },
       orderBy: {
         id: 'asc',
@@ -72,7 +72,7 @@ class ReserveController {
     });
 
     const reservesFormatted = reserves.map((reserve) => {
-      const users = reserve.UserReserve.map(formatUsersReserveToResponse);
+      const users = reserve.userReserve.map(formatUsersReserveToResponse);
 
       const formattedReserve = {
         ...formatReserveToResponse(reserve),
@@ -117,13 +117,13 @@ class ReserveController {
       data: {
         name,
         date: dateWithoutTimezone,
-        Admin: { connect: { id: userId } },
-        Room: { connect: { id: roomId } },
-        Schedule: { connect: { id: scheduleId } },
+        admin: { connect: { id: userId } },
+        room: { connect: { id: roomId } },
+        schedule: { connect: { id: scheduleId } },
       },
       include: {
-        Room: true,
-        Schedule: true,
+        room: true,
+        schedule: true,
       },
     });
 
@@ -148,7 +148,7 @@ class ReserveController {
     try {
       const reserve = await assertReserveExists(reserveId);
 
-      assertUserIsOnReserve(userId, reserve.UserReserve);
+      assertUserIsOnReserve(userId, reserve.userReserve);
 
       await assertIsReserveLeader(userId, reserve);
     } catch (e) {

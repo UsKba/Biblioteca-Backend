@@ -17,18 +17,18 @@ interface CreateUserReserveParams {
 }
 
 type ReserveToFormat = Reserve & {
-  Schedule: Schedule;
-  Room: Room;
+  schedule: Schedule;
+  room: Room;
 };
 
 type UserReserveToFormat = UserReserve & {
-  User: User;
+  user: User;
 };
 
 export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
   return {
     status: userReserve.status,
-    ...userReserve.User,
+    ...userReserve.user,
   };
 }
 
@@ -38,8 +38,8 @@ export function formatReserveToResponse(reserve: ReserveToFormat) {
     name: reserve.name,
     date: reserve.date,
     adminId: reserve.adminId,
-    room: reserve.Room,
-    schedule: reserve.Schedule,
+    room: reserve.room,
+    schedule: reserve.schedule,
   };
 }
 
@@ -50,11 +50,11 @@ export async function createUserReserve(params: CreateUserReserveParams) {
     data: {
       status: status || reserveConfig.userReserve.statusWaiting,
 
-      Reserve: { connect: { id: reserveId } },
-      User: { connect: { enrollment: userEnrollment } },
+      reserve: { connect: { id: reserveId } },
+      user: { connect: { enrollment: userEnrollment } },
     },
     include: {
-      User: true,
+      user: true,
     },
   });
 

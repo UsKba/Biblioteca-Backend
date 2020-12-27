@@ -1,0 +1,791 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "friendUser1",
+      "type": "Friend",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser1"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser1"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"user1\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "friendUser2",
+      "type": "Friend",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser2"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser2"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"user2\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "friendRequestSender",
+      "type": "FriendRequest",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestSender"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"sender\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "friendRequestReceiver",
+      "type": "FriendRequest",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestReceiver"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"receiver\""
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "userReserve",
+      "type": "UserReserve",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "reserve",
+      "type": "Reserve",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "UserReserve"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "FriendUser1"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "FriendUser2"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "Reserve"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "FriendRequestSender"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "User",
+      "field": "FriendRequestReceiver"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Friend",
+      "field": "user1",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user1"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user1"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"user1\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user1"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId1]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user1"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Friend",
+      "field": "user2",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user2"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user2"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"user2\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user2"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId2]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user2"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Friend",
+      "field": "User1"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Friend",
+      "field": "User2"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "room",
+      "type": "Room",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "room"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "room"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[roomId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "room"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "schedule",
+      "type": "Schedule",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "schedule"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "schedule"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[scheduleId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "schedule"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "admin",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "admin"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "admin"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[adminId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Reserve",
+          "field": "admin"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Reserve",
+      "field": "userReserve",
+      "type": "UserReserve",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Reserve",
+      "field": "UserReserve"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Reserve",
+      "field": "Room"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Reserve",
+      "field": "Schedule"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Reserve",
+      "field": "Admin"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserReserve",
+      "field": "user",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "user"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserReserve",
+      "field": "reserve",
+      "type": "Reserve",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "reserve"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "reserve"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[reserveId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "reserve"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "UserReserve",
+      "field": "User"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "UserReserve",
+      "field": "Reserve"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Room",
+      "field": "reserve",
+      "type": "Reserve",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Room",
+      "field": "Reserve"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Schedule",
+      "field": "period",
+      "type": "Period",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Schedule",
+          "field": "period"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Schedule",
+          "field": "period"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[periodId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Schedule",
+          "field": "period"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Schedule",
+      "field": "reserve",
+      "type": "Reserve",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Schedule",
+      "field": "Reserve"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Schedule",
+      "field": "Period"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Period",
+      "field": "schedule",
+      "type": "Schedule",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Period",
+      "field": "Schedule"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "userSender",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userSender"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"sender\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[senderId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "FriendRequest",
+      "field": "userReceiver",
+      "type": "User",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userReceiver"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "value": "\"receiver\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[receiverId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "FriendRequest",
+      "field": "UserSender"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "FriendRequest",
+      "field": "UserReceiver"
+    }
+  ]
+}

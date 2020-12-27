@@ -6,11 +6,11 @@ import { removeDateTimezoneOffset } from '~/app/utils/date';
 import reserveConfig from '~/config/reserve';
 
 type Params = Reserve & {
-  UserReserve: UserReserve[];
+  userReserve: UserReserve[];
 };
 
 export function checkHaveTheMinimumRequiredUsersThatNotRefused(reserve: Params) {
-  const usersRefusedCount = reserve.UserReserve.reduce((count, userReserve) => {
+  const usersRefusedCount = reserve.userReserve.reduce((count, userReserve) => {
     if (userReserve.status === reserveConfig.userReserve.statusRefused) {
       return count + 1;
     }
@@ -20,13 +20,13 @@ export function checkHaveTheMinimumRequiredUsersThatNotRefused(reserve: Params) 
 
   const countOfUsersThatRefusedOrWill = usersRefusedCount + 1;
   const haveMinimumRequired =
-    reserve.UserReserve.length - countOfUsersThatRefusedOrWill >= reserveConfig.minClassmatesPerRoom;
+    reserve.userReserve.length - countOfUsersThatRefusedOrWill >= reserveConfig.minClassmatesPerRoom;
 
   return haveMinimumRequired;
 }
 
 export function assertUserAlreadyNotRefusedReserve(userId: number, reserve: Params) {
-  const [userReserve] = reserve.UserReserve.filter((currentUserReserve) => currentUserReserve.userId === userId);
+  const [userReserve] = reserve.userReserve.filter((currentUserReserve) => currentUserReserve.userId === userId);
 
   if (userReserve.status === reserveConfig.userReserve.statusRefused) {
     throw new Error('O usuário já não faz parte dessa reserva');

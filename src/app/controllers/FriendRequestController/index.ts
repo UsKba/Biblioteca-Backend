@@ -33,8 +33,8 @@ class FriendRequestController {
         NOT: { status: friendConfig.statusDenied },
       },
       include: {
-        UserReceiver: true,
-        UserSender: true,
+        userReceiver: true,
+        userSender: true,
       },
     });
 
@@ -44,8 +44,8 @@ class FriendRequestController {
         NOT: { status: friendConfig.statusDenied },
       },
       include: {
-        UserReceiver: true,
-        UserSender: true,
+        userReceiver: true,
+        userSender: true,
       },
     });
 
@@ -80,13 +80,13 @@ class FriendRequestController {
       if (!friendRequest) {
         const friendRequestCreated = await prisma.friendRequest.create({
           data: {
-            UserSender: { connect: { id: userId } },
-            UserReceiver: { connect: { id: userReceiver.id } },
+            userSender: { connect: { id: userId } },
+            userReceiver: { connect: { id: userReceiver.id } },
             status: friendConfig.statusPending,
           },
           include: {
-            UserReceiver: true,
-            UserSender: true,
+            userReceiver: true,
+            userSender: true,
           },
         });
 
@@ -99,8 +99,8 @@ class FriendRequestController {
         where: { id: friendRequest.id },
         data: { status: friendConfig.statusPending },
         include: {
-          UserReceiver: true,
-          UserSender: true,
+          userReceiver: true,
+          userSender: true,
         },
       });
 
