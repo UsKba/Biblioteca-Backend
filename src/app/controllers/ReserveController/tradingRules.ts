@@ -88,7 +88,7 @@ export function assertIfTheReserveIsNotBeforeOfNow(date: Date) {
   const nowWithoutTimezone = removeDateTimezoneOffset(now);
 
   if (isBefore(date, nowWithoutTimezone)) {
-    throw new Error('A Data não pode ser anterior a atual');
+    throw new Error('A data não pode ser anterior a atual');
   }
 }
 

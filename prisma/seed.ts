@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import colorsConfig from '~/config/colors';
+import colorsConfig from '../src/config/colors';
 
 async function run() {
   const prisma = new PrismaClient();
