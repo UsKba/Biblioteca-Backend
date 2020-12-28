@@ -78,6 +78,7 @@ describe('Seach Index (validate data)', () => {
     expect(userIndexed.name).toBe(user.name);
     expect(userIndexed.email).toBe(user.email);
     expect(userIndexed.enrollment).toBe(user.enrollment);
+    expect(userIndexed).toHaveProperty('color');
   });
 });
 

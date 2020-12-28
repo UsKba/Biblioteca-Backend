@@ -21,10 +21,6 @@ describe('User store', () => {
     const response2 = await request(App).post('/users').send(user2);
     const response3 = await request(App).post('/users').send(user3);
 
-    console.log(response1.body.color);
-    console.log(response2.body.color);
-    console.log(response3.body.color);
-
     const color1DifferentOf2 = response1.body.color !== response2.body.color;
     const color1DifferentOf3 = response1.body.color !== response3.body.color;
 

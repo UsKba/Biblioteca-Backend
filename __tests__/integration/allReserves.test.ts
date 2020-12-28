@@ -123,11 +123,12 @@ describe('allReserves index', () => {
     expect(reserveAdmin.email).toBe(user1.email);
     expect(reserveAdmin.enrollment).toBe(user1.enrollment);
     expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
+    expect(reserveAdmin).toHaveProperty('color');
 
     expect(reserveMember.id).toBe(user2.id);
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
-    expect(reserveMember.enrollment).toBe(user2.enrollment);
     expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember).toHaveProperty('color');
   });
 });

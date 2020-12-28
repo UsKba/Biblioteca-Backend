@@ -228,11 +228,13 @@ describe('friendRequest index', () => {
     expect(friendRequestCreated.sender.name).toBe(user1.name);
     expect(friendRequestCreated.sender.email).toBe(user1.email);
     expect(friendRequestCreated.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestCreated.sender).toHaveProperty('color');
 
     expect(friendRequestCreated.receiver.id).toBe(user2.id);
     expect(friendRequestCreated.receiver.name).toBe(user2.name);
     expect(friendRequestCreated.receiver.email).toBe(user2.email);
     expect(friendRequestCreated.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestCreated.receiver).toHaveProperty('color');
   });
 
   it('should have correct fields on friendRequest received', async () => {
@@ -255,12 +257,12 @@ describe('friendRequest index', () => {
     expect(friendRequestCreated.sender.id).toBe(user1.id);
     expect(friendRequestCreated.sender.name).toBe(user1.name);
     expect(friendRequestCreated.sender.email).toBe(user1.email);
-    expect(friendRequestCreated.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestCreated.sender).toHaveProperty('color');
 
     expect(friendRequestCreated.receiver.id).toBe(user2.id);
     expect(friendRequestCreated.receiver.name).toBe(user2.name);
     expect(friendRequestCreated.receiver.email).toBe(user2.email);
-    expect(friendRequestCreated.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestCreated.receiver).toHaveProperty('color');
   });
 });
 

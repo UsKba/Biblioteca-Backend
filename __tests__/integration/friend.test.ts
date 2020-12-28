@@ -129,6 +129,7 @@ describe('friend index', () => {
     expect(friendCreated.name).toBe(user2.name);
     expect(friendCreated.email).toBe(user2.email);
     expect(friendCreated.enrollment).toBe(user2.enrollment);
+    expect(friendCreated).toHaveProperty('color');
   });
 });
 

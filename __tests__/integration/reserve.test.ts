@@ -585,12 +585,14 @@ describe('Reserve Store', () => {
     expect(reserveAdmin.email).toBe(user1.email);
     expect(reserveAdmin.enrollment).toBe(user1.enrollment);
     expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
+    expect(reserveAdmin).toHaveProperty('color');
 
     expect(reserveMember.id).toBe(user2.id);
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
     expect(reserveMember.enrollment).toBe(user2.enrollment);
     expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember).toHaveProperty('color');
   });
 });
 
@@ -733,7 +735,7 @@ describe('Reserve Delete', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should be able to delete a reserve', async () => {
+  it('should have correct fields on resert delete', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });
     const user3 = await createUser({ enrollment: '20181104010098' });
@@ -757,7 +759,7 @@ describe('Reserve Delete', () => {
   });
 });
 
-describe('Reserve Index old', () => {
+describe('Reserve Index (old reserves - that alreadt past of date)', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
