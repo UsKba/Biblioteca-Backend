@@ -1,8 +1,8 @@
 import { Reserve, UserReserve } from '@prisma/client';
-import { isBefore } from 'date-fns';
+import { isBefore, subHours } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
-import { removeDateTimezoneOffset } from '~/app/utils/date';
+import { getOnBrazilTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
@@ -84,10 +84,15 @@ export function assertIfTheReserveIsNotOnWeekend(date: Date) {
 }
 
 export function assertIfTheReserveIsNotBeforeOfNow(date: Date) {
+  // git push heroku main -f
   const now = new Date();
-  const nowWithoutTimezone = removeDateTimezoneOffset(now);
+  const dateOnBrazilTimezone = getOnBrazilTimezone(now);
 
-  if (isBefore(date, nowWithoutTimezone)) {
+  console.log(`now: ${now}`);
+  console.log(`dateOnBrazilTimezone: ${dateOnBrazilTimezone}`);
+  console.log(`date: ${date}`);
+
+  if (isBefore(date, dateOnBrazilTimezone)) {
     throw new Error('A data não pode ser anterior a atual');
   }
 }

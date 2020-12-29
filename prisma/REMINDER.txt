@@ -1,0 +1,182 @@
+Co-authored-by: Kaduco19 <caduco2003@gmail.com>
+
+Criação dos cargos para as reservas. Apliação das regras de négocio nos cargos das reservas e testes
+Removendo componentes da reserva, inicio das regras de négocio e testes.
+Finalização da remocão de componentes da reserva, junto com os testes.
+Excluir reservas, regras de négocio e testes.
+Correção de nomes nos testes da reserva.
+
+=> Criar docker container:
+docker run --name sb_database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
+=> listar containers em execucao:
+docker ps
+
+.env
+DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
+DATABASE_URL="postgresql://postgres:docker@localhost:5432/prisma?schema=public"
+
+
+
+FAZER MIGRACAO
+yarn migrate
+
+==================================== HEROKU ===================================
+
+1. Enter https://dashboard.heroku.com/apps
+2. Create a new App
+
+3.
+heroku git:remote -a PROJECT_NAME
+
+4.
+git remote // Verificar se aparece heroku
+git push heroku master
+
+
+
+=== Setup Postgres ===
+-> Va para `resources` no heroku
+-> Pesquise `Postgres` e adicione
+-> Click em Postgres
+-> Click em `Open App` e copie a URL
+
+-> Va para `settings` e em `Config Vars` coloque as variáveis de ambiente
+
+-> Click em `More` e `Run console` e digite `bash`
+-> Rode as migrações do banco de dados (yarn migrate:production)
+-> Rode as seeds do banco de dados (yarn seed:production)
+
+==> PRONTO <==
+
+
+=== Lembretes ===
+
+O heroku usa o comando `start` para rodar o app
+
+==> URI do seu database
+-> Va em 'Settings'
+-> Click em `Database Credentials`
+
+==> Atualizar código do heroku
+git add .
+git commit -m "your fabulous change message"
+git push heroku master
+
+
+
+
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.sqlite"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const reserves = await prisma.reserve.findMany({
+      select: {
+        id: true,
+        name: true,
+        date: true,
+        adminId: true,
+        Schedule: true,
+        Room: {
+          select: { id: true, initials: true },
+        },
+        UserReserve: {
+          select: {
+            User: true,
+            status: true,
+          },
+          where: {
+            OR: [
+              {
+                userId,
+                NOT: { status: reserveConfig.userReserve.statusRefused },
+              },
+              {
+                NOT: { status: reserveConfig.userReserve.statusRefused },
+              },
+            ],
+          },
+        },
+      },
+      where: {
+        date: {
+          gte: startDateWithoutTimezone,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });

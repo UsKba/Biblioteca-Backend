@@ -1,4 +1,4 @@
-import { setSeconds, setMilliseconds, isBefore } from 'date-fns';
+import { setSeconds, setMilliseconds, isBefore, subHours } from 'date-fns';
 
 export function resetSecondsAndMiliseconds(value: number | string | Date) {
   const date = new Date(value);
@@ -43,6 +43,13 @@ export function removeDateTimezoneOffset(date: Date) {
   const dateWithoutTimezone = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   return dateWithoutTimezone;
+}
+
+export function getOnBrazilTimezone(date: Date) {
+  const dateWithoutTimezone = removeDateTimezoneOffset(date);
+  const dateOnBrazil = subHours(dateWithoutTimezone, 3);
+
+  return dateOnBrazil;
 }
 
 export function setScheduleHoursAndMinutesAndRemoveTimezone(date: Date, scheduleHours: string) {

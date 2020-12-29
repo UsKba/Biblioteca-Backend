@@ -1,6 +1,10 @@
 import { Response } from 'express';
 
-import { setScheduleHoursAndMinutesAndRemoveTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
+import {
+  setScheduleHoursAndMinutesAndRemoveTimezone,
+  removeDateTimezoneOffset,
+  getOnBrazilTimezone,
+} from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
@@ -46,20 +50,9 @@ type StoreRequest = RequestAuthBody<StoreReserve>;
 class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number;
-    const startDateWithoutTimezone = removeDateTimezoneOffset(new Date());
+    const startDateWithoutTimezone = getOnBrazilTimezone(new Date());
 
     const reserves = await prisma.reserve.findMany({
-      where: {
-        userReserve: {
-          some: {
-            userId,
-            NOT: { status: reserveConfig.userReserve.statusRefused },
-          },
-        },
-        date: {
-          gte: startDateWithoutTimezone,
-        },
-      },
       select: {
         id: true,
         name: true,
@@ -72,6 +65,17 @@ class ReserveController {
           where: {
             NOT: { status: reserveConfig.userReserve.statusRefused },
           },
+        },
+      },
+      where: {
+        userReserve: {
+          some: {
+            userId,
+            NOT: { status: reserveConfig.userReserve.statusRefused },
+          },
+        },
+        date: {
+          gte: startDateWithoutTimezone,
         },
       },
       orderBy: {
@@ -91,7 +95,7 @@ class ReserveController {
     const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body; // ... name = date
 
     const date = new Date(year, month, day);
-    let dateWithoutTimezone: Date;
+    let dateWithScheduleHours: Date;
 
     try {
       assertUserIsOnClassmatesEnrollments(userEnrollment, classmatesEnrollments);
@@ -100,13 +104,13 @@ class ReserveController {
       assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments);
 
       const schedule = await assertIfScheduleExists(scheduleId);
-      dateWithoutTimezone = setScheduleHoursAndMinutesAndRemoveTimezone(date, schedule.initialHour);
+      dateWithScheduleHours = setScheduleHoursAndMinutesAndRemoveTimezone(date, schedule.initialHour);
 
-      assertIfTheReserveIsNotOnWeekend(dateWithoutTimezone);
-      assertIfTheReserveIsNotBeforeOfNow(dateWithoutTimezone);
+      assertIfTheReserveIsNotOnWeekend(dateWithScheduleHours);
+      assertIfTheReserveIsNotBeforeOfNow(dateWithScheduleHours);
 
       await assertRoomIdExists(roomId);
-      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithoutTimezone);
+      await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithScheduleHours);
       await assertUsersExistsOnDatabase(classmatesEnrollments);
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -115,7 +119,7 @@ class ReserveController {
     const reserve = await prisma.reserve.create({
       data: {
         name,
-        date: dateWithoutTimezone,
+        date: dateWithScheduleHours,
         admin: { connect: { id: userId } },
         room: { connect: { id: roomId } },
         schedule: { connect: { id: scheduleId } },
