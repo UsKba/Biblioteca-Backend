@@ -5,7 +5,7 @@ const reserveConfig = {
   maxReservesPerTurn: 2,
 
   userReserve: {
-    statusWaiting: 0,
+    statusPending: 0,
     statusAccepted: 1,
     statusRefused: 2,
   },

@@ -18,7 +18,7 @@ export async function getRandomColorList(length: number) {
   let colorsAlreadyDrawn: number[] = [];
 
   for (let i = 0; i < length; i += 1) {
-    let color = getRandomItem(colors);
+    let color = getRandomItem<Color>(colors);
 
     while (colorsAlreadyDrawn.includes(color.id)) {
       color = getRandomItem(colors);

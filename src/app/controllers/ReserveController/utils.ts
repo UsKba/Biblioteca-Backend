@@ -70,7 +70,7 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 
   const userReserve = await prisma.userReserve.create({
     data: {
-      status,
+      status: status || reserveConfig.userReserve.statusPending,
 
       user: { connect: { enrollment: userEnrollment } },
       color: { connect: { id: colorId } },
@@ -94,7 +94,7 @@ export async function createRelationsBetweenUsersAndReserve(params: CreateRelati
 
   for (let i = 0; i < classmatesEnrollments.length; i += 1) {
     const isAdmin = classmatesEnrollments[i] === loggedUserEnrollment;
-    const status = isAdmin ? reserveConfig.userReserve.statusAccepted : reserveConfig.userReserve.statusWaiting;
+    const status = isAdmin ? reserveConfig.userReserve.statusAccepted : reserveConfig.userReserve.statusPending;
 
     const userReserve = await createUserReserve({
       reserveId,

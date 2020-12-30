@@ -189,7 +189,7 @@ describe('Reserve Index', () => {
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
     expect(reserveMember.enrollment).toBe(user2.enrollment);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
   });
 });
 
@@ -591,7 +591,7 @@ describe('Reserve Store', () => {
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
     expect(reserveMember.enrollment).toBe(user2.enrollment);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
     expect(reserveMember).toHaveProperty('color');
   });
 });
