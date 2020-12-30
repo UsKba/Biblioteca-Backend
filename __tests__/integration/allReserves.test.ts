@@ -128,7 +128,7 @@ describe('allReserves index', () => {
     expect(reserveMember.id).toBe(user2.id);
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusWaiting);
+    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
     expect(reserveMember).toHaveProperty('color');
   });
 });

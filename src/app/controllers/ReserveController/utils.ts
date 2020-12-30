@@ -63,7 +63,7 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 
   const userReserve = await prisma.userReserve.create({
     data: {
-      status: status || reserveConfig.userReserve.statusWaiting,
+      status: status || reserveConfig.userReserve.statusPending,
 
       reserve: { connect: { id: reserveId } },
       user: { connect: { enrollment: userEnrollment } },
