@@ -1,10 +1,6 @@
 import { Response } from 'express';
 
-import {
-  setScheduleHoursAndMinutesAndRemoveTimezone,
-  removeDateTimezoneOffset,
-  getOnBrazilTimezone,
-} from '~/app/utils/date';
+import { setScheduleHoursAndMinutes, getDateOnBrazilTimezone } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 
@@ -50,7 +46,7 @@ type StoreRequest = RequestAuthBody<StoreReserve>;
 class ReserveController {
   async index(request: IndexRequest, response: Response) {
     const userId = request.userId as number;
-    const startDateWithoutTimezone = getOnBrazilTimezone(new Date());
+    const startDate = getDateOnBrazilTimezone(new Date());
 
     const reserves = await prisma.reserve.findMany({
       select: {
@@ -75,7 +71,7 @@ class ReserveController {
           },
         },
         date: {
-          gte: startDateWithoutTimezone,
+          gte: startDate,
         },
       },
       orderBy: {
@@ -92,7 +88,7 @@ class ReserveController {
     const userId = request.userId as number;
     const userEnrollment = request.userEnrollment as string;
 
-    const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body; // ... name = date
+    const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body;
 
     const date = new Date(year, month, day);
     let dateWithScheduleHours: Date;
@@ -104,7 +100,7 @@ class ReserveController {
       assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments);
 
       const schedule = await assertIfScheduleExists(scheduleId);
-      dateWithScheduleHours = setScheduleHoursAndMinutesAndRemoveTimezone(date, schedule.initialHour);
+      dateWithScheduleHours = setScheduleHoursAndMinutes(date, schedule.initialHour);
 
       assertIfTheReserveIsNotOnWeekend(dateWithScheduleHours);
       assertIfTheReserveIsNotBeforeOfNow(dateWithScheduleHours);

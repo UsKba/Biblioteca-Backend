@@ -45,18 +45,18 @@ export function removeDateTimezoneOffset(date: Date) {
   return dateWithoutTimezone;
 }
 
-export function getOnBrazilTimezone(date: Date) {
+export function getDateOnBrazilTimezone(date: Date) {
   const dateWithoutTimezone = removeDateTimezoneOffset(date);
   const dateOnBrazil = subHours(dateWithoutTimezone, 3);
 
   return dateOnBrazil;
 }
 
-export function setScheduleHoursAndMinutesAndRemoveTimezone(date: Date, scheduleHours: string) {
+export function setScheduleHoursAndMinutes(date: Date, scheduleHours: string) {
   const [hours, minutes] = splitSingleDate(scheduleHours);
 
-  const tempDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hours, minutes);
-  const dateWithoutTimezone = removeDateTimezoneOffset(tempDate);
+  const dateWithScheduleHours = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hours, minutes);
+  const dateWithoutTimezone = removeDateTimezoneOffset(dateWithScheduleHours);
 
   return dateWithoutTimezone;
 }

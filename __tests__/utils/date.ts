@@ -38,7 +38,7 @@ function getNextWeekDayDate(params?: GenerateDateParams, rootDate?: Date) {
   const newDate = new Date(newYear, newMonth, newDay);
   const day = getNextWeekDay(newDate);
 
-  return new Date(newYear, newMonth, day);
+  return new Date(newDate.getFullYear(), newDate.getUTCMonth(), day);
 }
 
 export function generateDate(params?: GenerateDateParams) {

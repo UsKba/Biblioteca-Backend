@@ -1,5 +1,3 @@
-import { response } from 'express';
-
 import request from 'supertest';
 
 import App from '~/App';

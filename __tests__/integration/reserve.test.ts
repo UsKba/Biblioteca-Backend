@@ -243,7 +243,7 @@ describe('Reserve Store', () => {
     const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
     const tomorrowReserve = {
-      name: 'Trabalho de portugues',
+      name: 'Group of English',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
@@ -251,7 +251,7 @@ describe('Reserve Store', () => {
     };
 
     const afterTomorrowReserve = {
-      name: 'Trabalho de portugues2',
+      name: 'Group of English2',
       roomId: room.id,
       scheduleId: schedule.id,
       classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
@@ -260,22 +260,22 @@ describe('Reserve Store', () => {
 
     const leaderToken = encodeToken(user1);
 
-    const tomorrowResponse = await request(App)
+    const tomorrowReserveResponse = await request(App)
       .post('/reserves')
       .send(tomorrowReserve)
       .set({
         authorization: `Bearer ${leaderToken}`,
       });
 
-    const afterTomorrowResponse = await request(App)
+    const afterTomorrowReserveResponse = await request(App)
       .post('/reserves')
       .send(afterTomorrowReserve)
       .set({
         authorization: `Bearer ${leaderToken}`,
       });
 
-    expect(tomorrowResponse.status).toBe(200);
-    expect(afterTomorrowResponse.status).toBe(200);
+    expect(tomorrowReserveResponse.status).toBe(200);
+    expect(afterTomorrowReserveResponse.status).toBe(200);
   });
 
   it('should not be able to create a reserve on a schedule that does not exists', async () => {

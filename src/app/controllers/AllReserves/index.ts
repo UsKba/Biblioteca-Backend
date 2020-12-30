@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { removeDateTimezoneOffset } from '~/app/utils/date';
+import { getDateOnBrazilTimezone } from '~/app/utils/date';
 
 import { RequestQuery } from '~/types';
 
@@ -25,14 +25,14 @@ class AllReserves {
     const tempStartDate = new Date(startYear, startMonth, startDay);
     const tempEndDate = new Date(endYear, endMonth, endDay);
 
-    const startDateWithoutTimezone = removeDateTimezoneOffset(tempStartDate);
-    const endDateWithoutTimezone = removeDateTimezoneOffset(tempEndDate);
+    const startReserveDate = getDateOnBrazilTimezone(tempStartDate);
+    const endReserveDate = getDateOnBrazilTimezone(tempEndDate);
 
     const reserves = await prisma.reserve.findMany({
       where: {
         date: {
-          gte: startDateWithoutTimezone,
-          lt: endDateWithoutTimezone,
+          gte: startReserveDate,
+          lt: endReserveDate,
         },
       },
       include: {
