@@ -4,6 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 
 import { RequestBody } from '~/types';
 
+import { formatUserToResponse } from '../UserController/utils';
 import { findUserOrCreate } from './utils';
 
 interface StoreBody {
@@ -21,7 +22,7 @@ class LoginController {
     const user = await findUserOrCreate({ enrollment, name, email });
 
     return res.json({
-      user,
+      user: formatUserToResponse(user),
       token: encodeToken(user),
     });
   }

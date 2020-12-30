@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 
-import { getNextUserColor } from '~/app/utils/colors';
+import { getRandomColor } from '~/app/utils/colors';
 
 import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
 
 import prisma from '~/prisma';
 
 import { assertEnrollmentNotExists, assertEmailNotExists, assertUserIdExists } from './tradingRules';
+import { formatUserToResponse } from './utils';
 
 interface StoreBody {
   name: string;
@@ -23,53 +24,69 @@ type StoreRequest = RequestBody<StoreBody>;
 type UpdateRequest = RequestBodyParamsId<UpdateBody>;
 
 class UserController {
-  async index(request: Request, response: Response) {
-    const users = await prisma.user.findMany({});
+  async index(req: Request, res: Response) {
+    const users = await prisma.user.findMany({
+      include: {
+        color: true,
+      },
+    });
 
-    return response.json(users);
+    const usersFormatted = users.map(formatUserToResponse);
+
+    return res.json(usersFormatted);
   }
 
-  async show(request: RequestParamsId, response: Response) {
-    const { id } = request.params;
+  async show(req: RequestParamsId, res: Response) {
+    const { id } = req.params;
 
     const user = await prisma.user.findOne({
       where: { id: Number(id) },
+      include: {
+        color: true,
+      },
     });
 
     if (user === null) {
-      return response.status(400).json({ error: 'Usuário não encontrado' });
+      return res.status(400).json({ error: 'Usuário não encontrado' });
     }
 
-    return response.json(user);
+    const userFormatted = formatUserToResponse(user);
+
+    return res.json(userFormatted);
   }
 
-  async store(request: StoreRequest, response: Response) {
-    const { enrollment, email, name } = request.body;
+  async store(req: StoreRequest, res: Response) {
+    const { enrollment, email, name } = req.body;
 
     try {
       await assertEnrollmentNotExists(enrollment);
       await assertEmailNotExists(email);
     } catch (e) {
-      return response.status(400).json({ error: e.message });
+      return res.status(400).json({ error: e.message });
     }
 
-    const color = await getNextUserColor();
+    const color = await getRandomColor();
 
     const user = await prisma.user.create({
       data: {
         enrollment,
         email,
         name,
-        color,
+        color: { connect: { id: color.id } },
+      },
+      include: {
+        color: true,
       },
     });
 
-    return response.json(user);
+    const userFormatted = formatUserToResponse(user);
+
+    return res.json(userFormatted);
   }
 
-  async update(request: UpdateRequest, response: Response) {
-    const id = Number(request.params.id);
-    const { name, email } = request.body;
+  async update(req: UpdateRequest, res: Response) {
+    const id = Number(req.params.id);
+    const { name, email } = req.body;
 
     try {
       await assertUserIdExists(id);
@@ -78,7 +95,7 @@ class UserController {
         await assertEmailNotExists(email);
       }
     } catch (e) {
-      return response.status(400).json({ error: e.message });
+      return res.status(400).json({ error: e.message });
     }
 
     const user = await prisma.user.update({
@@ -87,9 +104,14 @@ class UserController {
         email,
       },
       where: { id },
+      include: {
+        color: true,
+      },
     });
 
-    return response.json(user);
+    const userFormatted = formatUserToResponse(user);
+
+    return res.json(userFormatted);
   }
 }
 

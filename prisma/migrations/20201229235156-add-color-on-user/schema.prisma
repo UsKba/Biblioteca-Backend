@@ -12,7 +12,9 @@ model User {
   enrollment String @unique
   email      String @unique
   name       String
-  color      String
+
+  color   Color @relation(fields: [colorId], references: [id])
+  colorId Int
 
   friendUser1 Friend[] @relation("user1")
   friendUser2 Friend[] @relation("user2")
@@ -32,12 +34,6 @@ model Friend {
 
   userId1 Int
   userId2 Int
-}
-
-model UserColor {
-  id Int @id @default(autoincrement())
-
-  colors String
 }
 
 model FriendRequest {
@@ -76,6 +72,12 @@ model UserReserve {
 
   userId    Int
   reserveId Int
+}
+
+model Color {
+  id    Int    @id @default(autoincrement())
+  color String
+  User  User[]
 }
 
 model Room {

@@ -4,6 +4,8 @@ import { RequestAuthQuery } from '~/types/auth';
 
 import prisma from '~/prisma';
 
+import { formatUserToResponse } from '../UserController/utils';
+
 type ShowSearch = {
   name?: string;
   enrollment?: string;
@@ -22,9 +24,14 @@ class SeachController {
         enrollment: { contains: enrollment },
         email: { contains: email },
       },
+      include: {
+        color: true,
+      },
     });
 
-    return res.json(users);
+    const usersFormatted = users.map(formatUserToResponse);
+
+    return res.json(usersFormatted);
   }
 }
 

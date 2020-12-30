@@ -1,0 +1,65 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "UserReserve",
+      "field": "color",
+      "type": "Color",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "color"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "color"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[colorId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "UserReserve",
+          "field": "color"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "UserReserve",
+      "field": "colorId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Color",
+      "field": "UserReserve",
+      "type": "UserReserve",
+      "arity": "List"
+    }
+  ]
+}

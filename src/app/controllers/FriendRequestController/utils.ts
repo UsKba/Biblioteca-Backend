@@ -1,15 +1,19 @@
-import { FriendRequest, User } from '@prisma/client';
+import { FriendRequest } from '@prisma/client';
+
+import { UserWithColor } from '~/types/global';
+
+import { formatUserToResponse } from '../UserController/utils';
 
 type FriendRequestToFormat = FriendRequest & {
-  userSender: User;
-  userReceiver: User;
+  userSender: UserWithColor;
+  userReceiver: UserWithColor;
 };
 
 export function formatFriendRequestToResponse(friendRequest: FriendRequestToFormat) {
   return {
     id: friendRequest.id,
     status: friendRequest.status,
-    sender: friendRequest.userSender,
-    receiver: friendRequest.userReceiver,
+    sender: formatUserToResponse(friendRequest.userSender),
+    receiver: formatUserToResponse(friendRequest.userReceiver),
   };
 }

@@ -4,6 +4,7 @@ import { RequestAuth, RequestAuthParamsId } from '~/types/auth';
 
 import prisma from '~/prisma';
 
+import { formatUserToResponse } from '../UserController/utils';
 import { assertFriendExists } from './tradingRules';
 
 type IndexRequest = RequestAuth;
@@ -27,9 +28,14 @@ class FriendController {
           },
         ],
       },
+      include: {
+        color: true,
+      },
     });
 
-    return res.json(friends);
+    const friendsFormatted = friends.map(formatUserToResponse);
+
+    return res.json(friendsFormatted);
   }
 
   async delete(req: DeleteRequest, res: Response) {

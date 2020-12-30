@@ -3,11 +3,11 @@
   "steps": [
     {
       "tag": "CreateModel",
-      "model": "UserColor"
+      "model": "Color"
     },
     {
       "tag": "CreateField",
-      "model": "UserColor",
+      "model": "Color",
       "field": "id",
       "type": "Int",
       "arity": "Required"
@@ -17,7 +17,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "UserColor",
+          "model": "Color",
           "field": "id"
         },
         "directive": "id"
@@ -28,7 +28,7 @@
       "location": {
         "path": {
           "tag": "Field",
-          "model": "UserColor",
+          "model": "Color",
           "field": "id"
         },
         "directive": "default"
@@ -40,7 +40,7 @@
         "tag": "Directive",
         "path": {
           "tag": "Field",
-          "model": "UserColor",
+          "model": "Color",
           "field": "id"
         },
         "directive": "default"
@@ -50,8 +50,8 @@
     },
     {
       "tag": "CreateField",
-      "model": "UserColor",
-      "field": "colors",
+      "model": "Color",
+      "field": "color",
       "type": "String",
       "arity": "Required"
     }

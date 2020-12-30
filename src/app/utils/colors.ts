@@ -1,43 +1,36 @@
-import colorsConfig from '~/config/colors';
+import { Color } from '@prisma/client';
 
 import prisma from '~/prisma';
 
-import { getRandomItem, subtractElements } from './array';
+import { getRandomItem } from './array';
 
-function getRandomColorIndex(allColorsIndexes: number[], colorsIndexes: number[]) {
-  const disponibleColors = subtractElements(allColorsIndexes, colorsIndexes);
-
-  const colorIndex = getRandomItem(disponibleColors);
-
-  return colorIndex;
-}
-
-export async function getNextUserColor() {
-  const [userColor] = await prisma.userColor.findMany({});
-  const colorsIndexes = userColor.colors.split(',').map(Number);
-
-  const allColorsIndexes = Object.keys(colorsConfig).map((color, index) => index);
-
-  const colorIndex = getRandomColorIndex(allColorsIndexes, colorsIndexes);
-  const color = Object.values(colorsConfig)[colorIndex];
-
-  const colorsIndexesUpdated = [...colorsIndexes, colorIndex];
-
-  if (colorsIndexesUpdated.length === allColorsIndexes.length) {
-    await prisma.userColor.update({
-      data: { colors: '' },
-      where: { id: userColor.id },
-    });
-
-    return color;
-  }
-
-  const colorsIndexesUpdatedString = String(colorsIndexesUpdated);
-
-  await prisma.userColor.update({
-    data: { colors: colorsIndexesUpdatedString },
-    where: { id: userColor.id },
-  });
+export async function getRandomColor() {
+  const colors = await prisma.color.findMany({});
+  const color = getRandomItem(colors);
 
   return color;
+}
+
+export async function getRandomColorList(length: number) {
+  const colors = await prisma.color.findMany({});
+
+  const randomColorsList = [];
+  let colorsAlreadyDrawn: number[] = [];
+
+  for (let i = 0; i < length; i += 1) {
+    let color = getRandomItem(colors);
+
+    while (colorsAlreadyDrawn.includes(color.id)) {
+      color = getRandomItem(colors);
+    }
+
+    colorsAlreadyDrawn.push(color.id);
+    randomColorsList.push(color);
+
+    if (colorsAlreadyDrawn.length === colors.length) {
+      colorsAlreadyDrawn = [];
+    }
+  }
+
+  return randomColorsList;
 }

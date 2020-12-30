@@ -1,37 +1,75 @@
-import { PrismaClient } from '@prisma/client';
+import { Color, PrismaClient } from '@prisma/client';
 
-import colorsConfig from '../src/config/colors';
+import { getRandomItem } from '../src/app/utils/array';
 
-async function run() {
-  const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
+async function createColors() {
+  const colorsDatabase = [];
+
+  const colors = [
+    {
+      color: '#FF1F00',
+    },
+    {
+      color: '#3D6DCC',
+    },
+    {
+      color: '#2B9348',
+    },
+    {
+      color: '#8357E5',
+    },
+  ];
+
+  for (const colorData of colors) {
+    const colorCreated = await prisma.color.create({
+      data: colorData,
+    });
+
+    colorsDatabase.push(colorCreated);
+  }
+
+  return colorsDatabase;
+}
+
+async function createUsers(colors: Color[]) {
   const users = [
     {
       name: 'Idaslon Garcia',
       enrollment: '20181104010048',
       email: 'idaslon.g@academico.ifrn.edu.br',
-      color: colorsConfig.purple,
     },
     {
       name: 'Fellipe Souza',
       enrollment: '20181104010027',
       email: 'z.santos@academico.ifrn.edu.br',
-      color: colorsConfig.red,
     },
     {
       name: 'NATHAN MARQUES',
       enrollment: '20181104010009',
       email: 'nathan.araujo@academico.ifrn.edu.br',
-      color: colorsConfig.green,
     },
     {
       name: 'Alceu Nascimento',
       enrollment: '20181104010039',
       email: 'alceu.guilherme@academico.ifrn.edu.br',
-      color: colorsConfig.blue,
     },
   ];
 
+  for (const userData of users) {
+    const randomColor = getRandomItem(colors);
+
+    await prisma.user.create({
+      data: {
+        ...userData,
+        color: { connect: { id: randomColor.id } },
+      },
+    });
+  }
+}
+
+async function createPeriodsAndSchedules() {
   const periods = [
     {
       name: 'Manhã',
@@ -111,27 +149,6 @@ async function run() {
     ],
   ];
 
-  const rooms = [
-    {
-      initials: 'F1-3',
-    },
-    {
-      initials: 'F1-4',
-    },
-    {
-      initials: 'F1-5',
-    },
-    {
-      initials: 'F1-6',
-    },
-  ];
-
-  for (const user of users) {
-    await prisma.user.create({
-      data: user,
-    });
-  }
-
   for (let i = 0; i < periods.length; i += 1) {
     const periodData = periods[i];
 
@@ -153,20 +170,39 @@ async function run() {
       });
     }
   }
+}
+
+async function createRooms() {
+  const rooms = [
+    {
+      initials: 'F1-3',
+    },
+    {
+      initials: 'F1-4',
+    },
+    {
+      initials: 'F1-5',
+    },
+    {
+      initials: 'F1-6',
+    },
+  ];
 
   for (const room of rooms) {
     await prisma.room.create({
       data: room,
     });
   }
+}
 
-  await prisma.userColor.create({
-    data: {
-      colors: '',
-    },
-  });
+async function run() {
+  const colors = await createColors();
+  await createUsers(colors);
 
-  prisma.disconnect();
+  await createPeriodsAndSchedules();
+  await createRooms();
+
+  await prisma.disconnect();
 }
 
 run();

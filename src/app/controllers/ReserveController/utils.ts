@@ -1,8 +1,14 @@
-import { Reserve, Room, Schedule, User, UserReserve } from '@prisma/client';
+import { Room, Schedule } from '@prisma/client';
+
+import { getRandomColorList } from '~/app/utils/colors';
 
 import reserveConfig from '~/config/reserve';
 
+import { UserWithColor } from '~/types/global';
+
 import prisma from '~/prisma';
+
+import { formatUserToResponse } from '../UserController/utils';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
   loggedUserEnrollment: string;
@@ -12,8 +18,9 @@ interface CreateRelationsBetweenUsersAndReserveParams {
 
 interface CreateUserReserveParams {
   reserveId: number;
+  colorId: number;
   userEnrollment: string;
-  status?: number;
+  status: number;
 }
 
 type ReserveToFormat = {
@@ -23,18 +30,18 @@ type ReserveToFormat = {
   adminId: number;
   schedule: Schedule;
   room: Room;
-  userReserve: { status: number; user: User }[];
+  userReserve: { status: number; user: UserWithColor }[];
 };
 
 type UserReserveToFormat = {
   status: number;
-  user: User;
+  user: UserWithColor;
 };
 
 export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
   return {
     status: userReserve.status,
-    ...userReserve.user,
+    ...formatUserToResponse(userReserve.user),
   };
 }
 
@@ -59,17 +66,20 @@ export function formatReservesToResponse(reserves: ReserveToFormat[]) {
 }
 
 export async function createUserReserve(params: CreateUserReserveParams) {
-  const { reserveId, userEnrollment, status } = params;
+  const { reserveId, userEnrollment, colorId, status } = params;
 
   const userReserve = await prisma.userReserve.create({
     data: {
-      status: status || reserveConfig.userReserve.statusWaiting,
+      status,
 
-      reserve: { connect: { id: reserveId } },
       user: { connect: { enrollment: userEnrollment } },
+      color: { connect: { id: colorId } },
+      reserve: { connect: { id: reserveId } },
     },
     include: {
-      user: true,
+      user: {
+        include: { color: true },
+      },
     },
   });
 
@@ -80,15 +90,17 @@ export async function createRelationsBetweenUsersAndReserve(params: CreateRelati
   const { loggedUserEnrollment, reserveId, classmatesEnrollments } = params;
 
   const users = [];
+  const userColors = await getRandomColorList(classmatesEnrollments.length);
 
   for (let i = 0; i < classmatesEnrollments.length; i += 1) {
     const isAdmin = classmatesEnrollments[i] === loggedUserEnrollment;
-    const status = isAdmin ? reserveConfig.userReserve.statusAccepted : undefined;
+    const status = isAdmin ? reserveConfig.userReserve.statusAccepted : reserveConfig.userReserve.statusWaiting;
 
     const userReserve = await createUserReserve({
-      userEnrollment: classmatesEnrollments[i],
       reserveId,
       status,
+      colorId: userColors[i].id,
+      userEnrollment: classmatesEnrollments[i],
     });
 
     const userFormatted = formatUsersReserveToResponse(userReserve);

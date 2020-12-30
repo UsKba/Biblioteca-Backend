@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./database.sqlite"
+  url = "***"
 }
 
 model User {
@@ -12,9 +12,6 @@ model User {
   enrollment String @unique
   email      String @unique
   name       String
-
-  color   Color @relation(fields: [colorId], references: [id])
-  colorId Int
 
   friendUser1 Friend[] @relation("user1")
   friendUser2 Friend[] @relation("user2")
@@ -68,20 +65,15 @@ model UserReserve {
   status Int
 
   user    User    @relation(fields: [userId], references: [id])
-  color   Color   @relation(fields: [colorId], references: [id])
   reserve Reserve @relation(fields: [reserveId], references: [id])
 
   userId    Int
-  colorId   Int
   reserveId Int
 }
 
 model Color {
   id    Int    @id @default(autoincrement())
   color String
-
-  User        User[]
-  UserReserve UserReserve[]
 }
 
 model Room {

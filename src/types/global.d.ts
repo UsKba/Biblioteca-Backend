@@ -1,3 +1,5 @@
+import { Color, User } from '@prisma/client';
+
 type PrismaClient = import('@prisma/client').PrismaClient;
 
 declare namespace NodeJS {
@@ -5,3 +7,5 @@ declare namespace NodeJS {
     prisma?: PrismaClient;
   }
 }
+
+export type UserWithColor = User & { color: Color };

@@ -57,7 +57,12 @@ class ReserveController {
         room: true,
         schedule: true,
         userReserve: {
-          select: { status: true, user: true },
+          select: {
+            status: true,
+            user: {
+              include: { color: true },
+            },
+          },
           where: {
             NOT: { status: reserveConfig.userReserve.statusRefused },
           },
@@ -128,7 +133,12 @@ class ReserveController {
         room: true,
         schedule: true,
         userReserve: {
-          select: { status: true, user: true },
+          select: {
+            status: true,
+            user: {
+              include: { color: true },
+            },
+          },
         },
       },
     });

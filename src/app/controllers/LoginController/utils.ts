@@ -1,4 +1,4 @@
-import { getNextUserColor } from '~/app/utils/colors';
+import { getRandomColor } from '~/app/utils/colors';
 
 import prisma from '~/prisma';
 
@@ -13,21 +13,23 @@ export async function findUserOrCreate(userData: UserData) {
 
   const users = await prisma.user.findMany({
     where: { enrollment, email },
+    include: { color: true },
   });
 
   if (users.length > 0) {
     return users[0];
   }
 
-  const color = await getNextUserColor();
+  const color = await getRandomColor();
 
   const user = await prisma.user.create({
     data: {
       enrollment,
       email,
       name,
-      color,
+      color: { connect: { id: color.id } },
     },
+    include: { color: true },
   });
 
   return user;
