@@ -15,3 +15,15 @@ export async function assertFriendExists(params: FriendWhereUniqueInput) {
 
   return friend;
 }
+
+export async function assertUserIsNotFriend(senderId: number, receiverId: number) {
+  const friends = await prisma.friend.findMany({
+    where: { userId1: senderId, userId2: receiverId },
+  });
+
+  if (friends.length > 0) {
+    throw new RequestError('Usuário já está na lista de amigos');
+  }
+
+  return friends[0];
+}

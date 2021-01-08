@@ -4,7 +4,7 @@ import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types/reque
 
 import prisma from '~/prisma';
 
-import { assertInitialsNotExists, assertRoomIdExists } from './tradingRules';
+import { assertRoomNotExists, assertRoomExists } from './tradingRules';
 
 interface StoreRoom {
   initials: string;
@@ -29,7 +29,7 @@ class RoomController {
     const { initials } = request.body;
 
     try {
-      await assertInitialsNotExists(initials);
+      await assertRoomNotExists({ initials });
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }
@@ -44,13 +44,14 @@ class RoomController {
   }
 
   async update(request: UpdateRequest, response: Response) {
-    const { id } = request.params;
+    const id = Number(request.params.id);
     const { available, initials } = request.body;
 
     try {
-      await assertRoomIdExists(Number(id));
+      await assertRoomExists({ id });
+
       if (initials) {
-        await assertInitialsNotExists(initials);
+        await assertRoomNotExists({ initials });
       }
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -71,7 +72,7 @@ class RoomController {
     const id = Number(request.params.id);
 
     try {
-      await assertRoomIdExists(id);
+      await assertRoomExists({ id });
     } catch (e) {
       return response.status(400).json({ error: e.message });
     }

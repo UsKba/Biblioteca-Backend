@@ -3,6 +3,7 @@ import { Request as DefaultRequest } from 'express';
 import { ParamsDictionary, Query } from './request';
 
 export interface RequestAuthBody<B> extends DefaultRequest {
+  userEnrollment: string;
   userId?: number;
   body: B;
 }

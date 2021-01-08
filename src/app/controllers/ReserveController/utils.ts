@@ -1,4 +1,4 @@
-import { Room, Schedule } from '@prisma/client';
+import { Reserve, Room, Schedule } from '@prisma/client';
 
 import { getRandomColorList } from '~/app/utils/colors';
 
@@ -117,5 +117,18 @@ export async function deleteReserve(reserveId: number) {
 
   await prisma.reserve.delete({
     where: { id: reserveId },
+  });
+}
+
+export async function updateReserveLeader(reserve: Reserve) {
+  const usersReserve = await prisma.userReserve.findMany({
+    where: { reserveId: reserve.id },
+  });
+
+  await prisma.reserve.update({
+    where: { id: reserve.id },
+    data: {
+      admin: { connect: { id: usersReserve[0].userId } },
+    },
   });
 }

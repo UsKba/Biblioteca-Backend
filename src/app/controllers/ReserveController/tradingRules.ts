@@ -10,33 +10,6 @@ import reserveConfig from '~/config/reserve';
 
 import prisma from '~/prisma';
 
-async function checkUsersExists(userEnrollments: string[]) {
-  for (let i = 0; i < userEnrollments.length; i += 1) {
-    const userEnrollment = userEnrollments[i];
-
-    const userExists = await prisma.user.findOne({
-      where: { enrollment: userEnrollment },
-    });
-
-    if (!userExists) {
-      return {
-        allUsersExists: false,
-        nonUserEnrollment: userEnrollment,
-      };
-    }
-  }
-
-  return { allUsersExists: true };
-}
-
-export async function assertUsersExistsOnDatabase(usersEnrollments: string[]) {
-  const { allUsersExists, nonUserEnrollment } = await checkUsersExists(usersEnrollments);
-
-  if (!allUsersExists) {
-    throw new RequestError(`Usuário ${nonUserEnrollment} não encontrado`);
-  }
-}
-
 export async function assertRoomIsOpenOnThisDateAndSchedule(scheduleId: number, roomId: number, date: Date) {
   const reserveExistsArray = await prisma.reserve.findMany({
     where: { scheduleId, roomId, date },
@@ -115,25 +88,6 @@ export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
   }
 }
 
-export async function assertIfUserIsHisSelf(userId: number, userToDelete: number) {
-  if (userToDelete !== userId) {
-    throw new RequestError('Somente o lider da reserva pode remover outros usuários da reserva');
-  }
-}
-
-export async function uptateReserveLeader(reserve: Reserve) {
-  const usersReserve = await prisma.userReserve.findMany({
-    where: { reserveId: reserve.id },
-  });
-
-  await prisma.reserve.update({
-    where: { id: reserve.id },
-    data: {
-      admin: { connect: { id: usersReserve[0].userId } },
-    },
-  });
-}
-
 export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[]) {
   const userExists = userReserves.find((userReserve) => userReserve.userId === userId);
 
@@ -142,15 +96,8 @@ export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[
   }
 }
 
-// export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
-//   if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
-//     throw new RequestError(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
-//   }
-// }
-
-export function checkIfHaveMinUsersOnReserve(userReserves: UserReserve[]) {
-  if (userReserves.length === reserveConfig.minClassmatesPerRoom) {
-    return true;
-  }
-  return false;
+export function checkHaveExactMinUsersOnReserve(userReserves: UserReserve[]) {
+  // if (userReserves.length === reserveConfig.minClassmatesPerRoom) {
+  // if (userReserves.length >= reserveConfig.minClassmatesPerRoom) {
+  return userReserves.length === reserveConfig.minClassmatesPerRoom;
 }

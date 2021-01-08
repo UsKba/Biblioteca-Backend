@@ -2,20 +2,38 @@ import { RequestError } from '~/app/errors/request';
 
 import prisma from '~/prisma';
 
-export async function assertInitialsNotExists(initials: string) {
+interface RoomNotExistsParams {
+  initials?: string;
+}
+
+interface RoomExistsParams {
+  id?: number;
+}
+
+export async function assertRoomNotExists(params: RoomNotExistsParams) {
+  const { initials } = params;
+
   const room = await prisma.room.findOne({
     where: { initials },
   });
 
   if (room !== null) {
-    throw new RequestError('Já existe sala com essa sigla');
+    throw new RequestError(`${initials} já existe`);
   }
+
+  return room;
 }
 
-export async function assertRoomIdExists(id: number) {
-  const roomExists = await prisma.room.findOne({ where: { id: Number(id) } });
+export async function assertRoomExists(params: RoomExistsParams) {
+  const { id } = params;
 
-  if (!roomExists) {
+  const room = await prisma.room.findOne({
+    where: { id },
+  });
+
+  if (!room) {
     throw new RequestError('Sala não encontrada');
   }
+
+  return room;
 }

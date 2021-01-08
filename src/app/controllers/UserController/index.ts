@@ -6,7 +6,7 @@ import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types/reque
 
 import prisma from '~/prisma';
 
-import { assertEnrollmentNotExists, assertEmailNotExists, assertUserIdExists } from './tradingRules';
+import { assertUserNotExists, assertUserExists } from './tradingRules';
 import { formatUserToResponse } from './utils';
 
 interface StoreBody {
@@ -59,8 +59,8 @@ class UserController {
     const { enrollment, email, name } = req.body;
 
     try {
-      await assertEnrollmentNotExists(enrollment);
-      await assertEmailNotExists(email);
+      await assertUserNotExists({ enrollment });
+      await assertUserNotExists({ email });
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -89,10 +89,10 @@ class UserController {
     const { name, email } = req.body;
 
     try {
-      await assertUserIdExists(id);
+      await assertUserExists({ id });
 
       if (email) {
-        await assertEmailNotExists(email);
+        await assertUserNotExists({ email });
       }
     } catch (e) {
       return res.status(400).json({ error: e.message });

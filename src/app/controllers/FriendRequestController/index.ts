@@ -6,11 +6,11 @@ import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/reque
 
 import prisma from '~/prisma';
 
-import { assertUserEnrollmentExists } from '../UserController/tradingRules';
+import { assertUserIsNotFriend } from '../FriendController/tradingRules';
+import { assertUserExists } from '../UserController/tradingRules';
 import {
   assertFriendRequestExists,
   assertIsSenderOrReceiverId,
-  assertUserIsNotFriend,
   assertUserLoggedAndFriendRequestReceiverAreDifferent,
 } from './tradingRules';
 import { formatFriendRequestToResponse } from './utils';
@@ -67,7 +67,7 @@ class FriendRequestController {
     try {
       assertUserLoggedAndFriendRequestReceiverAreDifferent(userEnrollment, receiverEnrollment);
 
-      const userReceiver = await assertUserEnrollmentExists(receiverEnrollment);
+      const userReceiver = await assertUserExists({ enrollment: receiverEnrollment });
       await assertUserIsNotFriend(userId, userReceiver.id);
 
       const [friendRequest] = await prisma.friendRequest.findMany({
@@ -118,7 +118,7 @@ class FriendRequestController {
 
     try {
       const friendRequest = await assertFriendRequestExists(id);
-      await assertIsSenderOrReceiverId(userId, friendRequest);
+      assertIsSenderOrReceiverId(userId, friendRequest);
 
       const friendRequestUpdated = await prisma.friendRequest.update({
         where: { id },

@@ -8,10 +8,9 @@ import {
   assertIsReserveLeader,
   assertReserveExists,
   assertUserIsOnReserve,
-  uptateReserveLeader,
-  checkIfHaveMinUsersOnReserve,
+  checkHaveExactMinUsersOnReserve,
 } from '../ReserveController/tradingRules';
-import { deleteReserve } from '../ReserveController/utils';
+import { deleteReserve, updateReserveLeader } from '../ReserveController/utils';
 
 type UserReserveDelete = {
   reserveId: string;
@@ -30,11 +29,9 @@ class UserReserveController {
     try {
       const reserve = await assertReserveExists(reserveId);
       const userLoggedIsLeader = reserve.adminId === userId;
-      assertUserIsOnReserve(userIdToDelete, reserve.userReserve);
-      // assertCanRemoveUserFromReserve(reserve.UserReserve); se tiver menos de 3 pessoas deletar a reserva
-      // lista de espera ????????
 
-      const haveMinUsersOnReserve = checkIfHaveMinUsersOnReserve(reserve.userReserve);
+      assertUserIsOnReserve(userIdToDelete, reserve.userReserve);
+      const haveMinUsersOnReserve = checkHaveExactMinUsersOnReserve(reserve.userReserve);
 
       if (userId === userIdToDelete) {
         if (haveMinUsersOnReserve) {
@@ -48,7 +45,7 @@ class UserReserveController {
           });
 
           if (userLoggedIsLeader) {
-            await uptateReserveLeader(reserve);
+            await updateReserveLeader(reserve);
           }
         }
         return res.json({ reserveId, userId: userIdToDelete });

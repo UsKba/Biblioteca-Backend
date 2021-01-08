@@ -1,32 +1,30 @@
+import { UserWhereUniqueInput } from '@prisma/client';
+
 import { RequestError } from '~/app/errors/request';
 
 import prisma from '~/prisma';
 
-export async function assertEmailNotExists(email: string) {
-  const emailExists = await prisma.user.findOne({
-    where: { email },
-  });
+type FindUser = UserWhereUniqueInput;
 
-  if (emailExists) {
-    throw new RequestError('Email já cadastrado');
-  }
-}
+export async function assertUserNotExists(params: FindUser) {
+  const { id, email, enrollment } = params;
 
-export async function assertEnrollmentNotExists(enrollment: string) {
-  const enrollmentExists = await prisma.user.findOne({
-    where: { enrollment },
-  });
-
-  if (enrollmentExists) {
-    throw new RequestError('Matrícula já está cadastrada');
-  }
-
-  return enrollmentExists;
-}
-
-export async function assertUserEnrollmentExists(enrollment: string) {
   const user = await prisma.user.findOne({
-    where: { enrollment },
+    where: { id, email, enrollment },
+  });
+
+  if (user) {
+    throw new RequestError('Usuário já cadastrado');
+  }
+
+  return user;
+}
+
+export async function assertUserExists(params: FindUser) {
+  const { id, email, enrollment } = params;
+
+  const user = await prisma.user.findOne({
+    where: { id, email, enrollment },
   });
 
   if (!user) {
@@ -36,14 +34,29 @@ export async function assertUserEnrollmentExists(enrollment: string) {
   return user;
 }
 
-export async function assertUserIdExists(id: number) {
-  const user = await prisma.user.findOne({
-    where: { id },
-  });
+async function checkUsersExists(userEnrollments: string[]) {
+  for (let i = 0; i < userEnrollments.length; i += 1) {
+    const userEnrollment = userEnrollments[i];
 
-  if (!user) {
-    throw new RequestError('Usuário não encontrado');
+    const userExists = await prisma.user.findOne({
+      where: { enrollment: userEnrollment },
+    });
+
+    if (!userExists) {
+      return {
+        allUsersExists: false,
+        nonUserEnrollment: userEnrollment,
+      };
+    }
   }
 
-  return user;
+  return { allUsersExists: true };
+}
+
+export async function assertUsersExistsOnDatabase(usersEnrollments: string[]) {
+  const { allUsersExists, nonUserEnrollment } = await checkUsersExists(usersEnrollments);
+
+  if (!allUsersExists) {
+    throw new RequestError(`Usuário ${nonUserEnrollment} não encontrado`);
+  }
 }
