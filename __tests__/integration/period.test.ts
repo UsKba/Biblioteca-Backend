@@ -110,12 +110,12 @@ describe('period store', () => {
   });
 });
 
-describe('period store', () => {
+describe('period index', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should have correct fields on period store', async () => {
+  it('should have correct fields on period index', async () => {
     const period = await createPeriod();
 
     const response = await request(App).get('/periods');
