@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { encodeToken } from '~/app/utils/auth';
 
-import { RequestBody } from '~/types';
+import { RequestBody } from '~/types/request';
 
 import { formatUserToResponse } from '../UserController/utils';
 import { findUserOrCreate } from './utils';

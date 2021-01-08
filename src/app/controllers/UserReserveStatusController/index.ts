@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import reserveConfig from '~/config/reserve';
 
-import { RequestAuthParams } from '~/types/auth';
+import { RequestAuthParams } from '~/types/requestAuth';
 
 import { assertReserveExists, assertUserIsOnReserve } from '../ReserveController/tradingRules';
 import { deleteReserve } from '../ReserveController/utils';

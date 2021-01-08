@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { RequestAuthBody } from '~/types/auth';
+import { RequestAuthBody } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 

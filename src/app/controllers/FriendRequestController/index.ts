@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import friendConfig from '~/config/friend';
 
-import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/auth';
+import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 

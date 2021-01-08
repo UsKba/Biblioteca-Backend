@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { assertInitialDateIsBeforeEndDate, stringsToDateArray } from '~/app/utils/date';
 
-import { RequestBody, RequestBodyParamsId } from '~/types';
+import { RequestBody, RequestBodyParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
 

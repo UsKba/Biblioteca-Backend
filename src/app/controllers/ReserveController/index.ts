@@ -4,7 +4,7 @@ import { setScheduleHoursAndMinutes, getDateOnBrazilTimezone } from '~/app/utils
 
 import reserveConfig from '~/config/reserve';
 
-import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/auth';
+import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 

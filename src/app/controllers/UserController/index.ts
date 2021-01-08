@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { getRandomColor } from '~/app/utils/colors';
 
-import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types';
+import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
 

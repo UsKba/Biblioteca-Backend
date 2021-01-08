@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { getDateOnBrazilTimezone } from '~/app/utils/date';
 
-import { RequestQuery } from '~/types';
+import { RequestQuery } from '~/types/request';
 
 import prisma from '~/prisma';
 

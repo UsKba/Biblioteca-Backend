@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types';
+import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
 
