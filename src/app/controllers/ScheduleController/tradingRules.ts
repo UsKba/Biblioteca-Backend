@@ -3,6 +3,8 @@ import { areIntervalsOverlapping, isWithinInterval } from 'date-fns';
 
 import { stringsToDateArray } from '~/app/utils/date';
 
+import { RequestError } from '~/app/errors/request';
+
 import prisma from '~/prisma';
 
 export async function isScheduleOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
@@ -34,7 +36,7 @@ export async function assertScheduleIsNotOverlappingOnDatabase(initialDate: Date
   const areOverlapping = await isScheduleOverlappingOtherOnDatabase(initialDate, endDate, ignoreId);
 
   if (areOverlapping) {
-    throw new Error('Não é possível colocar dois horários no mesmo intervalo');
+    throw new RequestError('Não é possível colocar dois horários no mesmo intervalo');
   }
 }
 
@@ -53,7 +55,7 @@ export function assertScheduleIsOnPeriodInterval(period: Period, initialDate: Da
   });
 
   if (!isInitialDateInsidePeriodInterval || !isEndDateInsidePeriodInterval) {
-    throw new Error(`O horário deve estar entre às ${initialHour} ate às ${endHour}`);
+    throw new RequestError(`O horário deve estar entre às ${initialHour} ate às ${endHour}`);
   }
 }
 
@@ -63,7 +65,7 @@ export async function assertIfScheduleExists(id: number) {
   });
 
   if (!schedule) {
-    throw new Error('Horário não encontrado');
+    throw new RequestError('Horário não encontrado');
   }
 
   return schedule;

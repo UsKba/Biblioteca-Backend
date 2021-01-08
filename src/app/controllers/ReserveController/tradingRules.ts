@@ -1,8 +1,10 @@
 import { Reserve, UserReserve } from '@prisma/client';
-import { isBefore, subHours } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 import { haveDuplicates } from '~/app/utils/array';
-import { getDateOnBrazilTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
+import { getDateOnBrazilTimezone } from '~/app/utils/date';
+
+import { RequestError } from '~/app/errors/request';
 
 import reserveConfig from '~/config/reserve';
 
@@ -31,7 +33,7 @@ export async function assertUsersExistsOnDatabase(usersEnrollments: string[]) {
   const { allUsersExists, nonUserEnrollment } = await checkUsersExists(usersEnrollments);
 
   if (!allUsersExists) {
-    throw new Error(`Usuário ${nonUserEnrollment} não encontrado`);
+    throw new RequestError(`Usuário ${nonUserEnrollment} não encontrado`);
   }
 }
 
@@ -41,7 +43,7 @@ export async function assertRoomIsOpenOnThisDateAndSchedule(scheduleId: number, 
   });
 
   if (reserveExistsArray.length > 0) {
-    throw new Error(`Não é possível realizar a reserva pois esta sala já está reservada nesse dia e horário`);
+    throw new RequestError(`Não é possível realizar a reserva pois esta sala já está reservada nesse dia e horário`);
   }
 }
 
@@ -49,7 +51,7 @@ export function assertIfHaveTheMinimunClassmatesRequired(classmatesEnrollments: 
   const { minClassmatesPerRoom } = reserveConfig;
 
   if (classmatesEnrollments.length < minClassmatesPerRoom) {
-    throw new Error(`São necessários ao menos ${minClassmatesPerRoom} alunos`);
+    throw new RequestError(`São necessários ao menos ${minClassmatesPerRoom} alunos`);
   }
 }
 
@@ -57,7 +59,7 @@ export function assertIfHaveTheMaximumClassmatesRequired(classmatesEnrollments: 
   const { maxClassmatesPerRoom } = reserveConfig;
 
   if (classmatesEnrollments.length > maxClassmatesPerRoom) {
-    throw new Error(`São necessários no máximo ${maxClassmatesPerRoom} alunos`);
+    throw new RequestError(`São necessários no máximo ${maxClassmatesPerRoom} alunos`);
   }
 }
 
@@ -65,7 +67,7 @@ export function assertUserIsOnClassmatesEnrollments(userEnrollment: string, clas
   const userExists = classmatesEnrollments.includes(userEnrollment);
 
   if (!userExists) {
-    throw new Error('Somente o usuario autenticado pode realizar a reserva');
+    throw new RequestError('Somente o usuario autenticado pode realizar a reserva');
   }
 }
 
@@ -73,13 +75,13 @@ export function assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments: st
   const haveIdsDuplicated = haveDuplicates(classmatesEnrollments);
 
   if (haveIdsDuplicated) {
-    throw new Error('Não pode repetir o mesmo usuário');
+    throw new RequestError('Não pode repetir o mesmo usuário');
   }
 }
 
 export function assertIfTheReserveIsNotOnWeekend(date: Date) {
   if (date.getDay() === 0 || date.getDay() === 6) {
-    throw new Error('Não se pode reservar sala no final de semana');
+    throw new RequestError('Não se pode reservar sala no final de semana');
   }
 }
 
@@ -88,7 +90,7 @@ export function assertIfTheReserveIsNotBeforeOfNow(date: Date) {
   const dateOnBrazilTimezone = getDateOnBrazilTimezone(now);
 
   if (isBefore(date, dateOnBrazilTimezone)) {
-    throw new Error('A data não pode ser anterior a atual');
+    throw new RequestError('A data não pode ser anterior a atual');
   }
 }
 
@@ -101,7 +103,7 @@ export async function assertReserveExists(id: number) {
   });
 
   if (!reserve) {
-    throw new Error('Reserva não encontrada');
+    throw new RequestError('Reserva não encontrada');
   }
 
   return reserve;
@@ -109,13 +111,13 @@ export async function assertReserveExists(id: number) {
 
 export async function assertIsReserveLeader(userId: number, reserve: Reserve) {
   if (reserve.adminId !== userId) {
-    throw new Error('Somente o líder da reserva pode realizar esta ação');
+    throw new RequestError('Somente o líder da reserva pode realizar esta ação');
   }
 }
 
 export async function assertIfUserIsHisSelf(userId: number, userToDelete: number) {
   if (userToDelete !== userId) {
-    throw new Error('Somente o lider da reserva pode remover outros usuários da reserva');
+    throw new RequestError('Somente o lider da reserva pode remover outros usuários da reserva');
   }
 }
 
@@ -136,13 +138,13 @@ export function assertUserIsOnReserve(userId: number, userReserves: UserReserve[
   const userExists = userReserves.find((userReserve) => userReserve.userId === userId);
 
   if (!userExists) {
-    throw new Error('Usuário não pertence a reserva');
+    throw new RequestError('Usuário não pertence a reserva');
   }
 }
 
 // export function assertCanRemoveUserFromReserve(userReserves: UserReserve[]) {
 //   if (userReserves.length - 1 < reserveConfig.minClassmatesPerRoom) {
-//     throw new Error(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
+//     throw new RequestError(`Precisa-se ter no mínimo ${reserveConfig.minClassmatesPerRoom} componentes na reserva`);
 //   }
 // }
 

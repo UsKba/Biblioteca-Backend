@@ -1,5 +1,7 @@
 import { FriendWhereUniqueInput } from '@prisma/client';
 
+import { RequestError } from '~/app/errors/request';
+
 import prisma from '~/prisma';
 
 export async function assertFriendExists(params: FriendWhereUniqueInput) {
@@ -8,7 +10,7 @@ export async function assertFriendExists(params: FriendWhereUniqueInput) {
   });
 
   if (!friend) {
-    throw new Error('Amigo não encontrado');
+    throw new RequestError('Amigo não encontrado');
   }
 
   return friend;

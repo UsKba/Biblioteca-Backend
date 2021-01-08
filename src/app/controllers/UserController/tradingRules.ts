@@ -1,3 +1,5 @@
+import { RequestError } from '~/app/errors/request';
+
 import prisma from '~/prisma';
 
 export async function assertEmailNotExists(email: string) {
@@ -6,7 +8,7 @@ export async function assertEmailNotExists(email: string) {
   });
 
   if (emailExists) {
-    throw new Error('Email já cadastrado');
+    throw new RequestError('Email já cadastrado');
   }
 }
 
@@ -16,7 +18,7 @@ export async function assertEnrollmentNotExists(enrollment: string) {
   });
 
   if (enrollmentExists) {
-    throw new Error('Matrícula já está cadastrada');
+    throw new RequestError('Matrícula já está cadastrada');
   }
 
   return enrollmentExists;
@@ -28,7 +30,7 @@ export async function assertUserEnrollmentExists(enrollment: string) {
   });
 
   if (!user) {
-    throw new Error('Usuário não encontrado');
+    throw new RequestError('Usuário não encontrado');
   }
 
   return user;
@@ -40,7 +42,7 @@ export async function assertUserIdExists(id: number) {
   });
 
   if (!user) {
-    throw new Error('Usuário não encontrado');
+    throw new RequestError('Usuário não encontrado');
   }
 
   return user;

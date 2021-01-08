@@ -1,5 +1,7 @@
 import { FriendRequest } from '@prisma/client';
 
+import { RequestError } from '~/app/errors/request';
+
 import prisma from '~/prisma';
 
 export function assertUserLoggedAndFriendRequestReceiverAreDifferent(
@@ -7,7 +9,7 @@ export function assertUserLoggedAndFriendRequestReceiverAreDifferent(
   receiverEnrollment: string
 ) {
   if (userEnrollment === receiverEnrollment) {
-    throw new Error('Você não pode enviar solicitação de amizade para sigo mesmo');
+    throw new RequestError('Você não pode enviar solicitação de amizade para sigo mesmo');
   }
 }
 
@@ -17,7 +19,7 @@ export async function assertUserIsNotFriend(senderId: number, receiverId: number
   });
 
   if (friends.length > 0) {
-    throw new Error('Usuário já está na lista de amigos');
+    throw new RequestError('Usuário já está na lista de amigos');
   }
 
   return friends[0];
@@ -25,7 +27,7 @@ export async function assertUserIsNotFriend(senderId: number, receiverId: number
 
 export async function assertIsSenderOrReceiverId(senderId: number, friendRequest: FriendRequest) {
   if (friendRequest?.senderId !== senderId && friendRequest?.receiverId !== senderId) {
-    throw new Error('Você não tem permissão para deletar o convite');
+    throw new RequestError('Você não tem permissão para deletar o convite');
   }
 
   return friendRequest;
@@ -37,7 +39,7 @@ export async function assertFriendRequestExists(id: number) {
   });
 
   if (!friendRequest) {
-    throw new Error('Convite não encontrado');
+    throw new RequestError('Convite não encontrado');
   }
 
   return friendRequest;

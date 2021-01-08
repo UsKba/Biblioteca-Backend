@@ -3,6 +3,8 @@ import { isBefore } from 'date-fns';
 
 import { removeDateTimezoneOffset } from '~/app/utils/date';
 
+import { RequestError } from '~/app/errors/request';
+
 import reserveConfig from '~/config/reserve';
 
 type Params = Reserve & {
@@ -29,7 +31,7 @@ export function assertUserAlreadyNotRefusedReserve(userId: number, reserve: Para
   const [userReserve] = reserve.userReserve.filter((currentUserReserve) => currentUserReserve.userId === userId);
 
   if (userReserve.status === reserveConfig.userReserve.statusRefused) {
-    throw new Error('O usuário já não faz parte dessa reserva');
+    throw new RequestError('O usuário já não faz parte dessa reserva');
   }
 }
 
@@ -43,6 +45,6 @@ export function assertNowIsBeforeOfReserve(reserve: Reserve) {
   const isNowBefore = isBefore(nowWithoutTimezone, reserveDateWithoutTimezone);
 
   if (!isNowBefore) {
-    throw new Error('Você está atrasado para fazer isso');
+    throw new RequestError('Você está atrasado para fazer isso');
   }
 }

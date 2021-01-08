@@ -1,5 +1,7 @@
 import { setSeconds, setMilliseconds, isBefore, subHours } from 'date-fns';
 
+import { RequestError } from '../errors/request';
+
 export function resetSecondsAndMiliseconds(value: number | string | Date) {
   const date = new Date(value);
 
@@ -35,7 +37,7 @@ export function checkIsCorrectHourFormat(hour: string) {
 
 export function assertInitialDateIsBeforeEndDate(initialDate: Date, endDate: Date) {
   if (isBefore(endDate, initialDate)) {
-    throw new Error('A hora final não pode ser antes da de inicio');
+    throw new RequestError('A hora final não pode ser antes da de inicio');
   }
 }
 

@@ -2,6 +2,8 @@ import { areIntervalsOverlapping } from 'date-fns';
 
 import { stringsToDateArray } from '~/app/utils/date';
 
+import { RequestError } from '~/app/errors/request';
+
 import prisma from '~/prisma';
 
 async function isPeriodOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
@@ -33,7 +35,7 @@ export async function assertPeriodIsNotOverlappingOnDatabase(initialDate: Date, 
   const areOverlapping = await isPeriodOverlappingOtherOnDatabase(initialDate, endDate, ignoreId);
 
   if (areOverlapping) {
-    throw new Error('Não é possível colocar dois turnos no mesmo intervalo');
+    throw new RequestError('Não é possível colocar dois turnos no mesmo intervalo');
   }
 }
 
@@ -43,7 +45,7 @@ export async function assertPeriodExists(id: number) {
   });
 
   if (!period) {
-    throw new Error('Turno não encontrado');
+    throw new RequestError('Turno não encontrado');
   }
 
   return period;
