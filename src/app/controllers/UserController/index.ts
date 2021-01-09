@@ -1,13 +1,11 @@
 import { Request, Response } from 'express';
 
-import { getRandomColor } from '~/app/utils/colors';
-
 import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
 
 import { assertUserNotExists, assertUserExists } from './tradingRules';
-import { formatUserToResponse } from './utils';
+import { createUser, formatUserToResponse } from './utils';
 
 interface StoreBody {
   name: string;
@@ -59,29 +57,13 @@ class UserController {
     const { enrollment, email, name } = req.body;
 
     try {
-      await assertUserNotExists({ enrollment });
-      await assertUserNotExists({ email });
+      const user = await createUser({ enrollment, email, name });
+      const userFormatted = formatUserToResponse(user);
+
+      return res.json(userFormatted);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-
-    const color = await getRandomColor();
-
-    const user = await prisma.user.create({
-      data: {
-        enrollment,
-        email,
-        name,
-        color: { connect: { id: color.id } },
-      },
-      include: {
-        color: true,
-      },
-    });
-
-    const userFormatted = formatUserToResponse(user);
-
-    return res.json(userFormatted);
   }
 
   async update(req: UpdateRequest, res: Response) {

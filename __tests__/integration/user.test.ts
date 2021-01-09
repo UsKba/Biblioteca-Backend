@@ -47,6 +47,14 @@ describe('User store', () => {
     expect(response.status).toBe(400);
   });
 
+  it('should not be able to register an user with incorrect enrollment format', async () => {
+    const user = generateUser({ enrollment: '123' });
+
+    const response = await request(App).post('/users').send(user);
+
+    expect(response.status).toBe(400);
+  });
+
   it('should have correct fields on user store', async () => {
     const userData = generateUser();
 

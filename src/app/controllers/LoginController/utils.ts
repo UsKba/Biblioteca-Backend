@@ -1,6 +1,6 @@
-import { getRandomColor } from '~/app/utils/colors';
-
 import prisma from '~/prisma';
+
+import { createUser } from '../UserController/utils';
 
 interface UserData {
   name: string;
@@ -20,17 +20,7 @@ export async function findUserOrCreate(userData: UserData) {
     return users[0];
   }
 
-  const color = await getRandomColor();
-
-  const user = await prisma.user.create({
-    data: {
-      enrollment,
-      email,
-      name,
-      color: { connect: { id: color.id } },
-    },
-    include: { color: true },
-  });
+  const user = await createUser({ enrollment, name, email });
 
   return user;
 }

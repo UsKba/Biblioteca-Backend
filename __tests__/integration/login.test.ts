@@ -2,6 +2,7 @@ import request from 'supertest';
 
 import App from '~/App';
 
+import { generateUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('Login', () => {
@@ -9,16 +10,8 @@ describe('Login', () => {
     await cleanDatabase();
   });
 
-  it('should be able to login', async () => {
-    const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
-
-    const response = await request(App).post('/login').send(userData);
-
-    expect(response.status).toBe(200);
-  });
-
   it('should be able to create user ', async () => {
-    const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
+    const userData = generateUser();
 
     const createUserResponse = await request(App).post('/login').send(userData);
     const indexUsersResponse = await request(App).get('/users');
@@ -33,7 +26,7 @@ describe('Login', () => {
   });
 
   it('should be able to login user ', async () => {
-    const userData = { name: 'Lonlon', enrollment: '20181104010087', email: 'Lonlon@gmail.com' };
+    const userData = generateUser();
 
     const createUserResponse = await request(App).post('/login').send(userData);
     const loginUserResponse = await request(App).post('/login').send(userData);
@@ -47,6 +40,14 @@ describe('Login', () => {
     expect(indexUsersResponse.body[0].name).toBe(userData.name);
     expect(indexUsersResponse.body[0].enrollment).toBe(userData.enrollment);
     expect(indexUsersResponse.body[0].email).toBe(userData.email);
+  });
+
+  it('should not be able to create a user with invalid enrollment format', async () => {
+    const user = generateUser({ enrollment: '123' });
+
+    const response = await request(App).post('/login').send(user);
+
+    expect(response.status).toBe(400);
   });
 
   it('should not be able to login with invalid data', async () => {
