@@ -1,5 +1,7 @@
 import { RequestError } from '~/app/errors/request';
 
+import roomConfig from '~/config/room';
+
 import prisma from '~/prisma';
 
 interface RoomNotExistsParams {
@@ -36,4 +38,13 @@ export async function assertRoomExists(params: RoomExistsParams) {
   }
 
   return room;
+}
+
+export function assertIsValidRoomStatus(status: number) {
+  const validStatus = Object.values(roomConfig);
+  const statusExists = validStatus.find((currentStatus) => currentStatus === status);
+
+  if (!statusExists) {
+    throw new RequestError(`'Status' inválido`);
+  }
 }

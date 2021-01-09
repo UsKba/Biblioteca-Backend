@@ -19,7 +19,6 @@ interface GenerateUserParams {
 
 interface GenerateRoomParams {
   initials?: string;
-  available?: boolean;
 }
 
 interface GeneratePeriodParams {
@@ -67,7 +66,6 @@ export function generateUser(params?: GenerateUserParams) {
 export function generateRoom(params?: GenerateRoomParams) {
   return {
     initials: 'F1-1',
-    available: true,
     ...params,
   };
 }

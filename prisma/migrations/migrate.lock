@@ -32,3 +32,4 @@
 20201229235334-add-color-on-user-reserve
 20210108155604-removed-initial-hour-and-end-hour-of-period
 20210108155719-add-unique-on-period-name
+20210109141857-changed-available-to-status-on-room

@@ -6,12 +6,11 @@ import { validateSchema } from '~/app/utils/yup';
 
 const RoomStoreSchema = Yup.object().shape({
   initials: Yup.string().required('A sigla é requerida'),
-  available: Yup.boolean(),
 });
 
 const RoomUpdateSchema = Yup.object().shape({
   initials: Yup.string(),
-  available: Yup.boolean(),
+  status: Yup.number(),
 });
 
 export async function validateRoomStore(request: Request, response: Response, next: NextFunction) {
