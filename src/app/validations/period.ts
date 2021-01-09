@@ -2,15 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 
 import * as Yup from 'yup';
 
-import { validateHourYup, validateSchema } from '~/app/utils/yup';
+import { validateSchema } from '~/app/utils/yup';
 
 const periodStoreSchema = Yup.object().shape({
-  initialHour: Yup.string()
-    .required('Hora inicial é requerida')
-    .test('is-hour-valid', 'Hora inicial inválida', validateHourYup),
-  endHour: Yup.string()
-    .required('Hora final é requerida')
-    .test('is-hour-valid', 'Hora final inválida', validateHourYup),
+  name: Yup.string().required('O nome é requerido'),
 });
 
 export async function validatePeriodStore(request: Request, response: Response, next: NextFunction) {

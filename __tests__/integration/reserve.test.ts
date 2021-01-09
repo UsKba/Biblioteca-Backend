@@ -38,9 +38,9 @@ describe('Reserve Index', () => {
   });
 
   it('should be able index the two reserves linked with user', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -51,15 +51,15 @@ describe('Reserve Index', () => {
     const reserve1 = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
-      schedule: schedule1,
       room,
+      schedule: schedule1,
     });
 
     const reserve2 = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
-      schedule: schedule2,
       room,
+      schedule: schedule2,
     });
 
     const leaderToken = encodeToken(user1);
@@ -84,9 +84,9 @@ describe('Reserve Index', () => {
 
     const room = await createRoom();
 
-    const morningPeriod = await createPeriod({ initialHour: '07:00', endHour: '12:00' });
-    const afternoonPeriod = await createPeriod({ initialHour: '13:00', endHour: '18:00' });
-    const nightPeriod = await createPeriod({ initialHour: '19:00', endHour: '22:00' });
+    const morningPeriod = await createPeriod({ name: 'Morning' });
+    const afternoonPeriod = await createPeriod({ name: 'Afternoon' });
+    const nightPeriod = await createPeriod({ name: 'Night' });
 
     const schedule1 = await createSchedule({ periodId: morningPeriod.id, initialHour: '07:00', endHour: '08:00' });
     const schedule2 = await createSchedule({ periodId: afternoonPeriod.id, initialHour: '13:00', endHour: '14:00' });
@@ -199,9 +199,9 @@ describe('Reserve Store', () => {
   });
 
   it('should be able to create a reserve', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -232,9 +232,9 @@ describe('Reserve Store', () => {
   });
 
   it('should be able to create various reserves on the same room on diferents days', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -279,9 +279,9 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve on a schedule that does not exists', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -310,9 +310,9 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve if the room not exists', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -466,9 +466,9 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve on weekend', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -602,9 +602,9 @@ describe('Reserve Delete', () => {
   });
 
   it('should be able to delete a reserve', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const reserve = await createReserve({
       leader: user1,
@@ -623,9 +623,9 @@ describe('Reserve Delete', () => {
   });
 
   it('should have deleted the userReserve relations', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const reserve = await createReserve({
       leader: user1,
@@ -650,9 +650,9 @@ describe('Reserve Delete', () => {
   });
 
   it('should not be able to delete a reserve with id that not exists', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const reserve = await createReserve({
       leader: user1,
@@ -715,9 +715,9 @@ describe('Reserve Delete', () => {
   });
 
   it('should not be able to delete a reserve with invalid id', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     await createReserve({
       leader: user1,
@@ -736,9 +736,9 @@ describe('Reserve Delete', () => {
   });
 
   it('should have correct fields on resert delete', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const reserve = await createReserve({
       leader: user1,
@@ -774,7 +774,6 @@ describe('Reserve Index (old reserves - that alreadt past of date)', () => {
     const room = await createRoom();
 
     await createOldReserve({
-      period,
       schedule,
       room,
       leader: user1,
@@ -782,7 +781,6 @@ describe('Reserve Index (old reserves - that alreadt past of date)', () => {
     });
 
     const reserve = await createReserve({
-      period,
       schedule,
       room,
       leader: user1,

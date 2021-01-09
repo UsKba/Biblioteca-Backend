@@ -73,18 +73,12 @@ async function createPeriodsAndSchedules() {
   const periods = [
     {
       name: 'Manhã',
-      initialHour: '07:00',
-      endHour: '12:00',
     },
     {
       name: 'Tarde',
-      initialHour: '13:00',
-      endHour: '18:00',
     },
     {
       name: 'Noite',
-      initialHour: '19:00',
-      endHour: '22:00',
     },
   ];
 

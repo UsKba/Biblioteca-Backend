@@ -6,12 +6,8 @@ import { RequestBody } from '~/types/request';
 
 import prisma from '~/prisma';
 
-import { assertPeriodIsNotOverlappingOnDatabase } from './tradingRules';
-
 interface StoreBody {
   name: string;
-  initialHour: string;
-  endHour: string;
 }
 
 type StoreRequest = RequestBody<StoreBody>;
@@ -24,23 +20,10 @@ class PeriodController {
   }
 
   async store(req: StoreRequest, res: Response) {
-    const { name, initialHour, endHour } = req.body;
-    const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
-
-    try {
-      assertInitialDateIsBeforeEndDate(initialDate, endDate);
-
-      await assertPeriodIsNotOverlappingOnDatabase(initialDate, endDate);
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
+    const { name } = req.body;
 
     const period = await prisma.period.create({
-      data: {
-        name,
-        initialHour,
-        endHour,
-      },
+      data: { name },
     });
 
     return res.json(period);

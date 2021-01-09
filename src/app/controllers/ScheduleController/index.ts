@@ -7,11 +7,7 @@ import { RequestBody, RequestBodyParamsId } from '~/types/request';
 import prisma from '~/prisma';
 
 import { assertPeriodExists } from '../PeriodController/tradingRules';
-import {
-  assertIfScheduleExists,
-  assertScheduleIsNotOverlappingOnDatabase,
-  assertScheduleIsOnPeriodInterval,
-} from './tradingRules';
+import { assertIfScheduleExists, assertScheduleIsNotOverlappingOnDatabase } from './tradingRules';
 
 interface StoreSchedule {
   periodId: number;
@@ -41,9 +37,7 @@ class ScheduleController {
     try {
       assertInitialDateIsBeforeEndDate(initialDate, endDate);
 
-      const period = await assertPeriodExists(periodId);
-
-      assertScheduleIsOnPeriodInterval(period, initialDate, endDate);
+      await assertPeriodExists({ id: periodId });
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate);
     } catch (e) {
       return response.status(400).json({ error: e.message });
@@ -61,7 +55,6 @@ class ScheduleController {
   }
 
   async update(request: UpdateRequest, response: Response) {
-    // assertScheduleIsOnPeriodInterval
     // nn pode atualizar o periodId
 
     const id = Number(request.params.id);
@@ -72,8 +65,6 @@ class ScheduleController {
     try {
       assertInitialDateIsBeforeEndDate(initialDate, endDate);
       await assertIfScheduleExists(id);
-
-      // assertScheduleIsOnPeriodInterval(period, initialDate, endDate);
 
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate, id);
     } catch (e) {

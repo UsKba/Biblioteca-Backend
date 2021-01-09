@@ -16,9 +16,9 @@ describe('allReserves index', () => {
   });
 
   it('should be able index the all reserves on an specific date', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -57,9 +57,9 @@ describe('allReserves index', () => {
   });
 
   it('should have correct fields on week reserve index', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010098' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();

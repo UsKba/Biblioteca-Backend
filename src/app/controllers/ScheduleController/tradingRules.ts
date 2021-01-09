@@ -40,25 +40,6 @@ export async function assertScheduleIsNotOverlappingOnDatabase(initialDate: Date
   }
 }
 
-export function assertScheduleIsOnPeriodInterval(period: Period, initialDate: Date, endDate: Date) {
-  const { initialHour, endHour } = period;
-  const [periodInitialDate, periodEndDate] = stringsToDateArray(initialHour, endHour);
-
-  const isInitialDateInsidePeriodInterval = isWithinInterval(initialDate, {
-    start: periodInitialDate,
-    end: periodEndDate,
-  });
-
-  const isEndDateInsidePeriodInterval = isWithinInterval(endDate, {
-    start: periodInitialDate,
-    end: periodEndDate,
-  });
-
-  if (!isInitialDateInsidePeriodInterval || !isEndDateInsidePeriodInterval) {
-    throw new RequestError(`O horário deve estar entre às ${initialHour} ate às ${endHour}`);
-  }
-}
-
 export async function assertIfScheduleExists(id: number) {
   const schedule = await prisma.schedule.findOne({
     where: { id },

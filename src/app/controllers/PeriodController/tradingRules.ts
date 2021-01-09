@@ -1,47 +1,16 @@
-import { areIntervalsOverlapping } from 'date-fns';
-
-import { stringsToDateArray } from '~/app/utils/date';
+import { PeriodWhereUniqueInput } from '@prisma/client';
 
 import { RequestError } from '~/app/errors/request';
 
 import prisma from '~/prisma';
 
-async function isPeriodOverlappingOtherOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
-  const periods = await prisma.period.findMany({});
+type FindPeriod = PeriodWhereUniqueInput;
 
-  for (let i = 0; i < periods.length; i += 1) {
-    if (periods[i].id === ignoreId) {
-      // eslint-disable-next-line no-continue
-      continue;
-    }
+export async function assertPeriodExists(params: FindPeriod) {
+  const { id, name } = params;
 
-    const [dbInitialDate, dbEndDate] = stringsToDateArray(periods[i].initialHour, periods[i].endHour);
-
-    const areOverlapping = areIntervalsOverlapping(
-      { start: initialDate, end: endDate },
-      { start: dbInitialDate, end: dbEndDate },
-      { inclusive: false }
-    );
-
-    if (areOverlapping) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-export async function assertPeriodIsNotOverlappingOnDatabase(initialDate: Date, endDate: Date, ignoreId?: number) {
-  const areOverlapping = await isPeriodOverlappingOtherOnDatabase(initialDate, endDate, ignoreId);
-
-  if (areOverlapping) {
-    throw new RequestError('Não é possível colocar dois turnos no mesmo intervalo');
-  }
-}
-
-export async function assertPeriodExists(id: number) {
   const period = await prisma.period.findOne({
-    where: { id },
+    where: { id, name },
   });
 
   if (!period) {

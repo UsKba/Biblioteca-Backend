@@ -6,40 +6,36 @@ import MockDate from 'mockdate';
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
-import { removeDateTimezoneOffset } from '~/app/utils/date';
 
 import App from '~/App';
 
-import { generateDate, GenerateDateParams } from './utils/date';
+import { generateDate } from './utils/date';
 
 interface GenerateUserParams {
-  name?: string | any;
-  email?: string | any;
-  enrollment?: string | any;
+  name?: string;
+  email?: string;
+  enrollment?: string;
 }
 
 interface GenerateRoomParams {
-  initials?: string | any;
-  available?: boolean | any;
+  initials?: string;
+  available?: boolean;
 }
 
 interface GeneratePeriodParams {
-  name?: string | any;
-  initialHour?: string | any;
-  endHour?: string | any;
+  name?: string;
 }
 
 interface GenerateScheduleParams {
   periodId: number;
-  initialHour?: string | any;
-  endHour?: string | any;
+  initialHour?: string;
+  endHour?: string;
 }
 
 interface GenerateReserveParams {
   name?: string;
   leader: User;
   users: User[];
-  period?: Period;
   schedule?: Schedule;
   room?: Room;
   date?: {
@@ -79,8 +75,6 @@ export function generateRoom(params?: GenerateRoomParams) {
 export function generatePeriod(params?: GeneratePeriodParams) {
   return {
     name: 'Manhã',
-    initialHour: '06:00',
-    endHour: '12:00',
     ...params,
   };
 }
@@ -126,14 +120,14 @@ export async function createSchedule(params: GenerateScheduleParams) {
 }
 
 export async function createReserve(params: GenerateReserveParams) {
-  const { leader, users, room, period, schedule, date, name } = params;
+  const { leader, users, room, schedule, date, name } = params;
 
   const classmatesEnrollments = users.map((user) => user.enrollment);
 
   const targetName = name || 'Reuniao';
   const targetRoom = room || (await createRoom());
-  const targetPeriod = period || (await createPeriod());
-  const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriod.id }));
+  const targetPeriodId = schedule?.periodId || (await createPeriod()).id;
+  const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriodId }));
   const tomorrowDate = date || generateDate({ sumDay: 1 });
 
   const reserve = {

@@ -22,10 +22,7 @@ describe('Schedule Store', () => {
   });
 
   it('should be to create a schedule with `endHour` exact of `initialHour` of another', async () => {
-    const period = await createPeriod({
-      initialHour: '07:00',
-      endHour: '12:00',
-    });
+    const period = await createPeriod();
 
     const scheduleData1 = generateSchedule({
       periodId: period.id,
@@ -88,23 +85,6 @@ describe('Schedule Store', () => {
       periodId: id,
       initialHour: '-01:00',
       endHour: '24:00',
-    });
-
-    const response = await request(App).post('/schedules').send(schedule);
-
-    expect(response.status).toBe(400);
-  });
-
-  it('should not be able to create a schedule with `initialHour` or `endHour` outside of period interval ', async () => {
-    const { id } = await createPeriod({
-      initialHour: '07:00',
-      endHour: '12:00',
-    });
-
-    const schedule = generateSchedule({
-      periodId: id,
-      initialHour: '06:00',
-      endHour: '13:00',
     });
 
     const response = await request(App).post('/schedules').send(schedule);
@@ -303,6 +283,7 @@ describe('Schedule Update', () => {
       endHour: '09:00',
     });
 
+    expect(updateResponse.status).toBe(200);
     expect(updateResponse.body.id).toBe(schedule.id);
     expect(updateResponse.body.periodId).toBe(period.id);
     expect(updateResponse.body.initialHour).toBe('07:00');

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./database.sqlite"
+  url = "***"
 }
 
 model User {
@@ -105,7 +105,7 @@ model Schedule {
 
 model Period {
   id   Int    @id @default(autoincrement())
-  name String @unique
+  name String
 
   schedule Schedule[]
 }
