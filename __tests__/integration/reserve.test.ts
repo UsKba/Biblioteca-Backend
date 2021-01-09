@@ -4,6 +4,7 @@ import { encodeToken } from '~/app/utils/auth';
 import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
+import roomConfig from '~/config/room';
 
 import App from '~/App';
 import prisma from '~/prisma';
@@ -140,7 +141,6 @@ describe('Reserve Index', () => {
     const reserve = await createReserve({
       name: 'Trabalho de Portugues',
       date: tomorrowDate,
-      period,
       room,
       schedule,
       leader: user1,
@@ -486,6 +486,40 @@ describe('Reserve Store', () => {
       scheduleId: schedule.id,
       classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
     };
+
+    const leaderToken = encodeToken(user1);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to create a reserve on a room that is indisponible', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom();
+    const period = await createPeriod();
+    const schedule = await createSchedule({ periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
+      ...tomorrowDate,
+    };
+
+    await request(App).put(`/rooms/${room.id}`).send({
+      status: roomConfig.indisponible,
+    });
 
     const leaderToken = encodeToken(user1);
 

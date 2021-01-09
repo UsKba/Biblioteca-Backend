@@ -1,3 +1,5 @@
+import { Room } from '@prisma/client';
+
 import { RequestError } from '~/app/errors/request';
 
 import roomConfig from '~/config/room';
@@ -38,6 +40,14 @@ export async function assertRoomExists(params: RoomExistsParams) {
   }
 
   return room;
+}
+
+export function assertRoomIsDisponible(room: Room) {
+  const isDisponible = room.status === roomConfig.disponible;
+
+  if (!isDisponible) {
+    throw new RequestError(`A sala não está disponível`);
+  }
 }
 
 export function assertIsValidRoomStatus(status: number) {

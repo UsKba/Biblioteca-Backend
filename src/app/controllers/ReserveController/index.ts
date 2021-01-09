@@ -8,7 +8,7 @@ import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/reque
 
 import prisma from '~/prisma';
 
-import { assertRoomExists } from '../RoomController/tradingRules';
+import { assertRoomExists, assertRoomIsDisponible } from '../RoomController/tradingRules';
 import { assertIfScheduleExists } from '../ScheduleController/tradingRules';
 import { assertUsersExistsOnDatabase } from '../UserController/tradingRules';
 import {
@@ -110,7 +110,9 @@ class ReserveController {
       assertIfTheReserveIsNotOnWeekend(dateWithScheduleHours);
       assertIfTheReserveIsNotBeforeOfNow(dateWithScheduleHours);
 
-      await assertRoomExists({ id: roomId });
+      const room = await assertRoomExists({ id: roomId });
+      assertRoomIsDisponible(room);
+
       await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithScheduleHours);
       await assertUsersExistsOnDatabase(classmatesEnrollments);
     } catch (e) {
