@@ -1,0 +1,117 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser1"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendUser1\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendUser2"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendUser2\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendRequestUserSender\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "friendRequestReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendRequestUserReceiver\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user1"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendUser1\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Friend",
+          "field": "user2"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendUser2\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userSender"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendRequestUserSender\""
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "FriendRequest",
+          "field": "userReceiver"
+        },
+        "directive": "relation"
+      },
+      "argument": "",
+      "newValue": "\"friendRequestUserReceiver\""
+    }
+  ]
+}
