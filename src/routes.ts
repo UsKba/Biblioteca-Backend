@@ -5,6 +5,7 @@ import FriendController from '~/app/controllers/FriendController';
 import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
 import FriendRequestController from '~/app/controllers/FriendRequestController';
 import LoginController from '~/app/controllers/LoginController';
+import MessagesController from '~/app/controllers/MessagesController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
@@ -20,6 +21,7 @@ import authMiddleware from '~/app/middlewares/auth';
 import { validateParamsId } from '~/app/validations';
 import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateLoginStore } from '~/app/validations/login';
+import { validateMessageStore } from '~/app/validations/message';
 import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
@@ -83,5 +85,8 @@ routes.post('/reserves/:reserveId/accept', validateUserReserveStatusPostParams, 
 routes.post('/reserves/:reserveId/refuse', validateUserReserveStatusPostParams, UserReserveStatusController.refuse);
 
 routes.get('/search', validateSeachIndex, SearchController.index);
+
+routes.get('/messages', MessagesController.index);
+routes.post('/messages', validateMessageStore, MessagesController.store);
 
 export default routes;

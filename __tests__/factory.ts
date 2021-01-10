@@ -63,6 +63,15 @@ interface GenerateTagParams {
   name?: string;
 }
 
+interface GenerateMessageParams {
+  senderId: number;
+  receiverId: number;
+
+  subject?: string;
+  content?: string;
+  tags?: number[];
+}
+
 export function generateUserStudent(params?: GenerateUserParams) {
   return {
     name: faker.name.findName(),
@@ -107,6 +116,15 @@ export function generateTag(params?: GenerateTagParams) {
   return {
     name: 'Tag',
     ...params,
+  };
+}
+
+export function generateMessage(params: GenerateMessageParams) {
+  return {
+    ...params,
+    subject: 'Subject',
+    content: 'Message content',
+    tags: [],
   };
 }
 

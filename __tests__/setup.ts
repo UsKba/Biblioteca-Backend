@@ -79,8 +79,16 @@ async function createColors() {
   return colorsDatabase;
 }
 
-beforeAll(async () => {
+async function cleanAllDatabase() {
   await cleanDatabase();
+
+  await prisma.tag.deleteMany({});
+  await prisma.role.deleteMany({});
+  await prisma.color.deleteMany({});
+}
+
+beforeAll(async () => {
+  await cleanAllDatabase();
 
   await createTags();
   await createRoles();
@@ -88,11 +96,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await cleanDatabase();
-
-  await prisma.tag.deleteMany({});
-  await prisma.role.deleteMany({});
-  await prisma.color.deleteMany({});
-
+  await cleanAllDatabase();
   await prisma.disconnect();
 });
