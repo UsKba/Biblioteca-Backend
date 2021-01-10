@@ -5,6 +5,7 @@ import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
 import roomConfig from '~/config/room';
+import userConfig from '~/config/user';
 
 import App from '~/App';
 import prisma from '~/prisma';
@@ -619,6 +620,7 @@ describe('Reserve Store', () => {
     expect(reserveAdmin.email).toBe(user1.email);
     expect(reserveAdmin.enrollment).toBe(user1.enrollment);
     expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
+    expect(reserveAdmin.role).toBe(userConfig.role.student.slug);
     expect(reserveAdmin).toHaveProperty('color');
 
     expect(reserveMember.id).toBe(user2.id);
@@ -626,6 +628,7 @@ describe('Reserve Store', () => {
     expect(reserveMember.email).toBe(user2.email);
     expect(reserveMember.enrollment).toBe(user2.enrollment);
     expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember.role).toBe(userConfig.role.student.slug);
     expect(reserveMember).toHaveProperty('color');
   });
 });

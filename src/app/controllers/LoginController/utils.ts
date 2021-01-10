@@ -13,7 +13,7 @@ export async function findUserOrCreate(userData: UserData) {
 
   const users = await prisma.user.findMany({
     where: { enrollment, email },
-    include: { color: true },
+    include: { color: true, role: true },
   });
 
   if (users.length > 0) {

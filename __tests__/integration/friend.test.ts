@@ -2,6 +2,8 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import userConfig from '~/config/user';
+
 import App from '~/App';
 
 import { createUser, createFriend, createFriendRequest } from '../factory';
@@ -129,6 +131,7 @@ describe('friend index', () => {
     expect(friendCreated.name).toBe(user2.name);
     expect(friendCreated.email).toBe(user2.email);
     expect(friendCreated.enrollment).toBe(user2.enrollment);
+    expect(friendCreated.role).toBe(userConfig.role.student.slug);
     expect(friendCreated).toHaveProperty('color');
   });
 });

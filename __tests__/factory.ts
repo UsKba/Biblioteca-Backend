@@ -17,6 +17,10 @@ interface GenerateUserParams {
   enrollment?: string;
 }
 
+interface CreateUserParams extends GenerateUserParams {
+  isAdmin?: boolean;
+}
+
 interface GenerateRoomParams {
   initials?: string;
 }
@@ -54,11 +58,20 @@ interface GenerateFriendParams {
   user2: User;
 }
 
-export function generateUser(params?: GenerateUserParams) {
+export function generateUserStudent(params?: GenerateUserParams) {
   return {
     name: faker.name.findName(),
     email: faker.internet.email(),
     enrollment: '20181104010048',
+    ...params,
+  };
+}
+
+export function generateUserAdmin(params?: GenerateUserParams) {
+  return {
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    enrollment: '1138756',
     ...params,
   };
 }
@@ -85,8 +98,8 @@ export function generateSchedule(params: GenerateScheduleParams) {
   };
 }
 
-export async function createUser(params?: GenerateUserParams) {
-  const userData = generateUser(params);
+export async function createUser(params?: CreateUserParams) {
+  const userData = params?.isAdmin ? generateUserAdmin(params) : generateUserStudent(params);
 
   const response = await request(App).post('/users').send(userData);
 

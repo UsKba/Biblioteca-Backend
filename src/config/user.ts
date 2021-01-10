@@ -1,9 +1,13 @@
 const userConfig = {
-  admin: {
-    enrollmentLength: 2,
-  },
-  student: {
-    enrollmentLength: 14,
+  role: {
+    admin: {
+      slug: 'admin',
+      enrollmentLength: 7,
+    },
+    student: {
+      slug: 'student',
+      enrollmentLength: 14,
+    },
   },
 };
 

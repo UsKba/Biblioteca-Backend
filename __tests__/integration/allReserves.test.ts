@@ -3,6 +3,7 @@ import request from 'supertest';
 import { removeDateTimezoneOffset, splitSingleDate } from '~/app/utils/date';
 
 import reserveConfig from '~/config/reserve';
+import userConfig from '~/config/user';
 
 import App from '~/App';
 
@@ -123,12 +124,14 @@ describe('allReserves index', () => {
     expect(reserveAdmin.email).toBe(user1.email);
     expect(reserveAdmin.enrollment).toBe(user1.enrollment);
     expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
+    expect(reserveAdmin.role).toBe(userConfig.role.student.slug);
     expect(reserveAdmin).toHaveProperty('color');
 
     expect(reserveMember.id).toBe(user2.id);
     expect(reserveMember.name).toBe(user2.name);
     expect(reserveMember.email).toBe(user2.email);
     expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember.role).toBe(userConfig.role.student.slug);
     expect(reserveMember).toHaveProperty('color');
   });
 });

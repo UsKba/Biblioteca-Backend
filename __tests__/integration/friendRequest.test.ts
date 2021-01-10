@@ -3,6 +3,7 @@ import request from 'supertest';
 import { encodeToken } from '~/app/utils/auth';
 
 import friendConfig from '~/config/friend';
+import userConfig from '~/config/user';
 
 import App from '~/App';
 
@@ -228,12 +229,14 @@ describe('friendRequest index', () => {
     expect(friendRequestCreated.sender.name).toBe(user1.name);
     expect(friendRequestCreated.sender.email).toBe(user1.email);
     expect(friendRequestCreated.sender.enrollment).toBe(user1.enrollment);
+    expect(friendRequestCreated.sender.role).toBe(userConfig.role.student.slug);
     expect(friendRequestCreated.sender).toHaveProperty('color');
 
     expect(friendRequestCreated.receiver.id).toBe(user2.id);
     expect(friendRequestCreated.receiver.name).toBe(user2.name);
     expect(friendRequestCreated.receiver.email).toBe(user2.email);
     expect(friendRequestCreated.receiver.enrollment).toBe(user2.enrollment);
+    expect(friendRequestCreated.receiver.role).toBe(userConfig.role.student.slug);
     expect(friendRequestCreated.receiver).toHaveProperty('color');
   });
 
@@ -257,11 +260,13 @@ describe('friendRequest index', () => {
     expect(friendRequestCreated.sender.id).toBe(user1.id);
     expect(friendRequestCreated.sender.name).toBe(user1.name);
     expect(friendRequestCreated.sender.email).toBe(user1.email);
+    expect(friendRequestCreated.sender.role).toBe(userConfig.role.student.slug);
     expect(friendRequestCreated.sender).toHaveProperty('color');
 
     expect(friendRequestCreated.receiver.id).toBe(user2.id);
     expect(friendRequestCreated.receiver.name).toBe(user2.name);
     expect(friendRequestCreated.receiver.email).toBe(user2.email);
+    expect(friendRequestCreated.sender.role).toBe(userConfig.role.student.slug);
     expect(friendRequestCreated.receiver).toHaveProperty('color');
   });
 });

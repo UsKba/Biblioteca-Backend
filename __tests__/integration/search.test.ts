@@ -2,6 +2,8 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import userConfig from '~/config/user';
+
 import App from '~/App';
 
 import { createUser } from '../factory';
@@ -78,6 +80,7 @@ describe('Seach Index (validate data)', () => {
     expect(userIndexed.name).toBe(user.name);
     expect(userIndexed.email).toBe(user.email);
     expect(userIndexed.enrollment).toBe(user.enrollment);
+    expect(userIndexed.role).toBe(userConfig.role.student.slug);
     expect(userIndexed).toHaveProperty('color');
   });
 });

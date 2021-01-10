@@ -1,8 +1,10 @@
 import request from 'supertest';
 
+import userConfig from '~/config/user';
+
 import App from '~/App';
 
-import { generateUser } from '../factory';
+import { generateUserStudent } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('Login', () => {
@@ -11,7 +13,7 @@ describe('Login', () => {
   });
 
   it('should be able to create user ', async () => {
-    const userData = generateUser();
+    const userData = generateUserStudent();
 
     const createUserResponse = await request(App).post('/login').send(userData);
     const indexUsersResponse = await request(App).get('/users');
@@ -26,7 +28,7 @@ describe('Login', () => {
   });
 
   it('should be able to login user ', async () => {
-    const userData = generateUser();
+    const userData = generateUserStudent();
 
     const createUserResponse = await request(App).post('/login').send(userData);
     const loginUserResponse = await request(App).post('/login').send(userData);
@@ -43,7 +45,7 @@ describe('Login', () => {
   });
 
   it('should not be able to create a user with invalid enrollment format', async () => {
-    const user = generateUser({ enrollment: '123' });
+    const user = generateUserStudent({ enrollment: '123' });
 
     const response = await request(App).post('/login').send(user);
 
@@ -80,6 +82,7 @@ describe('Login', () => {
     expect(response.body.user.email).toBe(userData.email);
     expect(response.body.user.enrollment).toBe(userData.enrollment);
 
+    expect(response.body.user.role).toBe(userConfig.role.student.slug);
     expect(response.body.user).toHaveProperty('color');
   });
 });

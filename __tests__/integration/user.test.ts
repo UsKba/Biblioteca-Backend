@@ -1,8 +1,10 @@
 import request from 'supertest';
 
+import userConfig from '~/config/user';
+
 import App from '~/App';
 
-import { generateUser, createUser } from '../factory';
+import { generateUserStudent, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('User store', () => {
@@ -11,7 +13,7 @@ describe('User store', () => {
   });
 
   it('should be able to register an user', async () => {
-    const user = generateUser();
+    const user = generateUserStudent();
 
     const response = await request(App).post('/users').send(user);
 
@@ -20,7 +22,7 @@ describe('User store', () => {
   });
 
   it('should not be able to register with invalid enrollment', async () => {
-    const user = generateUser({
+    const user = generateUserStudent({
       enrollment: 'invalidEnrollment',
     });
 
@@ -31,7 +33,7 @@ describe('User store', () => {
 
   it('should not be able to register with duplicated enrollement', async () => {
     const user1 = await createUser();
-    const user2 = generateUser({ enrollment: user1.enrollment });
+    const user2 = generateUserStudent({ enrollment: user1.enrollment });
 
     const response = await request(App).post('/users').send(user2);
 
@@ -40,7 +42,7 @@ describe('User store', () => {
 
   it('should not be able to register an user with the same email', async () => {
     const user1 = await createUser({ email: 'UserEmail@gmail.com' });
-    const user2 = generateUser({ email: user1.email });
+    const user2 = generateUserStudent({ email: user1.email });
 
     const response = await request(App).post('/users').send(user2);
 
@@ -48,7 +50,7 @@ describe('User store', () => {
   });
 
   it('should not be able to register an user with incorrect enrollment format', async () => {
-    const user = generateUser({ enrollment: '123' });
+    const user = generateUserStudent({ enrollment: '123' });
 
     const response = await request(App).post('/users').send(user);
 
@@ -56,7 +58,7 @@ describe('User store', () => {
   });
 
   it('should have correct fields on user store', async () => {
-    const userData = generateUser();
+    const userData = generateUserStudent();
 
     const response = await request(App).post('/users').send(userData);
 
@@ -65,6 +67,7 @@ describe('User store', () => {
     expect(response.body.email).toBe(userData.email);
     expect(response.body.enrollment).toBe(userData.enrollment);
 
+    expect(response.body.role).toBe(userConfig.role.student.slug);
     expect(response.body).toHaveProperty('color');
   });
 });
@@ -115,6 +118,7 @@ describe('User index', () => {
     expect(userIndexed.email).toBe(user.email);
     expect(userIndexed.enrollment).toBe(user.enrollment);
 
+    expect(userIndexed.role).toBe(userConfig.role.student.slug);
     expect(userIndexed).toHaveProperty('color');
   });
 });
@@ -193,6 +197,7 @@ describe('User Update', () => {
     expect(response.body.email).toBe(user.email);
     expect(response.body.enrollment).toBe(user.enrollment);
 
+    expect(response.body.role).toBe(userConfig.role.student.slug);
     expect(response.body).toHaveProperty('color');
   });
 });
@@ -214,6 +219,7 @@ describe('User show', () => {
     expect(response.body.email).toBe(user.email);
     expect(response.body.enrollment).toBe(user.enrollment);
 
+    expect(response.body.role).toBe(userConfig.role.student.slug);
     expect(response.body).toHaveProperty('color');
   });
 });

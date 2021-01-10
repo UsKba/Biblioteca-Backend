@@ -1,13 +1,13 @@
 import userConfig from '~/config/user';
 
 export function checkUserIsAdminByEnrollment(enrollment: string) {
-  const isCorrectEnrollmentLength = enrollment.length === userConfig.admin.enrollmentLength;
+  const isCorrectEnrollmentLength = enrollment.length === userConfig.role.admin.enrollmentLength;
 
   return isCorrectEnrollmentLength;
 }
 
 export function checkUserIsStudentByEnrollment(enrollment: string) {
-  const isCorrectEnrollmentLength = enrollment.length === userConfig.student.enrollmentLength;
+  const isCorrectEnrollmentLength = enrollment.length === userConfig.role.student.enrollmentLength;
 
   return isCorrectEnrollmentLength;
 }

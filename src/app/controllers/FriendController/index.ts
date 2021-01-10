@@ -28,9 +28,7 @@ class FriendController {
           },
         ],
       },
-      include: {
-        color: true,
-      },
+      include: { color: true, role: true },
     });
 
     const friendsFormatted = friends.map(formatUserToResponse);

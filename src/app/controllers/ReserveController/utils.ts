@@ -4,7 +4,7 @@ import { getRandomColorList } from '~/app/utils/colors';
 
 import reserveConfig from '~/config/reserve';
 
-import { UserWithColor } from '~/types/global';
+import { UserWithColorAndRole } from '~/types/global';
 
 import prisma from '~/prisma';
 
@@ -30,12 +30,12 @@ type ReserveToFormat = {
   adminId: number;
   schedule: Schedule;
   room: Room;
-  userReserve: { status: number; user: UserWithColor }[];
+  userReserve: { status: number; user: UserWithColorAndRole }[];
 };
 
 type UserReserveToFormat = {
   status: number;
-  user: UserWithColor;
+  user: UserWithColorAndRole;
 };
 
 export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
@@ -78,7 +78,7 @@ export async function createUserReserve(params: CreateUserReserveParams) {
     },
     include: {
       user: {
-        include: { color: true },
+        include: { color: true, role: true },
       },
     },
   });

@@ -26,6 +26,7 @@ class SeachController {
       },
       include: {
         color: true,
+        role: true,
       },
     });
 

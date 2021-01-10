@@ -26,6 +26,7 @@ class UserController {
     const users = await prisma.user.findMany({
       include: {
         color: true,
+        role: true,
       },
     });
 
@@ -41,6 +42,7 @@ class UserController {
       where: { id: Number(id) },
       include: {
         color: true,
+        role: true,
       },
     });
 
@@ -87,6 +89,7 @@ class UserController {
       },
       where: { id },
       include: {
+        role: true,
         color: true,
       },
     });

@@ -1,9 +1,36 @@
-import { Color, PrismaClient } from '@prisma/client';
+import { Color, PrismaClient, Role } from '@prisma/client';
 
 import { getRandomItem } from '../src/app/utils/array';
+import roomConfig from '../src/config/room';
+import userConfig from '../src/config/user';
 
 const prisma = new PrismaClient();
 
+// Look __tests__/setup.ts
+async function createRoles() {
+  const rolesDatabase = [];
+
+  const roles = [
+    {
+      slug: userConfig.role.admin.slug,
+    },
+    {
+      slug: userConfig.role.student.slug,
+    },
+  ];
+
+  for (const roleData of roles) {
+    const roleCreated = await prisma.role.create({
+      data: roleData,
+    });
+
+    rolesDatabase.push(roleCreated);
+  }
+
+  return rolesDatabase;
+}
+
+// Look __tests__/setup.ts
 async function createColors() {
   const colorsDatabase = [];
 
@@ -33,7 +60,7 @@ async function createColors() {
   return colorsDatabase;
 }
 
-async function createUsers(colors: Color[]) {
+async function createUsers(roles: Role[], colors: Color[]) {
   const users = [
     {
       name: 'Idaslon Garcia',
@@ -57,12 +84,15 @@ async function createUsers(colors: Color[]) {
     },
   ];
 
+  const studentRole = roles.find((role) => role.slug === userConfig.role.student.slug) as Role;
+
   for (const userData of users) {
     const randomColor = getRandomItem(colors);
 
     await prisma.user.create({
       data: {
         ...userData,
+        role: { connect: { id: studentRole.id } },
         color: { connect: { id: randomColor.id } },
       },
     });
@@ -184,14 +214,19 @@ async function createRooms() {
 
   for (const room of rooms) {
     await prisma.room.create({
-      data: room,
+      data: {
+        ...room,
+        status: roomConfig.disponible,
+      },
     });
   }
 }
 
 async function run() {
+  const roles = await createRoles();
   const colors = await createColors();
-  await createUsers(colors);
+
+  await createUsers(roles, colors);
 
   await createPeriodsAndSchedules();
   await createRooms();

@@ -1,3 +1,6 @@
-import { Color, User } from '@prisma/client';
+import { Color, Role, User } from '@prisma/client';
 
-export type UserWithColor = User & { color: Color };
+export type UserWithColorAndRole = User & {
+  color: Color;
+  role: Role;
+};

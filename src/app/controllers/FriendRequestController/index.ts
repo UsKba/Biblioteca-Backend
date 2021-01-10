@@ -33,8 +33,8 @@ class FriendRequestController {
         NOT: { status: friendConfig.statusDenied },
       },
       include: {
-        userReceiver: { include: { color: true } },
-        userSender: { include: { color: true } },
+        userReceiver: { include: { color: true, role: true } },
+        userSender: { include: { color: true, role: true } },
       },
     });
 
@@ -44,8 +44,8 @@ class FriendRequestController {
         NOT: { status: friendConfig.statusDenied },
       },
       include: {
-        userReceiver: { include: { color: true } },
-        userSender: { include: { color: true } },
+        userReceiver: { include: { color: true, role: true } },
+        userSender: { include: { color: true, role: true } },
       },
     });
 
@@ -85,8 +85,8 @@ class FriendRequestController {
             status: friendConfig.statusPending,
           },
           include: {
-            userReceiver: { include: { color: true } },
-            userSender: { include: { color: true } },
+            userReceiver: { include: { color: true, role: true } },
+            userSender: { include: { color: true, role: true } },
           },
         });
 
@@ -99,8 +99,8 @@ class FriendRequestController {
         where: { id: friendRequest.id },
         data: { status: friendConfig.statusPending },
         include: {
-          userReceiver: { include: { color: true } },
-          userSender: { include: { color: true } },
+          userReceiver: { include: { color: true, role: true } },
+          userSender: { include: { color: true, role: true } },
         },
       });
 
