@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Yup from 'yup';
 
 import { checkIsCorrectHourFormat } from './date';

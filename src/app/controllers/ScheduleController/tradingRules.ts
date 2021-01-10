@@ -1,5 +1,4 @@
-import { Period } from '@prisma/client';
-import { areIntervalsOverlapping, isWithinInterval } from 'date-fns';
+import { areIntervalsOverlapping } from 'date-fns';
 
 import { stringsToDateArray } from '~/app/utils/date';
 
