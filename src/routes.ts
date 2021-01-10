@@ -10,6 +10,7 @@ import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import SearchController from '~/app/controllers/SearchController';
+import TagController from '~/app/controllers/TagController';
 import UserController from '~/app/controllers/UserController';
 import UserReserveController from '~/app/controllers/UserReserveController';
 import UserReserveStatusController from '~/app/controllers/UserReserveStatusController';
@@ -30,8 +31,8 @@ import { validateUserReserveStatusPostParams } from '~/app/validations/userReser
 
 const routes = Router();
 
-routes.get('/', (request, response) => {
-  return response.json({ ok: true });
+routes.get('/', (req, res) => {
+  return res.json({ ok: true });
 });
 
 routes.post('/login', validateLoginStore, LoginController.store);
@@ -40,6 +41,8 @@ routes.get('/users', UserController.index);
 routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
+
+routes.get('/tags', TagController.index);
 
 // Admin
 

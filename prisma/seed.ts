@@ -7,6 +7,30 @@ import userConfig from '../src/config/user';
 const prisma = new PrismaClient();
 
 // Look __tests__/setup.ts
+async function createTags() {
+  const tags = [
+    {
+      name: 'Sala com defeito',
+    },
+    {
+      name: 'Problema no site',
+    },
+    {
+      name: 'Dúvida',
+    },
+    {
+      name: 'Outro',
+    },
+  ];
+
+  for (const tagData of tags) {
+    await prisma.tag.create({
+      data: tagData,
+    });
+  }
+}
+
+// Look __tests__/setup.ts
 async function createRoles() {
   const rolesDatabase = [];
 
@@ -223,6 +247,8 @@ async function createRooms() {
 }
 
 async function run() {
+  await createTags();
+
   const roles = await createRoles();
   const colors = await createColors();
 

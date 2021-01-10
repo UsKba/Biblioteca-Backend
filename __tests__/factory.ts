@@ -8,6 +8,7 @@ import request from 'supertest';
 import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
+import prisma from '~/prisma';
 
 import { generateDate } from './utils/date';
 
@@ -58,6 +59,10 @@ interface GenerateFriendParams {
   user2: User;
 }
 
+interface GenerateTagParams {
+  name?: string;
+}
+
 export function generateUserStudent(params?: GenerateUserParams) {
   return {
     name: faker.name.findName(),
@@ -90,10 +95,17 @@ export function generatePeriod(params?: GeneratePeriodParams) {
   };
 }
 
-export function generateSchedule(params: GenerateScheduleParams) {
+export function generateSchedule(params?: GenerateScheduleParams) {
   return {
     initialHour: '06:00',
     endHour: '07:00',
+    ...params,
+  };
+}
+
+export function generateTag(params?: GenerateTagParams) {
+  return {
+    name: 'Tag',
     ...params,
   };
 }
@@ -122,7 +134,7 @@ export async function createPeriod(params?: GeneratePeriodParams) {
   return response.body as Period;
 }
 
-export async function createSchedule(params: GenerateScheduleParams) {
+export async function createSchedule(params?: GenerateScheduleParams) {
   const scheduleData = generateSchedule(params);
 
   const response = await request(App).post('/schedules').send(scheduleData);
@@ -204,4 +216,14 @@ export async function createFriend(params: GenerateFriendParams) {
     .set({ authorization: `Bearer ${tokenUser2}` });
 
   return friendRequestConfirmationResponse.body as Friend;
+}
+
+export async function createTag(params?: GenerateTagParams) {
+  const tagData = generateTag(params);
+
+  const tag = await prisma.tag.create({
+    data: tagData,
+  });
+
+  return tag;
 }
