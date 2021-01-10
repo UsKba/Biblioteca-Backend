@@ -121,10 +121,10 @@ export function generateTag(params?: GenerateTagParams) {
 
 export function generateMessage(params: GenerateMessageParams) {
   return {
-    ...params,
     subject: 'Subject',
     content: 'Message content',
     tags: [],
+    ...params,
   };
 }
 

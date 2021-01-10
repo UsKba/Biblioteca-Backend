@@ -7,8 +7,8 @@ import { RequestAuth, RequestAuthBody } from '~/types/requestAuth';
 import prisma from '~/prisma';
 
 import { assertUserExists } from '../UserController/tradingRules';
-import { assertMessageReceiverIsAdmin, assertMessageSenderIsTheLoggedUser } from './tradingRules';
-import { formatMessageToResponse } from './utils';
+import { assertMessageReceiverIsAdmin, assertMessageSenderIsTheLoggedUser, assertTagsExists } from './tradingRules';
+import { createRelationBetweenMessageAndTags, formatMessageToResponse } from './utils';
 
 interface Store {
   senderId: number;
@@ -30,17 +30,14 @@ class MessagesController {
 
     const { senderId, receiverId, subject, content, tags } = req.body;
 
-    // colocar tag 'default' quando não hover
-
-    // meta: consertar os try/catch dos controllers (typescript)
-    // meta: padronizar enrollments nos testes
-
     try {
       const userSender = await assertUserExists({ id: senderId });
       const userReceiver = await assertUserExists({ id: receiverId });
 
       assertMessageSenderIsTheLoggedUser(userSender.id, userId);
       assertMessageReceiverIsAdmin(userReceiver);
+
+      await assertTagsExists(tags);
     } catch (e) {
       const { message, statusCode } = e as RequestError;
       return res.status(statusCode).json({ error: message });
@@ -59,7 +56,12 @@ class MessagesController {
       },
     });
 
-    const messageFormatted = formatMessageToResponse(message);
+    const messageTags = await createRelationBetweenMessageAndTags(message, tags);
+
+    const messageFormatted = {
+      ...formatMessageToResponse(message),
+      tags: messageTags,
+    };
 
     return res.json(messageFormatted);
   }

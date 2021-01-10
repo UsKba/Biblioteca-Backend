@@ -4,29 +4,6 @@ import prisma from '~/prisma';
 
 import { cleanDatabase } from './utils/database';
 
-async function createTags() {
-  const tags = [
-    {
-      name: 'Sala com defeito',
-    },
-    {
-      name: 'Problema no site',
-    },
-    {
-      name: 'Dúvida',
-    },
-    {
-      name: 'Outro',
-    },
-  ];
-
-  for (const tagData of tags) {
-    await prisma.tag.create({
-      data: tagData,
-    });
-  }
-}
-
 async function createRoles() {
   const rolesDatabase = [];
 
@@ -82,7 +59,6 @@ async function createColors() {
 async function cleanAllDatabase() {
   await cleanDatabase();
 
-  await prisma.tag.deleteMany({});
   await prisma.role.deleteMany({});
   await prisma.color.deleteMany({});
 }
@@ -90,7 +66,6 @@ async function cleanAllDatabase() {
 beforeAll(async () => {
   await cleanAllDatabase();
 
-  await createTags();
   await createRoles();
   await createColors();
 });

@@ -18,9 +18,13 @@ describe('messages store', () => {
     const userSender = await createUser();
     const userReceiver = await createUser({ isAdmin: true });
 
+    const tag1 = await createTag({ name: 'Tag1' });
+    const tag2 = await createTag({ name: 'Tag2' });
+
     const message = generateMessage({
       senderId: userSender.id,
       receiverId: userReceiver.id,
+      tags: [tag1.id, tag2.id],
     });
 
     const senderToken = encodeToken(userSender);
@@ -152,7 +156,7 @@ describe('messages store', () => {
 
   it('should not be able create a message without data', async () => {
     const userSender = await createUser();
-    const userReceiver = await createUser({ isAdmin: true });
+    await createUser({ isAdmin: true });
 
     const senderToken = encodeToken(userSender);
 
@@ -166,14 +170,42 @@ describe('messages store', () => {
     expect(response.status).toBe(400);
   });
 
-  // not finished
-  it('should have correct fields on message store', async () => {
+  it('should be able create a message', async () => {
     const userSender = await createUser();
     const userReceiver = await createUser({ isAdmin: true });
+
+    const tag = await createTag({ name: 'Tag1' });
+    const nonTagId = tag.id + 1;
 
     const message = generateMessage({
       senderId: userSender.id,
       receiverId: userReceiver.id,
+      tags: [tag.id, nonTagId],
+    });
+
+    const senderToken = encodeToken(userSender);
+
+    const response = await request(App)
+      .post('/messages')
+      .send(message)
+      .set({
+        authorization: `Bearer ${senderToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should have correct fields on message store', async () => {
+    const userSender = await createUser();
+    const userReceiver = await createUser({ isAdmin: true });
+
+    const tag1 = await createTag({ name: 'Tag1' });
+    const tag2 = await createTag({ name: 'Tag2' });
+
+    const message = generateMessage({
+      senderId: userSender.id,
+      receiverId: userReceiver.id,
+      tags: [tag1.id, tag2.id],
     });
 
     const senderToken = encodeToken(userSender);
@@ -189,7 +221,6 @@ describe('messages store', () => {
 
     expect(response.body.subject).toBe(message.subject);
     expect(response.body.content).toBe(message.content);
-    // expect(response.body.tags.length).toBe(message.tags.length); // not finished
 
     expect(response.body.sender.id).toBe(userSender.id);
     expect(response.body.sender.name).toBe(userSender.name);
@@ -204,5 +235,10 @@ describe('messages store', () => {
     expect(response.body.receiver.enrollment).toBe(userReceiver.enrollment);
     expect(response.body.receiver.role).toBe(userConfig.role.admin.slug);
     expect(response.body.receiver).toHaveProperty('color');
+
+    expect(response.body.tags[0].id).toBe(tag1.id);
+    expect(response.body.tags[0].name).toBe(tag1.name);
+    expect(response.body.tags[1].id).toBe(tag2.id);
+    expect(response.body.tags[1].name).toBe(tag2.name);
   });
 });

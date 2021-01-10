@@ -6,7 +6,9 @@ export async function cleanDatabase() {
   await prisma.friend.deleteMany({});
   await prisma.reserve.deleteMany({});
   await prisma.schedule.deleteMany({});
+
   await prisma.messageTags.deleteMany({});
+  await prisma.tag.deleteMany({});
   await prisma.message.deleteMany({});
 
   await prisma.user.deleteMany({});
