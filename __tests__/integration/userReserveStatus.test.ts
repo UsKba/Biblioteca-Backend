@@ -62,6 +62,36 @@ describe('userReserveStatus accept', () => {
     expect(response.body.error).toBe('Você está atrasado para fazer isso');
   });
 
+  it('should not be able to accept partipate of a reserve that you arealdy accepted', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const reserve = await createReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const memberToken = encodeToken(user2);
+
+    const response1 = await request(App)
+      .post(`/reserves/${reserve.id}/accept`)
+      .set({
+        authorization: `Bearer ${memberToken}`,
+      });
+
+    const response2 = await request(App)
+      .post(`/reserves/${reserve.id}/accept`)
+      .set({
+        authorization: `Bearer ${memberToken}`,
+      });
+
+    expect(response1.status).toBe(200);
+    expect(response2.status).toBe(400);
+
+    expect(response2.body.error).toBe('O usuário já está participando participando da reserva');
+  });
+
   it('should not be able to accept partipate of a reserve that not exists', async () => {
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
@@ -161,6 +191,28 @@ describe('userReserveStatus refuse', () => {
     expect(response.body.userId).toBe(user2.id);
     expect(response.body.reserveId).toBe(reserve.id);
     expect(response.body.status).toBe(reserveConfig.userReserve.statusRefused);
+  });
+
+  it('should not be able to refuse partipate of a reserve that is already finished', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const reserve = await createOldReserve({
+      leader: user1,
+      users: [user1, user2, user3],
+    });
+
+    const memberToken = encodeToken(user2);
+
+    const response = await request(App)
+      .post(`/reserves/${reserve.id}/refuse`)
+      .set({
+        authorization: `Bearer ${memberToken}`,
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Você está atrasado para fazer isso');
   });
 
   it('should not be able to refuse partipate of a reserve that you arealdy refused', async () => {

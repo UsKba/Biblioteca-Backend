@@ -8,6 +8,7 @@ import { assertReserveExists, assertUserIsOnReserve } from '../ReserveController
 import { deleteReserve } from '../ReserveController/utils';
 import {
   assertNowIsBeforeOfReserve,
+  assertUserAlreadyNotAcceptedReserve,
   assertUserAlreadyNotRefusedReserve,
   checkHaveTheMinimumRequiredUsersThatNotRefused,
 } from './tradingRules';
@@ -28,6 +29,7 @@ class UserReserveController {
       const reserve = await assertReserveExists(reserveId);
       assertUserIsOnReserve(userId, reserve.userReserve);
       assertNowIsBeforeOfReserve(reserve);
+      assertUserAlreadyNotAcceptedReserve(userId, reserve);
 
       const userReserveFormatted = await updateUserReserveStatus(
         reserveId,
@@ -47,6 +49,7 @@ class UserReserveController {
 
     try {
       const reserve = await assertReserveExists(reserveId);
+      assertNowIsBeforeOfReserve(reserve);
       assertUserIsOnReserve(userId, reserve.userReserve);
       assertUserAlreadyNotRefusedReserve(userId, reserve);
 
