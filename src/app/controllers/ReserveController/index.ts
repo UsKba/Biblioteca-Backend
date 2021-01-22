@@ -59,8 +59,9 @@ class ReserveController {
         userReserve: {
           select: {
             status: true,
+            color: true,
             user: {
-              include: { color: true, role: true },
+              include: { role: true },
             },
           },
           where: {
@@ -137,8 +138,9 @@ class ReserveController {
         userReserve: {
           select: {
             status: true,
+            color: true,
             user: {
-              include: { color: true, role: true },
+              include: { role: true },
             },
           },
         },
