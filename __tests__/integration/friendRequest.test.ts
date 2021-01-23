@@ -123,6 +123,27 @@ describe('friendRequest store', () => {
     expect(responseFriendRequest.status).toBe(400);
   });
 
+  it('should not be able to make a friendRequest with a user that already sent one to you', async () => {
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+
+    const tokenUser1 = encodeToken(user1);
+    const tokenUser2 = encodeToken(user2);
+
+    const responseFriendRequest1 = await request(App)
+      .post('/friends/request')
+      .send({ receiverEnrollment: user2.enrollment })
+      .set({ authorization: `Bearer ${tokenUser1}` });
+
+    const responseFriendRequest2 = await request(App)
+      .post('/friends/request')
+      .send({ receiverEnrollment: user1.enrollment })
+      .set({ authorization: `Bearer ${tokenUser2}` });
+
+    expect(responseFriendRequest1.status).toBe(200);
+    expect(responseFriendRequest2.status).toBe(207);
+  });
+
   it('should have correct fields on friendRequest store ', async () => {
     const user1 = await createUser({ enrollment: '20181104010022' });
     const user2 = await createUser({ enrollment: '20181104010033' });

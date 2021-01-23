@@ -12,6 +12,7 @@ import { assertUserIsNotFriend } from '../FriendController/tradingRules';
 import { assertUserExists } from '../UserController/tradingRules';
 import {
   assertFriendRequestExists,
+  assertFriendRequestReceiverAlreadyNotSendOneToYou,
   assertIsSenderOrReceiverId,
   assertUserLoggedAndFriendRequestReceiverAreDifferent,
 } from './tradingRules';
@@ -71,7 +72,7 @@ class FriendRequestController {
 
       const userReceiver = await assertUserExists({ enrollment: receiverEnrollment });
       await assertUserIsNotFriend(userId, userReceiver.id);
-      // await assertFriendRequestReceiverAlreadyNotSendOneToYou(userId, userReceiver.id);
+      await assertFriendRequestReceiverAlreadyNotSendOneToYou(userId, userReceiver.id);
 
       const [friendRequest] = await prisma.friendRequest.findMany({
         where: {

@@ -32,3 +32,16 @@ export function assertIsSenderOrReceiverId(senderId: number, friendRequest: Frie
 
   return friendRequest;
 }
+
+export async function assertFriendRequestReceiverAlreadyNotSendOneToYou(userId: number, receiverId: number) {
+  const [friendRequest] = await prisma.friendRequest.findMany({
+    where: {
+      senderId: receiverId,
+      receiverId: userId,
+    },
+  });
+
+  if (friendRequest) {
+    throw new RequestError('Esse usuário já o envio uma solicitação de amizade', 207);
+  }
+}
