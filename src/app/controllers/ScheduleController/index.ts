@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 
 import { assertInitialDateIsBeforeEndDate, stringsToDateArray } from '~/app/utils/date';
 
+import { RequestError } from '~/app/errors/request';
+
 import { RequestBody, RequestBodyParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
@@ -30,8 +32,8 @@ class ScheduleController {
     return res.json(schedules);
   }
 
-  async store(request: StoreRequest, response: Response) {
-    const { initialHour, endHour, periodId } = request.body;
+  async store(req: StoreRequest, res: Response) {
+    const { initialHour, endHour, periodId } = req.body;
     const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
 
     try {
@@ -40,7 +42,8 @@ class ScheduleController {
       await assertPeriodExists({ id: periodId });
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate);
     } catch (e) {
-      return response.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const schedule = await prisma.schedule.create({
@@ -51,15 +54,15 @@ class ScheduleController {
       },
     });
 
-    return response.json(schedule);
+    return res.json(schedule);
   }
 
-  async update(request: UpdateRequest, response: Response) {
+  async update(req: UpdateRequest, res: Response) {
     // nn pode atualizar o periodId
 
-    const id = Number(request.params.id);
+    const id = Number(req.params.id);
 
-    const { initialHour, endHour } = request.body;
+    const { initialHour, endHour } = req.body;
     const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
 
     try {
@@ -68,7 +71,8 @@ class ScheduleController {
 
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate, id);
     } catch (e) {
-      return response.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const newSchudule = await prisma.schedule.update({
@@ -79,7 +83,7 @@ class ScheduleController {
       where: { id },
     });
 
-    return response.json(newSchudule);
+    return res.json(newSchudule);
   }
 }
 

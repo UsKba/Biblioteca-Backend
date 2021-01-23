@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import roomConfig from '~/config/room';
 
 import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types/request';
@@ -33,7 +35,8 @@ class RoomController {
     try {
       await assertRoomNotExists({ initials });
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const newRoom = await prisma.room.create({
@@ -61,7 +64,8 @@ class RoomController {
         await assertRoomNotExists({ initials });
       }
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const room = await prisma.room.update({
@@ -81,7 +85,8 @@ class RoomController {
     try {
       await assertRoomExists({ id });
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     await prisma.room.delete({

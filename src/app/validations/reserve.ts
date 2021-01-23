@@ -17,11 +17,11 @@ const ReserveSchema = Yup.object().shape({
     .typeError('As matrículas dos usuários precisam ser números'),
 });
 
-export async function validateReserveStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(ReserveSchema, request.body);
+export async function validateReserveStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(ReserveSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

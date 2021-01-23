@@ -13,11 +13,11 @@ const LoginSchema = Yup.object().shape({
     .test('should validade enrollment', 'Matrícula inválida', validateUserEnrollmentIsValidYup),
 });
 
-export async function validateLoginStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(LoginSchema, request.body);
+export async function validateLoginStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(LoginSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

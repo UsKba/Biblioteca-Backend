@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types/request';
 
 import prisma from '~/prisma';
@@ -64,7 +66,8 @@ class UserController {
 
       return res.json(userFormatted);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 
@@ -79,7 +82,8 @@ class UserController {
         await assertUserNotExists({ email });
       }
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const user = await prisma.user.update({

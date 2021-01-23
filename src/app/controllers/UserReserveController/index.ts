@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import { RequestAuthParams } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
@@ -66,7 +68,8 @@ class UserReserveController {
 
       return res.json({ reserveId, userId: userIdToDelete });
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 }

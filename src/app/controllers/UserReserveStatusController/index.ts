@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import reserveConfig from '~/config/reserve';
 
 import { RequestAuthParams } from '~/types/requestAuth';
@@ -39,7 +41,8 @@ class UserReserveController {
 
       return res.json(userReserveFormatted);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 
@@ -69,7 +72,8 @@ class UserReserveController {
 
       return res.json(userReserveFormatted);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 }

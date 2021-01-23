@@ -13,21 +13,21 @@ const RoomUpdateSchema = Yup.object().shape({
   status: Yup.number(),
 });
 
-export async function validateRoomStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(RoomStoreSchema, request.body);
+export async function validateRoomStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(RoomStoreSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();
 }
 
-export async function validateRoomUpdate(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(RoomUpdateSchema, request.body);
+export async function validateRoomUpdate(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(RoomUpdateSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

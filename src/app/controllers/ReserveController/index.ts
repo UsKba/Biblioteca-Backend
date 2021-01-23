@@ -2,6 +2,8 @@ import { Response } from 'express';
 
 import { setScheduleHoursAndMinutes, getDateOnBrazilTimezone } from '~/app/utils/date';
 
+import { RequestError } from '~/app/errors/request';
+
 import reserveConfig from '~/config/reserve';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/requestAuth';
@@ -44,8 +46,8 @@ type IndexRequest = RequestAuth;
 type StoreRequest = RequestAuthBody<StoreReserve>;
 
 class ReserveController {
-  async index(request: IndexRequest, response: Response) {
-    const userId = request.userId as number;
+  async index(req: IndexRequest, res: Response) {
+    const userId = req.userId as number;
     const startDate = getDateOnBrazilTimezone(new Date());
 
     const reserves = await prisma.reserve.findMany({
@@ -87,14 +89,14 @@ class ReserveController {
 
     const reservesFormatted = formatReservesToResponse(reserves);
 
-    return response.json(reservesFormatted);
+    return res.json(reservesFormatted);
   }
 
-  async store(request: StoreRequest, response: Response) {
-    const userId = request.userId as number;
-    const userEnrollment = request.userEnrollment as string;
+  async store(req: StoreRequest, res: Response) {
+    const userId = req.userId as number;
+    const userEnrollment = req.userEnrollment as string;
 
-    const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = request.body;
+    const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = req.body;
 
     const date = new Date(year, month, day);
     let dateWithScheduleHours: Date;
@@ -117,7 +119,8 @@ class ReserveController {
       await assertRoomIsOpenOnThisDateAndSchedule(scheduleId, roomId, dateWithScheduleHours);
       await assertUsersExistsOnDatabase(classmatesEnrollments);
     } catch (e) {
-      return response.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const reserve = await prisma.reserve.create({
@@ -158,7 +161,7 @@ class ReserveController {
       users: reserveUsers,
     };
 
-    return response.json(reserveFormatted);
+    return res.json(reserveFormatted);
   }
 
   async delete(req: RequestAuthParamsId, res: Response) {
@@ -172,7 +175,8 @@ class ReserveController {
 
       await assertIsReserveLeader(userId, reserve);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     await deleteReserve(reserveId);

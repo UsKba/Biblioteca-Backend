@@ -14,11 +14,11 @@ const MessageStoreSchema = Yup.object().shape({
   tags: Yup.array().of(Yup.number()),
 });
 
-export async function validateMessageStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(MessageStoreSchema, request.body);
+export async function validateMessageStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(MessageStoreSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();
