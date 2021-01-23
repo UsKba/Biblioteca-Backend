@@ -90,11 +90,11 @@ describe('User index', () => {
 
   it('should be able list 2 users', async () => {
     const user1 = await createUser({
-      enrollment: '20181104010048',
+      enrollment: '20181104010011',
       email: 'userEmail1@gmail.com',
     });
     const user2 = await createUser({
-      enrollment: '20181104010049',
+      enrollment: '20181104010022',
       email: 'userEmail2@gmail.com',
     });
 
@@ -176,7 +176,7 @@ describe('User Update', () => {
   });
 
   it('should not be able to update the enrollment', async () => {
-    const { id } = await createUser({ enrollment: '20181104010048' });
+    const { id } = await createUser({ enrollment: '20181104010011' });
 
     const response = await request(App).put(`/users/${id}`).send({
       enrollment: '20181104010049',
@@ -208,7 +208,7 @@ describe('User show', () => {
   });
 
   it('should have correct fields on user show', async () => {
-    const user = await createUser({ enrollment: '20181104010048' });
+    const user = await createUser({ enrollment: '20181104010011' });
 
     const response = await request(App).get(`/users/${user.id}`);
 

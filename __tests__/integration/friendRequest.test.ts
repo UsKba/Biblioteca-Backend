@@ -16,8 +16,8 @@ describe('friendRequest store', () => {
   });
 
   it('should be able to make a friendRequest with a user', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const token = encodeToken(user1);
 
@@ -59,7 +59,7 @@ describe('friendRequest store', () => {
   });
 
   it('should be able to make a friendRequest with a user with invalid receiverId', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
 
     const token = encodeToken(user1);
 
@@ -72,8 +72,8 @@ describe('friendRequest store', () => {
   });
 
   it('should be able to make a friendRequest with a user with receiverId that not exists', async () => {
-    const user = await createUser({ enrollment: '20181104010022' });
-    const receiverEnrollment = '20181104010023';
+    const user = await createUser({ enrollment: '20181104010011' });
+    const receiverEnrollment = '20181104010012';
 
     const token = encodeToken(user);
 
@@ -86,8 +86,8 @@ describe('friendRequest store', () => {
   });
 
   it('should be able to make a friendRequest with again a user that already denied', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
 
@@ -111,7 +111,7 @@ describe('friendRequest store', () => {
   });
 
   it('should not be able to make a friendRequest with yourself', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
 
     const tokenUser1 = encodeToken(user1);
 
@@ -145,8 +145,8 @@ describe('friendRequest store', () => {
   });
 
   it('should have correct fields on friendRequest store ', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
 
@@ -178,8 +178,8 @@ describe('friendRequest index', () => {
   });
 
   it('should be able to index one friendRequest sent', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
@@ -194,8 +194,8 @@ describe('friendRequest index', () => {
   });
 
   it('should be able to index one friendRequest received', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
@@ -298,8 +298,8 @@ describe('friendRequest delete', () => {
   });
 
   it('should be able to delete one friendRequest when you are the sender', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
@@ -314,8 +314,8 @@ describe('friendRequest delete', () => {
   });
 
   it('should be able to delete one friendRequest when you are the receiver', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
@@ -346,8 +346,8 @@ describe('friendRequest delete', () => {
   });
 
   it('should have correct fields on friendRequest delete', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
@@ -368,8 +368,8 @@ describe('friendRequest index after delete', () => {
   });
 
   it('should not list the user when you cancel the friend request that you sent', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser1 = encodeToken(user1);
@@ -387,8 +387,8 @@ describe('friendRequest index after delete', () => {
   });
 
   it('should not list the user that already denied the friend request', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
 
@@ -408,8 +408,8 @@ describe('friendRequest index after delete', () => {
   });
 
   it('should not list the user when you deny the friend request', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const friendRequest = await createFriendRequest({ user1, user2 });
     const tokenUser2 = encodeToken(user2);
@@ -433,8 +433,8 @@ describe('friendRequest confirmation', () => {
   });
 
   it('should be able to confirm friendRequest', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
@@ -456,8 +456,8 @@ describe('friendRequest confirmation', () => {
   });
 
   it('should delete friendRequest when it is confirmed', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
@@ -488,8 +488,8 @@ describe('friendRequest confirmation', () => {
   });
 
   it('should not be able to friendRequest a user who already is your friend', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);
@@ -517,8 +517,8 @@ describe('friendRequest confirmation', () => {
   });
 
   it('should have correct fields on friendRequest confirmation', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const tokenUser1 = encodeToken(user1);
     const tokenUser2 = encodeToken(user2);

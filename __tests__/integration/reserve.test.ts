@@ -359,8 +359,8 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve if does not have 3 users', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -388,7 +388,7 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve with the classmateIDs repeated', async () => {
-    const user = await createUser({ enrollment: '20181104010022' });
+    const user = await createUser({ enrollment: '20181104010011' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -416,8 +416,8 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve if the user does not exists ', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -445,9 +445,9 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve on the same date, schedule, room', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010039' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();

@@ -43,8 +43,7 @@ describe('messages store', () => {
     const userSender = await createUser();
     const userReceiver = await createUser({ isAdmin: true });
 
-    const newLocal = userSender.id + 2;
-    const nonUserSenderId = newLocal; // userReceiver is the next
+    const nonUserSenderId = userSender.id + 2; // userReceiver is the next
 
     const message = generateMessage({
       senderId: nonUserSenderId,
@@ -88,9 +87,8 @@ describe('messages store', () => {
 
   it('should not be able create a message with sender that is not the logged user', async () => {
     const userSender = await createUser({ enrollment: '20181104010011' });
-    const userReceiver = await createUser({ isAdmin: true });
-
     const otherUser = await createUser({ enrollment: '20181104010022' });
+    const userReceiver = await createUser({ isAdmin: true });
 
     const message = generateMessage({
       senderId: userSender.id,
