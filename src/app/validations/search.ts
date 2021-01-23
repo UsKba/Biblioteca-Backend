@@ -8,6 +8,7 @@ const SearchIndexSchema = Yup.object().shape({
   name: Yup.string(),
   email: Yup.string(),
   enrollment: Yup.number().typeError('A matrícula precisa ser um número'),
+  limit: Yup.number().typeError('O limite precisa ser um número'),
 });
 
 export async function validateSeachIndex(req: Request, res: Response, next: NextFunction) {
