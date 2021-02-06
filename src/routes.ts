@@ -5,13 +5,11 @@ import FriendController from '~/app/controllers/FriendController';
 import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
 import FriendRequestController from '~/app/controllers/FriendRequestController';
 import LoginController from '~/app/controllers/LoginController';
-import MessagesController from '~/app/controllers/MessagesController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import SearchController from '~/app/controllers/SearchController';
-import TagController from '~/app/controllers/TagController';
 import UserController from '~/app/controllers/UserController';
 import UserReserveController from '~/app/controllers/UserReserveController';
 import UserReserveStatusController from '~/app/controllers/UserReserveStatusController';
@@ -21,7 +19,6 @@ import authMiddleware from '~/app/middlewares/auth';
 import { validateParamsId } from '~/app/validations';
 import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateLoginStore } from '~/app/validations/login';
-import { validateMessageStore } from '~/app/validations/message';
 import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
@@ -44,7 +41,7 @@ routes.get('/users/:id', validateParamsId, UserController.show);
 routes.post('/users', validateUserStore, UserController.store);
 routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.update);
 
-routes.get('/tags', TagController.index);
+// routes.get('/tags', TagController.index);
 
 // Admin
 
@@ -86,7 +83,7 @@ routes.post('/reserves/:reserveId/refuse', validateUserReserveStatusPostParams, 
 
 routes.get('/search', validateSeachIndex, SearchController.index);
 
-routes.get('/messages', MessagesController.index);
-routes.post('/messages', validateMessageStore, MessagesController.store);
+// routes.get('/messages', MessagesController.index);
+// routes.post('/messages', validateMessageStore, MessagesController.store);
 
 export default routes;
