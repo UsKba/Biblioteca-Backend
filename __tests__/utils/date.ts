@@ -28,7 +28,7 @@ function getNextWeekDay(date: Date) {
   return date.getUTCDate();
 }
 
-function getLastWeekDayDate(date: Date) {
+function getLastWeekDay(date: Date) {
   const weekDay = date.getDay();
 
   if (weekDay === 0) {
@@ -71,7 +71,7 @@ function getWeekDayDate(params?: GenerateDateParams, rootDate?: Date) {
     const isToSubstract = isToSubtract();
 
     if (isToSubstract) {
-      return getLastWeekDayDate(date);
+      return getLastWeekDay(date);
     }
 
     return getNextWeekDay(date);
