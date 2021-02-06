@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User } from '@prisma/client';
+import { Friend, FriendRequest, Notice, Period, Reserve, Room, Schedule, User } from '@prisma/client';
 import faker from 'faker';
 import MockDate from 'mockdate';
 import request from 'supertest';
@@ -72,6 +72,14 @@ interface GenerateMessageParams {
   tags?: number[];
 }
 
+interface GenerateNoticeParams {
+  expiredAt: Date;
+  userCreatorId: number;
+
+  title?: string;
+  content?: string;
+}
+
 export function generateUserStudent(params?: GenerateUserParams) {
   return {
     name: faker.name.findName(),
@@ -124,6 +132,14 @@ export function generateMessage(params: GenerateMessageParams) {
     subject: 'Subject',
     content: 'Message content',
     tags: [],
+    ...params,
+  };
+}
+
+export function generateNotice(params: GenerateNoticeParams) {
+  return {
+    title: 'Notice Title',
+    content: 'Notice content',
     ...params,
   };
 }
@@ -244,4 +260,25 @@ export async function createTag(params?: GenerateTagParams) {
   });
 
   return tag;
+}
+
+export async function createNotice(params: GenerateNoticeParams) {
+  const { title, content, expiredAt, userCreatorId } = generateNotice(params);
+
+  const noticeData = {
+    title,
+    content,
+    expiredAt,
+  };
+
+  const userCreatorToken = encodeToken({ id: userCreatorId });
+
+  const response = await request(App)
+    .post('/notices')
+    .send(noticeData)
+    .set({
+      authorization: `Bearer ${userCreatorToken}`,
+    });
+
+  return response.body as Notice;
 }

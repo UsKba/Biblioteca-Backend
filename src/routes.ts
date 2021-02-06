@@ -28,6 +28,8 @@ import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 import { validateReserveDeleteParams } from '~/app/validations/userReserve';
 import { validateUserReserveStatusPostParams } from '~/app/validations/userReserveStatus';
 
+import NoticeController from './app/controllers/NoticeController';
+
 const routes = Router();
 
 routes.get('/', (req, res) => {
@@ -82,6 +84,10 @@ routes.post('/reserves/:reserveId/accept', validateUserReserveStatusPostParams, 
 routes.post('/reserves/:reserveId/refuse', validateUserReserveStatusPostParams, UserReserveStatusController.refuse);
 
 routes.get('/search', validateSeachIndex, SearchController.index);
+
+// Admin
+
+routes.post('/notices', NoticeController.store);
 
 // routes.get('/messages', MessagesController.index);
 // routes.post('/messages', validateMessageStore, MessagesController.store);
