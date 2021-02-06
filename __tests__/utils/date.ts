@@ -14,35 +14,81 @@ function formatDate(date: Date) {
   };
 }
 
-function getNextWeekDayDate(params?: GenerateDateParams, rootDate?: Date) {
-  function getNextWeekDay(date: Date) {
-    const weekDay = date.getDay();
+function getNextWeekDay(date: Date) {
+  const weekDay = date.getDay();
 
-    if (weekDay === 0) {
-      return date.getUTCDate() + 1;
+  if (weekDay === 0) {
+    return date.getUTCDate() + 1;
+  }
+
+  if (weekDay === 6) {
+    return date.getUTCDate() + 2;
+  }
+
+  return date.getUTCDate();
+}
+
+function getLastWeekDayDate(date: Date) {
+  const weekDay = date.getDay();
+
+  if (weekDay === 0) {
+    return date.getUTCDate() - 2;
+  }
+
+  if (weekDay === 6) {
+    return date.getUTCDate() - 1;
+  }
+
+  return date.getUTCDate();
+}
+
+function getWeekDayDate(params?: GenerateDateParams, rootDate?: Date) {
+  function getData() {
+    return {
+      sumYear: Number(params?.sumYear || 0),
+      sumMonth: Number(params?.sumMonth || 0),
+      sumDay: Number(params?.sumDay || 0),
+    };
+  }
+
+  function getDateData(date: Date) {
+    const { sumYear, sumMonth, sumDay } = getData();
+
+    return {
+      newYear: date.getUTCFullYear() + sumYear,
+      newMonth: date.getUTCMonth() + sumMonth,
+      newDay: date.getUTCDate() + sumDay,
+    };
+  }
+
+  function isToSubtract() {
+    const { sumYear, sumMonth, sumDay } = getData();
+
+    return sumYear < 0 || sumMonth < 0 || sumDay < 0;
+  }
+
+  function getTargetWeekDay(date: Date) {
+    const isToSubstract = isToSubtract();
+
+    if (isToSubstract) {
+      return getLastWeekDayDate(date);
     }
 
-    if (weekDay === 6) {
-      return date.getUTCDate() + 2;
-    }
-
-    return date.getUTCDate();
+    return getNextWeekDay(date);
   }
 
   const date = rootDate || new Date();
 
-  const newYear = date.getUTCFullYear() + Number(params?.sumYear || 0);
-  const newMonth = date.getUTCMonth() + Number(params?.sumMonth || 0);
-  const newDay = date.getUTCDate() + Number(params?.sumDay || 0);
+  const { newYear, newMonth, newDay } = getDateData(date);
 
   const newDate = new Date(newYear, newMonth, newDay);
-  const day = getNextWeekDay(newDate);
+  const day = getTargetWeekDay(newDate);
 
   return new Date(newDate.getFullYear(), newDate.getUTCMonth(), day);
 }
 
 export function generateDate(params?: GenerateDateParams) {
-  const date = getNextWeekDayDate(params);
+  const date = getWeekDayDate(params);
 
   return formatDate(date);
 }
@@ -83,7 +129,7 @@ export function generateDateList(params: GenerateDateListParams) {
 
   let rootDate = new Date();
   for (let i = 0; i < paramsArray.length; i += 1) {
-    const newDate = getNextWeekDayDate(paramsArray[i], rootDate);
+    const newDate = getWeekDayDate(paramsArray[i], rootDate);
 
     dates.push(formatDate(newDate));
     rootDate = newDate;

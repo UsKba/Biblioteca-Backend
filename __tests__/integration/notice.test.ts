@@ -51,6 +51,30 @@ describe('notice store', () => {
     expect(response.body.userCreator).toHaveProperty('color');
   });
 
+  it('should not be able to create an notice with `expiredDate` before of now', async () => {
+    const adminUser = await createUser({ isAdmin: true });
+
+    const { year, month, day } = generateDate({ sumDay: -1 });
+    const yesterdayDate = new Date(year, month, day);
+
+    const noticeData = {
+      title: 'Notice Title',
+      content: 'Notice content',
+      expiredAt: yesterdayDate,
+    };
+
+    const userCreatorToken = encodeToken(adminUser);
+
+    const response = await request(App)
+      .post('/notices')
+      .send(noticeData)
+      .set({
+        authorization: `Bearer ${userCreatorToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should not be able to create an notice with invalid `expiredAt`', async () => {
     const user = await createUser();
 
