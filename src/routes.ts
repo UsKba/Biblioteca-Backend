@@ -5,6 +5,7 @@ import FriendController from '~/app/controllers/FriendController';
 import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
 import FriendRequestController from '~/app/controllers/FriendRequestController';
 import LoginController from '~/app/controllers/LoginController';
+import NoticeController from '~/app/controllers/NoticeController';
 import PeriodController from '~/app/controllers/PeriodController';
 import ReserveController from '~/app/controllers/ReserveController';
 import RoomController from '~/app/controllers/RoomController';
@@ -19,6 +20,7 @@ import authMiddleware from '~/app/middlewares/auth';
 import { validateParamsId } from '~/app/validations';
 import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateLoginStore } from '~/app/validations/login';
+import { validateNoticeStore } from '~/app/validations/notice';
 import { validatePeriodStore } from '~/app/validations/period';
 import { validateReserveStore } from '~/app/validations/reserve';
 import { validateRoomStore, validateRoomUpdate } from '~/app/validations/room';
@@ -27,8 +29,6 @@ import { validateSeachIndex } from '~/app/validations/search';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
 import { validateReserveDeleteParams } from '~/app/validations/userReserve';
 import { validateUserReserveStatusPostParams } from '~/app/validations/userReserveStatus';
-
-import NoticeController from './app/controllers/NoticeController';
 
 const routes = Router();
 
@@ -87,7 +87,7 @@ routes.get('/search', validateSeachIndex, SearchController.index);
 
 // Admin
 
-routes.post('/notices', NoticeController.store);
+routes.post('/notices', validateNoticeStore, NoticeController.store);
 
 // routes.get('/messages', MessagesController.index);
 // routes.post('/messages', validateMessageStore, MessagesController.store);
