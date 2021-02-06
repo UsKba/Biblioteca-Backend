@@ -147,4 +147,25 @@ describe('notice index', () => {
     expect(noticeIndexed.userCreator.role).toBe(userConfig.role.admin.slug);
     expect(noticeIndexed.userCreator).toHaveProperty('color');
   });
+
+  it('should index only notices that already not expired', async () => {
+    const adminUser = await createUser({ isAdmin: true });
+
+    const { year, month, day } = generateDate({ sumDay: -1 });
+    const yesterdayDate = new Date(year, month, day);
+
+    await createNotice({ userCreator: adminUser });
+    await createNotice({ userCreator: adminUser, expiredAt: yesterdayDate });
+
+    const userCreatorToken = encodeToken(adminUser);
+
+    const response = await request(App)
+      .get('/notices')
+      .set({
+        authorization: `Bearer ${userCreatorToken}`,
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+  });
 });

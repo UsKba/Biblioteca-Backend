@@ -21,6 +21,11 @@ type StoreRequest = RequestAuthBody<StoreData>;
 class NoticeController {
   async index(req: IndexRequest, res: Response) {
     const notices = await prisma.notice.findMany({
+      where: {
+        expiredAt: {
+          gte: new Date(),
+        },
+      },
       include: {
         userCreator: {
           include: { color: true, role: true },

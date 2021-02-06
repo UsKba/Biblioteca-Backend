@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Friend, FriendRequest, Notice, Period, Reserve, Room, Schedule, User } from '@prisma/client';
+import { isBefore, subDays } from 'date-fns';
 import faker from 'faker';
 import MockDate from 'mockdate';
 import request from 'supertest';
@@ -267,6 +266,8 @@ type NoticeResponse = Notice & {
 };
 
 export async function createNotice(params: GenerateNoticeParams) {
+  const date = params.expiredAt || new Date();
+
   function generateDefaultDate() {
     const { year, month, day } = generateDate({ sumDay: 1 });
     const tomorrowDate = new Date(year, month, day);
@@ -274,23 +275,45 @@ export async function createNotice(params: GenerateNoticeParams) {
     return tomorrowDate;
   }
 
-  const { title, content, expiredAt, userCreator } = generateNotice(params);
-  const expiredAtDate = expiredAt || generateDefaultDate();
+  async function create() {
+    const { title, content, expiredAt, userCreator } = generateNotice(params);
+    const expiredAtDate = expiredAt || generateDefaultDate();
 
-  const noticeData = {
-    title,
-    content,
-    expiredAt: expiredAtDate,
-  };
+    const noticeData = {
+      title,
+      content,
+      expiredAt: expiredAtDate,
+    };
 
-  const userCreatorToken = encodeToken(userCreator);
+    const userCreatorToken = encodeToken(userCreator);
 
-  const response = await request(App)
-    .post('/notices')
-    .send(noticeData)
-    .set({
-      authorization: `Bearer ${userCreatorToken}`,
-    });
+    const response = await request(App)
+      .post('/notices')
+      .send(noticeData)
+      .set({
+        authorization: `Bearer ${userCreatorToken}`,
+      });
 
-  return response.body as NoticeResponse;
+    return response.body as NoticeResponse;
+  }
+
+  async function createOld() {
+    const newSystemDate = subDays(date, 1);
+
+    MockDate.set(newSystemDate);
+
+    const notice = await create();
+
+    MockDate.reset();
+
+    return notice;
+  }
+
+  const isOld = isBefore(date, new Date());
+
+  if (isOld) {
+    return createOld();
+  }
+
+  return create();
 }
