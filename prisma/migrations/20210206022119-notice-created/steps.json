@@ -97,7 +97,7 @@
     {
       "tag": "CreateField",
       "model": "Notice",
-      "field": "experiredAt",
+      "field": "expiredAt",
       "type": "DateTime",
       "arity": "Required"
     },

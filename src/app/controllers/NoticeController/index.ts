@@ -1,18 +1,41 @@
 import { Response } from 'express';
 
-import { RequestAuth } from '~/types/requestAuth';
+import { RequestAuthBody } from '~/types/requestAuth';
 
-// interface Store {
-//   title: string;
-//   content: string;
-//   expiredAt: Date;
-// }
+import prisma from '~/prisma';
 
-type StoreRequest = RequestAuth;
+import { formatNoticeToResponse } from './utils';
+
+interface StoreData {
+  title: string;
+  content: string;
+  expiredAt: Date;
+}
+
+type StoreRequest = RequestAuthBody<StoreData>;
 
 class NoticeController {
-  store(req: StoreRequest, res: Response) {
-    return res.json({ ok: true });
+  async store(req: StoreRequest, res: Response) {
+    const adminId = req.userId as number;
+    const { title, content, expiredAt } = req.body;
+
+    const notice = await prisma.notice.create({
+      data: {
+        title,
+        content,
+        expiredAt,
+        userCreator: { connect: { id: adminId } },
+      },
+      include: {
+        userCreator: {
+          include: { color: true, role: true },
+        },
+      },
+    });
+
+    const noticeFormatted = formatNoticeToResponse(notice);
+
+    return res.json(noticeFormatted);
   }
 }
 

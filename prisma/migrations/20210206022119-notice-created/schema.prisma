@@ -162,8 +162,8 @@ model Notice {
   title   String
   content String
 
-  createdAt   DateTime @default(now())
-  experiredAt DateTime
+  createdAt DateTime @default(now())
+  expiredAt DateTime
 
   userCreator   User @relation(fields: [userCreatorId], references: [id])
   userCreatorId Int

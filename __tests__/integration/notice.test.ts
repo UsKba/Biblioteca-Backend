@@ -2,6 +2,8 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import userConfig from '~/config/user';
+
 import App from '~/App';
 
 import { createUser } from '../factory';
@@ -14,7 +16,7 @@ describe('notice store', () => {
   });
 
   it('should be able to create an notice and assert have corerct fields', async () => {
-    const user = await createUser();
+    const adminUser = await createUser({ isAdmin: true });
 
     const { year, month, day } = generateDate({ sumDay: 1 });
     const tomorrowDate = new Date(year, month, day);
@@ -25,7 +27,7 @@ describe('notice store', () => {
       expiredAt: tomorrowDate,
     };
 
-    const userCreatorToken = encodeToken(user);
+    const userCreatorToken = encodeToken(adminUser);
 
     const response = await request(App)
       .post('/notices')
@@ -35,6 +37,18 @@ describe('notice store', () => {
       });
 
     expect(response.status).toBe(200);
+
+    expect(response.body.title).toBe(noticeData.title);
+    expect(response.body.content).toBe(noticeData.content);
+    expect(response.body.expiredAt).toBe(noticeData.expiredAt.toISOString());
+    expect(response.body).toHaveProperty('createdAt');
+
+    expect(response.body.userCreator.id).toBe(adminUser.id);
+    expect(response.body.userCreator.name).toBe(adminUser.name);
+    expect(response.body.userCreator.email).toBe(adminUser.email);
+    expect(response.body.userCreator.enrollment).toBe(adminUser.enrollment);
+    expect(response.body.userCreator.role).toBe(userConfig.role.admin.slug);
+    expect(response.body.userCreator).toHaveProperty('color');
   });
 
   it('should not be able to create an notice with invalid `expiredAt`', async () => {
