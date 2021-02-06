@@ -85,6 +85,8 @@ routes.post('/reserves/:reserveId/refuse', validateUserReserveStatusPostParams, 
 
 routes.get('/search', validateSeachIndex, SearchController.index);
 
+routes.get('/notices', NoticeController.index);
+
 // Admin
 
 routes.post('/notices', validateNoticeStore, NoticeController.store);

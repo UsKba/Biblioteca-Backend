@@ -6,7 +6,7 @@ import userConfig from '~/config/user';
 
 import App from '~/App';
 
-import { createUser } from '../factory';
+import { createNotice, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
 import { generateDate } from '../utils/date';
 
@@ -111,5 +111,40 @@ describe('notice store', () => {
       });
 
     expect(response.status).toBe(400);
+  });
+});
+
+describe('notice index', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should be able to index an notice and assert have corerct fields', async () => {
+    const adminUser = await createUser({ isAdmin: true });
+    const notice = await createNotice({ userCreator: adminUser });
+
+    const userCreatorToken = encodeToken(adminUser);
+
+    const response = await request(App)
+      .get('/notices')
+      .set({
+        authorization: `Bearer ${userCreatorToken}`,
+      });
+
+    const noticeIndexed = response.body[0];
+
+    expect(response.status).toBe(200);
+
+    expect(noticeIndexed.title).toBe(notice.title);
+    expect(noticeIndexed.content).toBe(notice.content);
+    expect(noticeIndexed.expiredAt).toBe(notice.expiredAt);
+    expect(noticeIndexed).toHaveProperty('createdAt');
+
+    expect(noticeIndexed.userCreator.id).toBe(adminUser.id);
+    expect(noticeIndexed.userCreator.name).toBe(adminUser.name);
+    expect(noticeIndexed.userCreator.email).toBe(adminUser.email);
+    expect(noticeIndexed.userCreator.enrollment).toBe(adminUser.enrollment);
+    expect(noticeIndexed.userCreator.role).toBe(userConfig.role.admin.slug);
+    expect(noticeIndexed.userCreator).toHaveProperty('color');
   });
 });

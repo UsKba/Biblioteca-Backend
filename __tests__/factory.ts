@@ -73,11 +73,11 @@ interface GenerateMessageParams {
 }
 
 interface GenerateNoticeParams {
-  expiredAt: Date;
-  userCreatorId: number;
+  userCreator: User;
 
   title?: string;
   content?: string;
+  expiredAt?: Date;
 }
 
 export function generateUserStudent(params?: GenerateUserParams) {
@@ -262,16 +262,28 @@ export async function createTag(params?: GenerateTagParams) {
   return tag;
 }
 
+type NoticeResponse = Notice & {
+  expiredAt: string;
+};
+
 export async function createNotice(params: GenerateNoticeParams) {
-  const { title, content, expiredAt, userCreatorId } = generateNotice(params);
+  function generateDefaultDate() {
+    const { year, month, day } = generateDate({ sumDay: 1 });
+    const tomorrowDate = new Date(year, month, day);
+
+    return tomorrowDate;
+  }
+
+  const { title, content, expiredAt, userCreator } = generateNotice(params);
+  const expiredAtDate = expiredAt || generateDefaultDate();
 
   const noticeData = {
     title,
     content,
-    expiredAt,
+    expiredAt: expiredAtDate,
   };
 
-  const userCreatorToken = encodeToken({ id: userCreatorId });
+  const userCreatorToken = encodeToken(userCreator);
 
   const response = await request(App)
     .post('/notices')
@@ -280,5 +292,5 @@ export async function createNotice(params: GenerateNoticeParams) {
       authorization: `Bearer ${userCreatorToken}`,
     });
 
-  return response.body as Notice;
+  return response.body as NoticeResponse;
 }

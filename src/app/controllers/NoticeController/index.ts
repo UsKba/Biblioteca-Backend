@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { RequestError } from '~/app/errors/request';
 
-import { RequestAuthBody } from '~/types/requestAuth';
+import { RequestAuth, RequestAuthBody } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
@@ -15,9 +15,24 @@ interface StoreData {
   expiredAt: string;
 }
 
+type IndexRequest = RequestAuth;
 type StoreRequest = RequestAuthBody<StoreData>;
 
 class NoticeController {
+  async index(req: IndexRequest, res: Response) {
+    const notices = await prisma.notice.findMany({
+      include: {
+        userCreator: {
+          include: { color: true, role: true },
+        },
+      },
+    });
+
+    const noticesFormatted = notices.map(formatNoticeToResponse);
+
+    return res.json(noticesFormatted);
+  }
+
   async store(req: StoreRequest, res: Response) {
     const adminId = req.userId as number;
     const { title, content, expiredAt: expiredAtString } = req.body;
