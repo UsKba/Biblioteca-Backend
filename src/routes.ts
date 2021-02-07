@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import AllReserves from '~/app/controllers/AllReserves';
+import ComputersController from '~/app/controllers/ComputersController';
 import FriendController from '~/app/controllers/FriendController';
 import FriendRequestConfirmationController from '~/app/controllers/FriendRequestConfirmationController';
 import FriendRequestController from '~/app/controllers/FriendRequestController';
@@ -88,5 +89,10 @@ routes.get('/search', validateSeachIndex, SearchController.index);
 
 routes.get('/messages', MessagesController.index);
 routes.post('/messages', validateMessageStore, MessagesController.store);
+
+routes.get('/computers/:id', ComputersController.index);
+routes.post('/computers', validateComputersStore, ComputersController.store);
+routes.delete('/computers/:id', validateParamsId, ComputersController.delete);
+routes.put('/users/:id', validateParamsId, validateComputersUpdate, ComputersController.update);
 
 export default routes;
