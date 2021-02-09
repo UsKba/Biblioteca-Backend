@@ -1,7 +1,7 @@
 import { Reserve, UserReserve } from '@prisma/client';
 import { isBefore } from 'date-fns';
 
-import { getDateOnBrazilTimezone } from '~/app/utils/date';
+import { getDateOnBrazilTimezone, removeDateTimezoneOffset } from '~/app/utils/date';
 
 import { RequestError } from '~/app/errors/request';
 
@@ -48,7 +48,7 @@ export function assertNowIsBeforeOfReserve(reserve: Reserve) {
   const reserveDate = new Date(reserve.date);
 
   const nowOnBrazilTimezone = getDateOnBrazilTimezone(now);
-  const reserveDateOnBrazilTimezone = getDateOnBrazilTimezone(reserveDate);
+  const reserveDateOnBrazilTimezone = removeDateTimezoneOffset(reserveDate); // already on brazil timezone
 
   const isNowBefore = isBefore(nowOnBrazilTimezone, reserveDateOnBrazilTimezone);
 
