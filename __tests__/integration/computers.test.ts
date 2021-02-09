@@ -177,7 +177,7 @@ describe('Computer Delete', () => {
   it('should be able to delete a computer', async () => {
     const computer = await createComputer();
 
-    const response = await request(App).delete(`/computer/${computer.id}`);
+    const response = await request(App).delete(`/computers/${computer.id}`);
 
     expect(response.status).toBe(200);
     expect(response.body.id).toBe(computer.id);

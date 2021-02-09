@@ -19,6 +19,7 @@ import UserReserveStatusController from '~/app/controllers/UserReserveStatusCont
 import authMiddleware from '~/app/middlewares/auth';
 
 import { validateParamsId } from '~/app/validations';
+import { validateComputersStore, validateComputersUpdate } from '~/app/validations/computer';
 import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateLoginStore } from '~/app/validations/login';
 import { validateNoticeStore } from '~/app/validations/notice';
@@ -98,6 +99,6 @@ routes.post('/notices', validateNoticeStore, NoticeController.store);
 routes.get('/computers/:id', ComputersController.index);
 routes.post('/computers', validateComputersStore, ComputersController.store);
 routes.delete('/computers/:id', validateParamsId, ComputersController.delete);
-routes.put('/users/:id', validateParamsId, validateComputersUpdate, ComputersController.update);
+routes.put('/computers/:id', validateParamsId, validateComputersUpdate, ComputersController.update);
 
 export default routes;
