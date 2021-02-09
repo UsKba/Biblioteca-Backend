@@ -23,21 +23,21 @@ const scheduleUpdateSchema = Yup.object().shape({
     .test('is-hour-valid', 'Hora final inválida', validateHourYup),
 });
 
-export async function validateScheduleStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(scheduleStoreSchema, request.body);
+export async function validateScheduleStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(scheduleStoreSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();
 }
 
-export async function validateScheduleUpdate(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(scheduleUpdateSchema, request.body);
+export async function validateScheduleUpdate(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(scheduleUpdateSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

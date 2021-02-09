@@ -20,6 +20,7 @@ export async function getRandomColorList(length: number) {
   for (let i = 0; i < length; i += 1) {
     let color = getRandomItem<Color>(colors);
 
+    // [to-do] retirar de colors que ja foram usadas e `colors`
     while (colorsAlreadyDrawn.includes(color.id)) {
       color = getRandomItem(colors);
     }

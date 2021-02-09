@@ -156,9 +156,10 @@ describe('Reserve Index', () => {
         authorization: `Bearer ${leaderToken}`,
       });
 
-    const reserveCreated = response.body[0];
-    const reserveAdmin = reserveCreated.users[0];
-    const reserveMember = reserveCreated.users[1];
+    const reserveIndexed = response.body[0];
+    const reserveAdmin = reserveIndexed.users[0];
+    const reserveMember1 = reserveIndexed.users[1];
+    const reserveMember2 = reserveIndexed.users[2];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
     const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
@@ -166,31 +167,47 @@ describe('Reserve Index', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
-    expect(reserveCreated.id).toBe(reserve.id);
+    expect(reserveIndexed.id).toBe(reserve.id);
 
-    expect(reserveCreated.name).toBe(reserve.name);
-    expect(reserveCreated.date).toBe(dateISO);
-    expect(reserveCreated.adminId).toBe(user1.id);
+    expect(reserveIndexed.name).toBe(reserve.name);
+    expect(reserveIndexed.date).toBe(dateISO);
+    expect(reserveIndexed.adminId).toBe(user1.id);
 
-    expect(reserveCreated.room.id).toBe(room.id);
-    expect(reserveCreated.room.initials).toBe(room.initials);
+    expect(reserveIndexed.room.id).toBe(room.id);
+    expect(reserveIndexed.room.initials).toBe(room.initials);
 
-    expect(reserveCreated.schedule.id).toBe(schedule.id);
-    expect(reserveCreated.schedule.initialHour).toBe(schedule.initialHour);
-    expect(reserveCreated.schedule.endHour).toBe(schedule.endHour);
-    expect(reserveCreated.schedule.periodId).toBe(schedule.periodId);
+    expect(reserveIndexed.schedule.id).toBe(schedule.id);
+    expect(reserveIndexed.schedule.initialHour).toBe(schedule.initialHour);
+    expect(reserveIndexed.schedule.endHour).toBe(schedule.endHour);
+    expect(reserveIndexed.schedule.periodId).toBe(schedule.periodId);
 
     expect(reserveAdmin.id).toBe(user1.id);
     expect(reserveAdmin.name).toBe(user1.name);
     expect(reserveAdmin.email).toBe(user1.email);
     expect(reserveAdmin.enrollment).toBe(user1.enrollment);
     expect(reserveAdmin.status).toBe(reserveConfig.userReserve.statusAccepted);
+    expect(reserveAdmin.role).toBe(userConfig.role.student.slug);
+    expect(reserveAdmin).toHaveProperty('color');
 
-    expect(reserveMember.id).toBe(user2.id);
-    expect(reserveMember.name).toBe(user2.name);
-    expect(reserveMember.email).toBe(user2.email);
-    expect(reserveMember.enrollment).toBe(user2.enrollment);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember1.id).toBe(user2.id);
+    expect(reserveMember1.name).toBe(user2.name);
+    expect(reserveMember1.email).toBe(user2.email);
+    expect(reserveMember1.enrollment).toBe(user2.enrollment);
+    expect(reserveMember1.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember1.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember1).toHaveProperty('color');
+
+    expect(reserveMember2.id).toBe(user3.id);
+    expect(reserveMember2.name).toBe(user3.name);
+    expect(reserveMember2.email).toBe(user3.email);
+    expect(reserveMember2.enrollment).toBe(user3.enrollment);
+    expect(reserveMember2.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember2.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember2).toHaveProperty('color');
+
+    expect(reserveAdmin.color !== reserveMember1.color).toBeTruthy();
+    expect(reserveAdmin.color !== reserveMember2.color).toBeTruthy();
+    expect(reserveMember1.color !== reserveMember2.color).toBeTruthy();
   });
 });
 
@@ -342,8 +359,8 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve if does not have 3 users', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -371,7 +388,7 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve with the classmateIDs repeated', async () => {
-    const user = await createUser({ enrollment: '20181104010022' });
+    const user = await createUser({ enrollment: '20181104010011' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -399,8 +416,8 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve if the user does not exists ', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -428,9 +445,9 @@ describe('Reserve Store', () => {
   });
 
   it('should not be able to create a reserve on the same date, schedule, room', async () => {
-    const user1 = await createUser({ enrollment: '20181104010022' });
-    const user2 = await createUser({ enrollment: '20181104010033' });
-    const user3 = await createUser({ enrollment: '20181104010039' });
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
 
     const room = await createRoom();
     const period = await createPeriod();
@@ -594,7 +611,8 @@ describe('Reserve Store', () => {
       });
 
     const reserveAdmin = response.body.users[0];
-    const reserveMember = response.body.users[1];
+    const reserveMember1 = response.body.users[1];
+    const reserveMember2 = response.body.users[2];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
     const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
@@ -623,13 +641,25 @@ describe('Reserve Store', () => {
     expect(reserveAdmin.role).toBe(userConfig.role.student.slug);
     expect(reserveAdmin).toHaveProperty('color');
 
-    expect(reserveMember.id).toBe(user2.id);
-    expect(reserveMember.name).toBe(user2.name);
-    expect(reserveMember.email).toBe(user2.email);
-    expect(reserveMember.enrollment).toBe(user2.enrollment);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
-    expect(reserveMember.role).toBe(userConfig.role.student.slug);
-    expect(reserveMember).toHaveProperty('color');
+    expect(reserveMember1.id).toBe(user2.id);
+    expect(reserveMember1.name).toBe(user2.name);
+    expect(reserveMember1.email).toBe(user2.email);
+    expect(reserveMember1.enrollment).toBe(user2.enrollment);
+    expect(reserveMember1.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember1.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember1).toHaveProperty('color');
+
+    expect(reserveMember2.id).toBe(user3.id);
+    expect(reserveMember2.name).toBe(user3.name);
+    expect(reserveMember2.email).toBe(user3.email);
+    expect(reserveMember2.enrollment).toBe(user3.enrollment);
+    expect(reserveMember2.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember2.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember2).toHaveProperty('color');
+
+    expect(reserveAdmin.color !== reserveMember1.color).toBeTruthy();
+    expect(reserveAdmin.color !== reserveMember2.color).toBeTruthy();
+    expect(reserveMember1.color !== reserveMember2.color).toBeTruthy();
   });
 });
 

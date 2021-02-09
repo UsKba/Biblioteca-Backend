@@ -97,7 +97,8 @@ describe('allReserves index', () => {
 
     const reserveIndexed = response.body[0];
     const reserveAdmin = reserveIndexed.users[0];
-    const reserveMember = reserveIndexed.users[1];
+    const reserveMember1 = reserveIndexed.users[1];
+    const reserveMember2 = reserveIndexed.users[2];
 
     const [hours, minutes] = splitSingleDate(schedule.initialHour);
     const tempDate = new Date(tomorrowDate.year, tomorrowDate.month, tomorrowDate.day, hours, minutes);
@@ -105,7 +106,9 @@ describe('allReserves index', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
+
     expect(reserveIndexed.id).toBe(reserve1.id);
+    expect(reserveIndexed.users.length).toBe(3);
 
     expect(reserveIndexed.name).toBe(reserve1.name);
     expect(reserveIndexed.date).toBe(dateISO);
@@ -127,11 +130,22 @@ describe('allReserves index', () => {
     expect(reserveAdmin.role).toBe(userConfig.role.student.slug);
     expect(reserveAdmin).toHaveProperty('color');
 
-    expect(reserveMember.id).toBe(user2.id);
-    expect(reserveMember.name).toBe(user2.name);
-    expect(reserveMember.email).toBe(user2.email);
-    expect(reserveMember.status).toBe(reserveConfig.userReserve.statusPending);
-    expect(reserveMember.role).toBe(userConfig.role.student.slug);
-    expect(reserveMember).toHaveProperty('color');
+    expect(reserveMember1.id).toBe(user2.id);
+    expect(reserveMember1.name).toBe(user2.name);
+    expect(reserveMember1.email).toBe(user2.email);
+    expect(reserveMember1.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember1.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember1).toHaveProperty('color');
+
+    expect(reserveMember2.id).toBe(user3.id);
+    expect(reserveMember2.name).toBe(user3.name);
+    expect(reserveMember2.email).toBe(user3.email);
+    expect(reserveMember2.status).toBe(reserveConfig.userReserve.statusPending);
+    expect(reserveMember2.role).toBe(userConfig.role.student.slug);
+    expect(reserveMember2).toHaveProperty('color');
+
+    expect(reserveAdmin.color !== reserveMember1.color).toBeTruthy();
+    expect(reserveAdmin.color !== reserveMember2.color).toBeTruthy();
+    expect(reserveMember1.color !== reserveMember2.color).toBeTruthy();
   });
 });

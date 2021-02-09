@@ -9,11 +9,11 @@ const UserReserveDeleteSchema = Yup.object().shape({
   userId: Yup.number().required('O id do usuário é requerido').typeError('O id do usuário precisa ser um número'),
 });
 
-export async function validateReserveDeleteParams(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(UserReserveDeleteSchema, request.params);
+export async function validateReserveDeleteParams(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(UserReserveDeleteSchema, req.params);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

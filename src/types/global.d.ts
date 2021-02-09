@@ -4,3 +4,7 @@ export type UserWithColorAndRole = User & {
   color: Color;
   role: Role;
 };
+
+export type UserWithRole = User & {
+  role: Role;
+};

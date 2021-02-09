@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./database.sqlite"
+  url = "***"
 }
 
 model User {
@@ -154,14 +154,6 @@ model MessageTags {
 
   tagId     Int
   messageId Int
-}
-
-model Computers {
-  id Int @id @default(autoincrement())
-
-  identification String @unique
-  local          String
-  status         Int
 }
 
 model Notice {

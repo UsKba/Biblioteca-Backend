@@ -38,7 +38,12 @@ class AllReserves {
       include: {
         room: true,
         schedule: true,
-        userReserve: { include: { user: { include: { color: true, role: true } } } },
+        userReserve: {
+          include: {
+            color: true,
+            user: { include: { role: true } },
+          },
+        },
       },
       orderBy: {
         id: 'asc',

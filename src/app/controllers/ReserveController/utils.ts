@@ -1,10 +1,10 @@
-import { Reserve, Room, Schedule } from '@prisma/client';
+import { Color, Reserve, Room, Schedule } from '@prisma/client';
 
 import { getRandomColorList } from '~/app/utils/colors';
 
 import reserveConfig from '~/config/reserve';
 
-import { UserWithColorAndRole } from '~/types/global';
+import { UserWithRole } from '~/types/global';
 
 import prisma from '~/prisma';
 
@@ -23,6 +23,12 @@ interface CreateUserReserveParams {
   status: number;
 }
 
+type UserReserveToFormat = {
+  status: number;
+  user: UserWithRole;
+  color: Color;
+};
+
 type ReserveToFormat = {
   id: number;
   name: string | null;
@@ -30,18 +36,20 @@ type ReserveToFormat = {
   adminId: number;
   schedule: Schedule;
   room: Room;
-  userReserve: { status: number; user: UserWithColorAndRole }[];
-};
-
-type UserReserveToFormat = {
-  status: number;
-  user: UserWithColorAndRole;
+  userReserve: UserReserveToFormat[];
 };
 
 export function formatUsersReserveToResponse(userReserve: UserReserveToFormat) {
+  const { user, color, status } = userReserve;
+
+  const userToFormat = {
+    color,
+    ...user,
+  };
+
   return {
-    status: userReserve.status,
-    ...formatUserToResponse(userReserve.user),
+    status,
+    ...formatUserToResponse(userToFormat),
   };
 }
 
@@ -78,8 +86,9 @@ export async function createUserReserve(params: CreateUserReserveParams) {
     },
     include: {
       user: {
-        include: { color: true, role: true },
+        include: { role: true },
       },
+      color: true,
     },
   });
 

@@ -8,11 +8,11 @@ const periodStoreSchema = Yup.object().shape({
   name: Yup.string().required('O nome é requerido'),
 });
 
-export async function validatePeriodStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(periodStoreSchema, request.body);
+export async function validatePeriodStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(periodStoreSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();

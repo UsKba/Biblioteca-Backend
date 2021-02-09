@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User, Computer } from '@prisma/client';
+import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User, Computers, Notice } from '@prisma/client';
+import { isBefore, subDays } from 'date-fns';
 import faker from 'faker';
 import MockDate from 'mockdate';
 import request from 'supertest';
@@ -78,6 +79,14 @@ interface GenerateMessageParams {
   tags?: number[];
 }
 
+interface GenerateNoticeParams {
+  userCreator: User;
+
+  title?: string;
+  content?: string;
+  expiredAt?: Date;
+}
+
 export function generateUserStudent(params?: GenerateUserParams) {
   return {
     name: faker.name.findName(),
@@ -142,6 +151,14 @@ export function generateMessage(params: GenerateMessageParams) {
   };
 }
 
+export function generateNotice(params: GenerateNoticeParams) {
+  return {
+    title: 'Notice Title',
+    content: 'Notice content',
+    ...params,
+  };
+}
+
 export async function createUser(params?: CreateUserParams) {
   const userData = params?.isAdmin ? generateUserAdmin(params) : generateUserStudent(params);
 
@@ -162,7 +179,7 @@ export async function createComputer(params?: GenerateaComputerParams) {
 
   const response = await request(App).post('/computers').send(computerData);
 
-  return response.body as Computer;
+  return response.body as Computers;
 }
 
 export async function createPeriod(params?: GeneratePeriodParams) {
@@ -265,4 +282,61 @@ export async function createTag(params?: GenerateTagParams) {
   });
 
   return tag;
+}
+
+type NoticeResponse = Notice & {
+  expiredAt: string;
+};
+
+export async function createNotice(params: GenerateNoticeParams) {
+  const date = params.expiredAt || new Date();
+
+  function generateDefaultDate() {
+    const { year, month, day } = generateDate({ sumDay: 1 });
+    const tomorrowDate = new Date(year, month, day);
+
+    return tomorrowDate;
+  }
+
+  async function create() {
+    const { title, content, expiredAt, userCreator } = generateNotice(params);
+    const expiredAtDate = expiredAt || generateDefaultDate();
+
+    const noticeData = {
+      title,
+      content,
+      expiredAt: expiredAtDate,
+    };
+
+    const userCreatorToken = encodeToken(userCreator);
+
+    const response = await request(App)
+      .post('/notices')
+      .send(noticeData)
+      .set({
+        authorization: `Bearer ${userCreatorToken}`,
+      });
+
+    return response.body as NoticeResponse;
+  }
+
+  async function createOld() {
+    const newSystemDate = subDays(date, 1);
+
+    MockDate.set(newSystemDate);
+
+    const notice = await create();
+
+    MockDate.reset();
+
+    return notice;
+  }
+
+  const isOld = isBefore(date, new Date());
+
+  if (isOld) {
+    return createOld();
+  }
+
+  return create();
 }

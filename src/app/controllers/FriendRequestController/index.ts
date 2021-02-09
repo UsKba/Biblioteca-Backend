@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import friendConfig from '~/config/friend';
 
 import { RequestAuthBody, RequestAuth, RequestAuthParamsId } from '~/types/requestAuth';
@@ -10,6 +12,7 @@ import { assertUserIsNotFriend } from '../FriendController/tradingRules';
 import { assertUserExists } from '../UserController/tradingRules';
 import {
   assertFriendRequestExists,
+  assertFriendRequestReceiverAlreadyNotSendOneToYou,
   assertIsSenderOrReceiverId,
   assertUserLoggedAndFriendRequestReceiverAreDifferent,
 } from './tradingRules';
@@ -69,6 +72,7 @@ class FriendRequestController {
 
       const userReceiver = await assertUserExists({ enrollment: receiverEnrollment });
       await assertUserIsNotFriend(userId, userReceiver.id);
+      await assertFriendRequestReceiverAlreadyNotSendOneToYou(userId, userReceiver.id);
 
       const [friendRequest] = await prisma.friendRequest.findMany({
         where: {
@@ -108,7 +112,8 @@ class FriendRequestController {
 
       return res.json(friendRequestFormatted);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 
@@ -129,7 +134,8 @@ class FriendRequestController {
 
       return res.json(friendRequestUpdated);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 }

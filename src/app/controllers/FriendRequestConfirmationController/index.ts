@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import { RequestAuthBody } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
@@ -33,7 +35,8 @@ class FriendRequestConfirmationController {
 
       return res.json(friend);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
   }
 }

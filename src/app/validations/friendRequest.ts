@@ -10,11 +10,11 @@ const FriendRequestStoreSchema = Yup.object().shape({
     .typeError('A matrícula do destinatário precisa ser um número'),
 });
 
-export async function validateFriendRequestStore(request: Request, response: Response, next: NextFunction) {
-  const error = await validateSchema(FriendRequestStoreSchema, request.body);
+export async function validateFriendRequestStore(req: Request, res: Response, next: NextFunction) {
+  const error = await validateSchema(FriendRequestStoreSchema, req.body);
 
   if (error) {
-    return response.status(400).json(error);
+    return res.status(400).json(error);
   }
 
   return next();
