@@ -4,12 +4,12 @@ import prisma from '~/prisma';
 
 import { decodeToken } from '../utils/auth';
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   userId?: number;
   userEnrollment?: string;
 }
 
-export default async (req: AuthRequest, res: Response, next: NextFunction) => {
+async function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -34,4 +34,6 @@ export default async (req: AuthRequest, res: Response, next: NextFunction) => {
   req.userId = user.id;
   req.userEnrollment = user.enrollment;
   return next();
-};
+}
+
+export default authMiddleware;

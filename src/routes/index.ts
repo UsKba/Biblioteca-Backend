@@ -113,6 +113,9 @@ import RoomController from '~/app/controllers/RoomController';
 import ScheduleController from '~/app/controllers/ScheduleController';
 import UserController from '~/app/controllers/UserController';
 
+import adminMiddleware from '~/app/middlewares/admin';
+import authMiddleware from '~/app/middlewares/auth';
+
 import { validateParamsId } from '~/app/validations';
 import { validateLoginStore } from '~/app/validations/login';
 import { validateUserStore, validateUserUpdate } from '~/app/validations/user';
@@ -141,7 +144,10 @@ routes.get('/notices', NoticeController.index);
 // routes.get('/messages', MessagesController.index);
 // routes.get('/tags', TagController.index);
 
-// routes.use(userRoutes);
-// routes.use(adminRoutes);
+routes.use(authMiddleware);
+routes.use(userRoutes);
+
+routes.use(adminMiddleware);
+routes.use(adminRoutes);
 
 export default routes;

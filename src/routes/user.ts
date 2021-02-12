@@ -8,8 +8,6 @@ import SearchController from '~/app/controllers/SearchController';
 import UserReserveController from '~/app/controllers/UserReserveController';
 import UserReserveStatusController from '~/app/controllers/UserReserveStatusController';
 
-import authMiddleware from '~/app/middlewares/auth';
-
 import { validateParamsId } from '~/app/validations';
 import { validateFriendRequestStore } from '~/app/validations/friendRequest';
 import { validateReserveStore } from '~/app/validations/reserve';
@@ -18,8 +16,6 @@ import { validateReserveDeleteParams } from '~/app/validations/userReserve';
 import { validateUserReserveStatusPostParams } from '~/app/validations/userReserveStatus';
 
 const userRoutes = Router();
-
-userRoutes.use(authMiddleware);
 
 userRoutes.get('/friends/request', FriendRequestController.index);
 userRoutes.post('/friends/request', validateFriendRequestStore, FriendRequestController.store);
