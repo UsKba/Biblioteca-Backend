@@ -17,13 +17,15 @@ describe('allReserves index', () => {
   });
 
   it('should be able index the all reserves on an specific date', async () => {
+    const admin = await createUser({ isAdmin: true });
+
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
     const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
@@ -58,13 +60,15 @@ describe('allReserves index', () => {
   });
 
   it('should have correct fields on week reserve index', async () => {
+    const admin = await createUser({ isAdmin: true });
+
     const user1 = await createUser({ enrollment: '20181104010011' });
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
-    const room = await createRoom();
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
     const [tomorrowDate, afterTomorrowDate] = generateDateList([{ sumDay: 1 }, { sumDay: 2 }]);
 
