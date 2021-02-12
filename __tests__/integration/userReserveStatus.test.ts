@@ -7,7 +7,7 @@ import reserveConfig from '~/config/reserve';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createOldReserve, createReserve, createUser } from '../factory';
+import { createOldReserve, createPeriod, createReserve, createRoom, createSchedule, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('userReserveStatus accept', () => {
@@ -20,9 +20,17 @@ describe('userReserveStatus accept', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -45,9 +53,17 @@ describe('userReserveStatus accept', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createOldReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -67,9 +83,17 @@ describe('userReserveStatus accept', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -97,9 +121,17 @@ describe('userReserveStatus accept', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const nonReserveId = reserve.id + 1;
@@ -122,9 +154,17 @@ describe('userReserveStatus accept', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const nonMemberToken = encodeToken(user4);
@@ -144,9 +184,17 @@ describe('userReserveStatus accept', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -173,9 +221,17 @@ describe('userReserveStatus refuse', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3, user4],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -198,9 +254,17 @@ describe('userReserveStatus refuse', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createOldReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -221,9 +285,17 @@ describe('userReserveStatus refuse', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3, user4],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -251,9 +323,17 @@ describe('userReserveStatus refuse', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const nonReserveId = reserve.id + 1;
@@ -276,9 +356,17 @@ describe('userReserveStatus refuse', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const nonMemberToken = encodeToken(user4);
@@ -298,9 +386,17 @@ describe('userReserveStatus refuse', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -327,9 +423,17 @@ describe('userReserveStatus refuse, reserve index', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3, user4],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
@@ -358,9 +462,17 @@ describe('userReserveStatus refuse, reserve index', () => {
     const user3 = await createUser({ enrollment: '20181104010033' });
     const user4 = await createUser({ enrollment: '20181104010044' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3, user4],
+      room,
+      schedule,
     });
 
     const member2Token = encodeToken(user2);
@@ -393,9 +505,17 @@ describe('userReserveStatus refuse, reserve index', () => {
     const user2 = await createUser({ enrollment: '20181104010022' });
     const user3 = await createUser({ enrollment: '20181104010033' });
 
+    const admin = await createUser({ isAdmin: true });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
     const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
+      room,
+      schedule,
     });
 
     const memberToken = encodeToken(user2);
