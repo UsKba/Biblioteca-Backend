@@ -106,6 +106,7 @@
 import { Router } from 'express';
 
 import AllReserves from '~/app/controllers/AllReserves';
+import ComputersController from '~/app/controllers/ComputersController';
 import LoginController from '~/app/controllers/LoginController';
 import NoticeController from '~/app/controllers/NoticeController';
 import PeriodController from '~/app/controllers/PeriodController';
@@ -137,6 +138,7 @@ routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.up
 routes.get('/rooms', RoomController.index);
 routes.get('/schedules', ScheduleController.index);
 routes.get('/periods', PeriodController.index);
+routes.get('/computers/:id', ComputersController.index);
 
 routes.get('/reserves/all', AllReserves.index);
 routes.get('/notices', NoticeController.index);

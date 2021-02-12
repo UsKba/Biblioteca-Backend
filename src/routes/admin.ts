@@ -24,7 +24,6 @@ adminRoutes.post('/rooms', validateRoomStore, RoomController.store);
 adminRoutes.put('/rooms/:id', validateParamsId, validateRoomUpdate, RoomController.update);
 adminRoutes.delete('/rooms/:id', validateParamsId, RoomController.delete);
 
-adminRoutes.get('/computers/:id', ComputersController.index);
 adminRoutes.post('/computers', validateComputersStore, ComputersController.store);
 adminRoutes.delete('/computers/:id', validateParamsId, ComputersController.delete);
 adminRoutes.put('/computers/:id', validateParamsId, validateComputersUpdate, ComputersController.update);
