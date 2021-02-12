@@ -33,7 +33,7 @@ describe('Room Store', () => {
 
   it('should not be able to create other room with the `initials` that already exists', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const data = {
       initials: room.initials,
@@ -76,7 +76,7 @@ describe('Room Index', () => {
 
   it('should be able to index the 1 room', async () => {
     const admin = await createUser({ isAdmin: true });
-    await createRoom({ user: admin });
+    await createRoom({ adminUser: admin });
 
     const response = await request(App).get('/rooms');
 
@@ -87,8 +87,8 @@ describe('Room Index', () => {
   it('should be able to index the 2 rooms', async () => {
     const admin = await createUser({ isAdmin: true });
 
-    await createRoom({ initials: 'F1-1', user: admin });
-    await createRoom({ initials: 'F1-2', user: admin });
+    await createRoom({ initials: 'F1-1', adminUser: admin });
+    await createRoom({ initials: 'F1-2', adminUser: admin });
 
     const response = await request(App).get('/rooms');
 
@@ -98,7 +98,7 @@ describe('Room Index', () => {
 
   it('should have correct fields on room index', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const adminToken = encodeToken(admin);
 
@@ -122,7 +122,7 @@ describe('Room Update', () => {
 
   it('should be able to update a room', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const adminToken = encodeToken(admin);
 
@@ -139,7 +139,7 @@ describe('Room Update', () => {
 
   it('should not be able to update the `status` of a room to other that is not accepted', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin, initials: 'F1-1' });
+    const room = await createRoom({ adminUser: admin, initials: 'F1-1' });
 
     const adminToken = encodeToken(admin);
 
@@ -156,8 +156,8 @@ describe('Room Update', () => {
   it('should not be able to update the `initials` of a room to another that already exists', async () => {
     const admin = await createUser({ isAdmin: true });
 
-    await createRoom({ user: admin, initials: 'F1-1' });
-    const room2 = await createRoom({ user: admin, initials: 'F1-2' });
+    await createRoom({ adminUser: admin, initials: 'F1-1' });
+    const room2 = await createRoom({ adminUser: admin, initials: 'F1-2' });
 
     const adminToken = encodeToken(admin);
 
@@ -187,7 +187,7 @@ describe('Room Update', () => {
 
   it('should not be able to update a room with invalid `status` format', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin, initials: 'F1-1' });
+    const room = await createRoom({ adminUser: admin, initials: 'F1-1' });
     const nextRoomId = room.id + 1;
 
     const adminToken = encodeToken(admin);
@@ -204,7 +204,7 @@ describe('Room Update', () => {
 
   it('should not be able to update a room with id that not exists', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin, initials: 'F1-1' });
+    const room = await createRoom({ adminUser: admin, initials: 'F1-1' });
     const nextRoomId = room.id + 1;
 
     const adminToken = encodeToken(admin);
@@ -221,7 +221,7 @@ describe('Room Update', () => {
 
   it('should have correct fields on room update', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin, initials: 'F1-1' });
+    const room = await createRoom({ adminUser: admin, initials: 'F1-1' });
 
     const adminToken = encodeToken(admin);
 
@@ -244,7 +244,7 @@ describe('Room Delete', () => {
 
   it('should be able to delete a room', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const adminToken = encodeToken(admin);
 
@@ -273,7 +273,7 @@ describe('Room Delete', () => {
 
   it('should not be able to delete a room with id that not exists', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const adminToken = encodeToken(admin);
     const nextRoomId = room.id + 1;
@@ -289,7 +289,7 @@ describe('Room Delete', () => {
 
   it('should have correct fields on room delete', async () => {
     const admin = await createUser({ isAdmin: true });
-    const room = await createRoom({ user: admin });
+    const room = await createRoom({ adminUser: admin });
 
     const adminToken = encodeToken(admin);
 

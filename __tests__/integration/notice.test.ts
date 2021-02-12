@@ -120,14 +120,14 @@ describe('notice index', () => {
 
   it('should be able to index an notice and assert have corerct fields', async () => {
     const adminUser = await createUser({ isAdmin: true });
-    const notice = await createNotice({ userCreator: adminUser });
+    const notice = await createNotice({ adminUser });
 
-    const userCreatorToken = encodeToken(adminUser);
+    const adminToken = encodeToken(adminUser);
 
     const response = await request(App)
       .get('/notices')
       .set({
-        authorization: `Bearer ${userCreatorToken}`,
+        authorization: `Bearer ${adminToken}`,
       });
 
     const noticeIndexed = response.body[0];
@@ -153,8 +153,8 @@ describe('notice index', () => {
     const { year, month, day } = generateDate({ sumDay: -1 });
     const yesterdayDate = new Date(year, month, day);
 
-    await createNotice({ userCreator: adminUser });
-    await createNotice({ userCreator: adminUser, expiredAt: yesterdayDate });
+    await createNotice({ adminUser });
+    await createNotice({ adminUser, expiredAt: yesterdayDate });
 
     const userCreatorToken = encodeToken(adminUser);
 

@@ -1,8 +1,10 @@
 import request from 'supertest';
 
+import { encodeToken } from '~/app/utils/auth';
+
 import App from '~/App';
 
-import { createPeriod, generatePeriod } from '../factory';
+import { createPeriod, createUser, generatePeriod } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('period store', () => {
@@ -11,9 +13,16 @@ describe('period store', () => {
   });
 
   it('should be to create a period', async () => {
+    const admin = await createUser({ isAdmin: true });
     const periodData = generatePeriod();
 
-    const response = await request(App).post('/periods').send(periodData);
+    const adminToken = encodeToken(admin);
+    const response = await request(App)
+      .post('/periods')
+      .send(periodData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
@@ -21,9 +30,17 @@ describe('period store', () => {
   });
 
   it('should not be to create a period with `initials` that already exists', async () => {
+    const admin = await createUser({ isAdmin: true });
     const periodData = generatePeriod();
 
-    const response = await request(App).post('/periods').send(periodData);
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/periods')
+      .send(periodData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
@@ -37,7 +54,8 @@ describe('period index', () => {
   });
 
   it('should have correct fields on period index', async () => {
-    const period = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
 
     const response = await request(App).get('/periods');
     const periodCreated = response.body[0];

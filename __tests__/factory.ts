@@ -30,11 +30,12 @@ interface GenerateaComputerParams {
 }
 
 interface GenerateRoomParams {
-  user: User;
+  adminUser: User;
   initials?: string;
 }
 
 interface GeneratePeriodParams {
+  adminUser: User;
   name?: string;
 }
 
@@ -81,7 +82,7 @@ interface GenerateMessageParams {
 }
 
 interface GenerateNoticeParams {
-  userCreator: User;
+  adminUser: User;
 
   title?: string;
   content?: string;
@@ -170,7 +171,7 @@ export async function createUser(params?: CreateUserParams) {
 
 export async function createRoom(params: GenerateRoomParams) {
   const roomData = generateRoom(params);
-  const adminToken = encodeToken(params.user);
+  const adminToken = encodeToken(params.adminUser);
 
   const response = await request(App)
     .post('/rooms')
@@ -190,10 +191,16 @@ export async function createComputer(params?: GenerateaComputerParams) {
   return response.body as Computers;
 }
 
-export async function createPeriod(params?: GeneratePeriodParams) {
+export async function createPeriod(params: GeneratePeriodParams) {
   const periodData = generatePeriod(params);
+  const adminToken = encodeToken(params.adminUser);
 
-  const response = await request(App).post('/periods').send(periodData);
+  const response = await request(App)
+    .post('/periods')
+    .send(periodData)
+    .set({
+      authorization: `Bearer ${adminToken}`,
+    });
 
   return response.body as Period;
 }
@@ -307,7 +314,7 @@ export async function createNotice(params: GenerateNoticeParams) {
   }
 
   async function create() {
-    const { title, content, expiredAt, userCreator } = generateNotice(params);
+    const { title, content, expiredAt, adminUser } = generateNotice(params);
     const expiredAtDate = expiredAt || generateDefaultDate();
 
     const noticeData = {
@@ -316,13 +323,13 @@ export async function createNotice(params: GenerateNoticeParams) {
       expiredAt: expiredAtDate,
     };
 
-    const userCreatorToken = encodeToken(userCreator);
+    const adminToken = encodeToken(adminUser);
 
     const response = await request(App)
       .post('/notices')
       .send(noticeData)
       .set({
-        authorization: `Bearer ${userCreatorToken}`,
+        authorization: `Bearer ${adminToken}`,
       });
 
     return response.body as NoticeResponse;
