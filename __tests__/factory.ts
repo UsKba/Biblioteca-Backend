@@ -50,11 +50,12 @@ interface CreateScheduleParams extends GenerateScheduleParams {
 }
 
 interface GenerateReserveParams {
-  name?: string;
   leader: User;
   users: User[];
-  schedule?: Schedule;
-  room?: Room;
+  schedule: Schedule;
+  room: Room;
+
+  name?: string;
   date?: {
     year: number;
     month: number;
@@ -228,16 +229,13 @@ export async function createReserve(params: GenerateReserveParams) {
 
   const classmatesEnrollments = users.map((user) => user.enrollment);
 
-  const targetName = name || 'Reuniao';
-  const targetRoom = room || (await createRoom());
-  const targetPeriodId = schedule?.periodId || (await createPeriod()).id;
-  const targetSchedule = schedule || (await createSchedule({ periodId: targetPeriodId }));
+  const targetName = name || 'ReserveName';
   const tomorrowDate = date || generateDate({ sumDay: 1 });
 
   const reserve = {
     name: targetName,
-    roomId: targetRoom.id,
-    scheduleId: targetSchedule.id,
+    roomId: room.id,
+    scheduleId: schedule.id,
     classmatesEnrollments,
     ...tomorrowDate,
   };
