@@ -17,6 +17,7 @@ describe('period store', () => {
     const periodData = generatePeriod();
 
     const adminToken = encodeToken(admin);
+
     const response = await request(App)
       .post('/periods')
       .send(periodData)

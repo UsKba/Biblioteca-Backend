@@ -1,8 +1,10 @@
 import request from 'supertest';
 
+import { encodeToken } from '~/app/utils/auth';
+
 import App from '~/App';
 
-import { generateSchedule, createSchedule, createPeriod } from '../factory';
+import { generateSchedule, createSchedule, createPeriod, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
 
 describe('Schedule Store', () => {
@@ -11,10 +13,18 @@ describe('Schedule Store', () => {
   });
 
   it('should be able to create a schedule', async () => {
-    const { id } = await createPeriod();
-    const schedule = generateSchedule({ periodId: id });
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
-    const response = await request(App).post('/schedules').send(schedule);
+    const schedule = generateSchedule({ periodId: id });
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(schedule)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(200);
     expect(response.body.initialHour).toBe(schedule.initialHour);
@@ -22,7 +32,8 @@ describe('Schedule Store', () => {
   });
 
   it('should be to create a schedule with `endHour` exact of `initialHour` of another', async () => {
-    const period = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
 
     const scheduleData1 = generateSchedule({
       periodId: period.id,
@@ -36,15 +47,29 @@ describe('Schedule Store', () => {
       endHour: '09:00',
     });
 
-    const response1 = await request(App).post('/schedules').send(scheduleData1);
-    const response2 = await request(App).post('/schedules').send(scheduleData2);
+    const adminToken = encodeToken(admin);
+
+    const response1 = await request(App)
+      .post('/schedules')
+      .send(scheduleData1)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    const response2 = await request(App)
+      .post('/schedules')
+      .send(scheduleData2)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response1.status).toBe(200);
     expect(response2.status).toBe(200);
   });
 
   it('should not be able to create a schedule with `endHour` before `initialHour`', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule = generateSchedule({
       periodId: id,
@@ -52,13 +77,20 @@ describe('Schedule Store', () => {
       endHour: '06:00',
     });
 
-    const response = await request(App).post('/schedules').send(schedule);
+    const adminToken = encodeToken(admin);
+    const response = await request(App)
+      .post('/schedules')
+      .send(schedule)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to create a schedule inside a interval that already exists', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule1 = generateSchedule({
       periodId: id,
@@ -72,14 +104,28 @@ describe('Schedule Store', () => {
       endHour: '08:30',
     });
 
-    await request(App).post('/schedules').send(schedule1);
-    const response = await request(App).post('/schedules').send(schedule2);
+    const adminToken = encodeToken(admin);
+
+    await request(App)
+      .post('/schedules')
+      .send(schedule1)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(schedule2)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to create a schedule with hour greater than 23:59 or smaller than 00:00', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule = generateSchedule({
       periodId: id,
@@ -87,32 +133,69 @@ describe('Schedule Store', () => {
       endHour: '24:00',
     });
 
-    const response = await request(App).post('/schedules').send(schedule);
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(schedule)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to create a schedule without `initialHour`, `endHour` or `periodId`', async () => {
-    const response = await request(App).post('/schedules').send({});
+    const admin = await createUser({ isAdmin: true });
+    const scheduleData = {};
+
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to create a schedule with invalid `initialHour`, `endHour` or `periodId`', async () => {
-    const response = await request(App).post('/schedules').send({
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const scheduleData = {
       periodId: 'invalidPeriod',
       initialHour: 'invalidInitalHour',
       endHour: 'invalidEndHour',
-    });
+    };
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should have correct fields', async () => {
-    const period = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
+
     const scheduleData = generateSchedule({ periodId: period.id });
 
-    const response = await request(App).post('/schedules').send(scheduleData);
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/schedules')
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
     const scheduleCreated = response.body;
 
     expect(scheduleCreated.periodId).toBe(period.id);
@@ -127,8 +210,10 @@ describe('Schedule Index', () => {
   });
 
   it('should be able to index one schedule', async () => {
-    const { id } = await createPeriod();
-    const schedule = await createSchedule({ periodId: id });
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
+
+    const schedule = await createSchedule({ adminUser: admin, periodId: id });
 
     const response = await request(App).get('/schedules');
 
@@ -140,10 +225,11 @@ describe('Schedule Index', () => {
   });
 
   it('should be able to index many schedules', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
-    const schedule1 = await createSchedule({ periodId: id, initialHour: '06:00', endHour: '07:00' });
-    const schedule2 = await createSchedule({ periodId: id, initialHour: '07:00', endHour: '08:00' });
+    const schedule1 = await createSchedule({ adminUser: admin, periodId: id, initialHour: '06:00', endHour: '07:00' });
+    const schedule2 = await createSchedule({ adminUser: admin, periodId: id, initialHour: '07:00', endHour: '08:00' });
 
     const response = await request(App).get('/schedules');
 
@@ -158,8 +244,10 @@ describe('Schedule Index', () => {
   });
 
   it('should have correct on schedule index', async () => {
-    const period = await createPeriod();
-    const schedule = await createSchedule({ periodId: period.id });
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
+
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
     const response = await request(App).get('/schedules');
     const scheduleCreated = response.body[0];
@@ -176,18 +264,25 @@ describe('Schedule Update', () => {
   });
 
   it('should be able to update a schedule', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule = await createSchedule({
+      adminUser: admin,
       periodId: id,
       initialHour: '07:00',
       endHour: '08:00',
     });
 
-    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
-      initialHour: '07:00',
-      endHour: '09:00',
-    });
+    const scheduleData = { initialHour: '07:00', endHour: '09:00' };
+    const adminToken = encodeToken(admin);
+
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(updateResponse.body.id).toBe(schedule.id);
     expect(updateResponse.body.initialHour).toBe('07:00');
@@ -195,93 +290,146 @@ describe('Schedule Update', () => {
   });
 
   it('should not be able to update a schedule with invalid id', async () => {
-    const response = await request(App).put(`/schedules/invalidId`).send({ initialHour: '08:00', endHour: '09:00' });
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const scheduleData = { initialHour: '08:00', endHour: '09:00' };
+
+    const response = await request(App)
+      .put(`/schedules/invalidId`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to update a schedule wihout initialHour or endHour', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule = await createSchedule({
+      adminUser: admin,
       periodId: id,
       initialHour: '07:00',
       endHour: '08:00',
     });
 
+    const scheduleData = {};
     const nextScheduleId = schedule.id + 1;
 
-    const response = await request(App).put(`/schedules/${nextScheduleId}`).send({});
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .put(`/schedules/${nextScheduleId}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to update a schedule with an id that not exists', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule = await createSchedule({
+      adminUser: admin,
       periodId: id,
       initialHour: '07:00',
       endHour: '08:00',
     });
 
+    const scheduleData = { initialHour: '08:00', endHour: '09:00' };
+
     const nextScheduleId = schedule.id + 1;
+    const adminToken = encodeToken(admin);
 
     const response = await request(App)
       .put(`/schedules/${nextScheduleId}`)
-      .send({ initialHour: '08:00', endHour: '09:00' });
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(response.status).toBe(400);
   });
 
   it('should not be able to update a schedule with `endHour` before `initialHour`', async () => {
-    const { id } = await createPeriod();
-    const schedule = await createSchedule({ periodId: id });
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
-    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
+    const schedule = await createSchedule({ adminUser: admin, periodId: id });
+    const scheduleData = {
       initialHour: '06:00',
       endHour: '05:00',
-    });
+    };
+
+    const adminToken = encodeToken(admin);
+
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(updateResponse.status).toBe(400);
   });
 
   it('should not be able to update a schedule inside a interval that already exists', async () => {
-    const { id } = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const { id } = await createPeriod({ adminUser: admin });
 
     const schedule1 = await createSchedule({
+      adminUser: admin,
       periodId: id,
       initialHour: '07:00',
       endHour: '08:00',
     });
 
     await createSchedule({
+      adminUser: admin,
       periodId: id,
       initialHour: '08:00',
       endHour: '09:00',
     });
 
-    const update = await request(App).put(`/schedules/${schedule1.id}`).send({
-      initialHour: '08:00',
-      endHour: '09:00',
-    });
+    const scheduleData = { initialHour: '08:00', endHour: '09:00' };
+    const adminToken = encodeToken(admin);
 
-    expect(update.status).toBe(400);
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule1.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(updateResponse.status).toBe(400);
   });
 
   it('should have correct fields on schedule update', async () => {
-    const period = await createPeriod();
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
 
     const schedule = await createSchedule({
+      adminUser: admin,
       periodId: period.id,
       initialHour: '07:00',
       endHour: '08:00',
     });
 
-    const updateResponse = await request(App).put(`/schedules/${schedule.id}`).send({
-      initialHour: '07:00',
-      endHour: '09:00',
-    });
+    const scheduleData = { initialHour: '07:00', endHour: '09:00' };
+    const adminToken = encodeToken(admin);
+
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
 
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.body.id).toBe(schedule.id);

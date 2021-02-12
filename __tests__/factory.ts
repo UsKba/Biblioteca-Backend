@@ -45,6 +45,10 @@ interface GenerateScheduleParams {
   endHour?: string;
 }
 
+interface CreateScheduleParams extends GenerateScheduleParams {
+  adminUser: User;
+}
+
 interface GenerateReserveParams {
   name?: string;
   leader: User;
@@ -205,10 +209,16 @@ export async function createPeriod(params: GeneratePeriodParams) {
   return response.body as Period;
 }
 
-export async function createSchedule(params?: GenerateScheduleParams) {
+export async function createSchedule(params: CreateScheduleParams) {
   const scheduleData = generateSchedule(params);
+  const adminToken = encodeToken(params.adminUser);
 
-  const response = await request(App).post('/schedules').send(scheduleData);
+  const response = await request(App)
+    .post('/schedules')
+    .send(scheduleData)
+    .set({
+      authorization: `Bearer ${adminToken}`,
+    });
 
   return response.body as Schedule;
 }
