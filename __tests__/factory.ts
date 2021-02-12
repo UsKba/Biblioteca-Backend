@@ -30,6 +30,7 @@ interface GenerateaComputerParams {
 }
 
 interface GenerateRoomParams {
+  user: User;
   initials?: string;
 }
 
@@ -167,13 +168,20 @@ export async function createUser(params?: CreateUserParams) {
   return response.body as User;
 }
 
-export async function createRoom(params?: GenerateRoomParams) {
+export async function createRoom(params: GenerateRoomParams) {
   const roomData = generateRoom(params);
+  const adminToken = encodeToken(params.user);
 
-  const response = await request(App).post('/rooms').send(roomData);
+  const response = await request(App)
+    .post('/rooms')
+    .send(roomData)
+    .set({
+      authorization: `Bearer ${adminToken}`,
+    });
 
   return response.body as Room;
 }
+
 export async function createComputer(params?: GenerateaComputerParams) {
   const computerData = generateComputer(params);
 
