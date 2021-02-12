@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 import { RequestError } from '~/app/errors/request';
 
 import roomConfig from '~/config/room';
 
-import { RequestBodyParamsId, RequestBody, RequestParamsId } from '~/types/request';
+import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId, RequestAuthParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
@@ -19,11 +19,13 @@ interface UpdateRoom {
   status?: number;
 }
 
-type StoreRequest = RequestBody<StoreRoom>;
-type UpdateRequest = RequestBodyParamsId<UpdateRoom>;
+type IndexRequest = RequestAuth;
+type StoreRequest = RequestAuthBody<StoreRoom>;
+type UpdateRequest = RequestAuthBodyParamsId<UpdateRoom>;
+type DeleteRequest = RequestAuthParamsId;
 
 class RoomController {
-  async index(req: Request, res: Response) {
+  async index(req: IndexRequest, res: Response) {
     const rooms = await prisma.room.findMany({});
 
     return res.json(rooms);
@@ -79,7 +81,7 @@ class RoomController {
     return res.json(room);
   }
 
-  async delete(req: RequestParamsId, res: Response) {
+  async delete(req: DeleteRequest, res: Response) {
     const id = Number(req.params.id);
 
     try {
