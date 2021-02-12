@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-import { RequestBody } from '~/types/request';
+import { RequestAuth, RequestAuthBody } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
@@ -8,10 +8,11 @@ interface StoreBody {
   name: string;
 }
 
-type StoreRequest = RequestBody<StoreBody>;
+type IndexRequest = RequestAuth;
+type StoreRequest = RequestAuthBody<StoreBody>;
 
 class PeriodController {
-  async index(req: Request, res: Response) {
+  async index(req: IndexRequest, res: Response) {
     const periods = await prisma.period.findMany({});
 
     return res.json(periods);

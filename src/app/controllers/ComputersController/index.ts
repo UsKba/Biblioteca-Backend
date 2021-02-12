@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
-import { RequestBody, RequestParamsId, RequestBodyParamsId } from '~/types/request';
-import { RequestAuth } from '~/types/requestAuth';
+import { RequestParamsId } from '~/types/request';
+import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
@@ -17,8 +17,9 @@ interface UpdateBody {
   status?: number;
 }
 
-type StoreRequest = RequestBody<StoreBody>;
-type UpdateRequest = RequestBodyParamsId<UpdateBody>;
+type IndexRequest = RequestAuth;
+type StoreRequest = RequestAuthBody<StoreBody>;
+type UpdateRequest = RequestAuthBodyParamsId<UpdateBody>;
 
 class ComputerController {
   async store(req: StoreRequest, res: Response) {
@@ -34,7 +35,7 @@ class ComputerController {
     return res.json(computer);
   }
 
-  async index(req: RequestAuth, res: Response) {
+  async index(req: IndexRequest, res: Response) {
     const { id } = req.body;
 
     const computer = await prisma.computers.findOne({
@@ -70,4 +71,5 @@ class ComputerController {
     return res.json({ id });
   }
 }
+
 export default new ComputerController();

@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 import { assertInitialDateIsBeforeEndDate, stringsToDateArray } from '~/app/utils/date';
 
 import { RequestError } from '~/app/errors/request';
 
-import { RequestBody, RequestBodyParamsId } from '~/types/request';
+import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
@@ -22,11 +22,12 @@ interface UpdateSchedule {
   endHour: string;
 }
 
-type StoreRequest = RequestBody<StoreSchedule>;
-type UpdateRequest = RequestBodyParamsId<UpdateSchedule>;
+type IndexRequest = RequestAuth;
+type StoreRequest = RequestAuthBody<StoreSchedule>;
+type UpdateRequest = RequestAuthBodyParamsId<UpdateSchedule>;
 
 class ScheduleController {
-  async index(req: Request, res: Response) {
+  async index(req: IndexRequest, res: Response) {
     const schedules = await prisma.schedule.findMany({});
 
     return res.json(schedules);
