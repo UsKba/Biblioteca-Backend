@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User, Computers, Notice } from '@prisma/client';
+import { Friend, FriendRequest, Period, Reserve, Room, Schedule, User, Computer, Notice } from '@prisma/client';
 import { isBefore, subDays } from 'date-fns';
 import faker from 'faker';
 import MockDate from 'mockdate';
@@ -24,6 +24,7 @@ interface CreateUserParams extends GenerateUserParams {
 }
 
 interface GenerateaComputerParams {
+  adminUser: User;
   identification?: string;
   local?: string;
   status?: number;
@@ -122,7 +123,7 @@ export function generateComputer(params?: GenerateaComputerParams) {
   return {
     identification: 'F1-1',
     local: 'Sala B2',
-    status: '1',
+    status: 1,
     ...params,
   };
 }
@@ -188,12 +189,17 @@ export async function createRoom(params: GenerateRoomParams) {
   return response.body as Room;
 }
 
-export async function createComputer(params?: GenerateaComputerParams) {
+export async function createComputer(params: GenerateaComputerParams) {
   const computerData = generateComputer(params);
 
-  const response = await request(App).post('/computers').send(computerData);
+  const adminToken = encodeToken(params.adminUser);
 
-  return response.body as Computers;
+  const response = await request(App)
+    .post('/computers')
+    .send(computerData)
+    .set({ authorization: `Bearer ${adminToken}` });
+
+  return response.body as Computer;
 }
 
 export async function createPeriod(params: GeneratePeriodParams) {

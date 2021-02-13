@@ -9,14 +9,17 @@
     "start": "NODE_ENV=PRODUCTION node ./dist/server.js",
     "dev": "NODE_ENV=DEVELOPMENT ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
     "dev:win": "SET NODE_ENV=DEVELOPMENT && ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
+
     "migrate:rollback": "dotenv -e .env -- prisma migrate down 1 --experimental",
     "migrate": "prisma format && dotenv -e .env -- prisma migrate save -c --experimental && dotenv -e .env -- prisma migrate up --experimental && dotenv -e .env -- prisma generate",
     "migrate:test": "dotenv -e .env.test -- prisma migrate save -c --experimental && dotenv -e .env.test -- prisma migrate up --experimental && dotenv -e .env.test -- prisma generate",
     "migrate:production": "prisma migrate save -c --experimental && prisma migrate up --experimental && prisma generate",
+
     "pretest": "yarn migrate:test",
     "test": "NODE_ENV=TEST dotenv -e .env.test -- jest --runInBand",
     "pretest:win": "yarn migrate:test",
     "test:win": "SET NODE_ENV=TEST && dotenv -e .env.test -- jest --runInBand",
+
     "seed": "dotenv -e .env -- ts-node prisma/seed.ts",
     "seed:production": "ts-node prisma/seed.ts"
   },

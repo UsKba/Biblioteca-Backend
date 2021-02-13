@@ -1,96 +1,112 @@
-describe('temp', () => {
-  it('should be temporary', () => {
-    expect(true).toBeTruthy();
+import request from 'supertest';
+
+import { encodeToken } from '~/app/utils/auth';
+
+import App from '~/App';
+
+import { createComputer, createUser } from '../factory';
+import { cleanDatabase } from '../utils/database';
+
+describe('Computer store', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
   });
+
+  it('should be able to register an computer', async () => {
+    const admin = await createUser({ isAdmin: true });
+
+    const computer = {
+      identification: 'PC030',
+      local: 'Sala B2',
+      status: 1,
+    };
+
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/computers')
+      .send(computer)
+      .set({ authorization: `Bearer ${adminToken}` });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+  });
+
+  // it('should not be able to create other computer with the `identification` that already exists', async () => {
+  //   const admin = await createUser({ isAdmin: true });
+
+  //   const computer = {
+  //     identification: 'PC030',
+  //     local: 'Sala B2',
+  //     status: 1,
+  //   };
+
+  //   const adminToken = encodeToken(admin);
+
+  //   const response = await request(App)
+  //     .post('/computers')
+  //     .send(computer)
+  //     .set({ authorization: `Bearer ${adminToken}` });
+
+  //   const response2 = await request(App)
+  //     .post('/computers')
+  //     .send(computer)
+  //     .set({ authorization: `Bearer ${adminToken}` });
+
+  //   expect(response.status).toBe(200);
+  //   expect(response2.status).toBe(400);
+  // });
+
+  // it('should have correct fields on computer store', async () => {
+  //   const computer = {
+  //     identification: 'PC030',
+  //     local: 'Sala B2',
+  //     status: 1,
+  //   };
+
+  //   const response = await request(App).post('/computers').send(computer);
+
+  //   expect(response.body.identification).toBe('PC030');
+  //   expect(response.body.local).toBe('Sala B2');
+  //   expect(response.body.status).toBe(1);
+  // });
 });
 
-// import request from 'supertest';
+describe('Computer index', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
 
-// import App from '~/App';
+  it('should be able to index the 1 computer', async () => {
+    const admin = await createUser({ isAdmin: true });
+    await createComputer({ adminUser: admin });
 
-// import { createComputer } from '../factory';
-// import { cleanDatabase } from '../utils/database';
+    const response = await request(App).get('/computers');
 
-// describe('Computer store', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
+    expect(response.status).toBe(200);
+  });
 
-//   it('should be able to register an computer', async () => {
-//     const computer = {
-//       identification: 'PC030',
-//       local: 'Sala B2',
-//       status: 1,
-//     };
+  // it('should be able to index the 2 rooms', async () => {
+  //   await createComputer({ identification: 'PC020' });
+  //   await createComputer({ identification: 'PC030' });
 
-//     const response = await request(App).post('/computers').send(computer);
+  //   const response = await request(App).get('/computers');
 
-//     expect(response.status).toBe(200);
-//     expect(response.body).toHaveProperty('id');
-//   });
+  //   expect(response.status).toBe(200);
+  //   expect(response.body.length).toBe(2);
+  // });
 
-//   it('should not be able to create other computer with the `identification` that already exists', async () => {
-//     const computer = {
-//       identification: 'PC030',
-//       local: 'Sala B2',
-//       status: 1,
-//     };
+  // it('should have correct fields on room index', async () => {
+  //   const computer = await createComputer();
 
-//     const response = await request(App).post('/computers').send(computer);
-//     const response2 = await request(App).post('/computers').send(computer);
+  //   const response = await request(App).get('/computers');
+  //   const computerCreated = response.body[0];
 
-//     expect(response.status).toBe(200);
-//     expect(response2.status).toBe(400);
-//   });
-
-//   it('should have correct fields on computer store', async () => {
-//     const computer = {
-//       identification: 'PC030',
-//       local: 'Sala B2',
-//       status: 1,
-//     };
-
-//     const response = await request(App).post('/computers').send(computer);
-
-//     expect(response.body.identification).toBe('PC030');
-//     expect(response.body.local).toBe('Sala B2');
-//     expect(response.body.status).toBe(1);
-//   });
-// });
-
-// describe('Computer index', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
-
-//   it('should be able to index the 1 computer', async () => {
-//     await createComputer();
-
-//     const response = await request(App).get('/computers');
-
-//     expect(response.status).toBe(200);
-//   });
-//   it('should be able to index the 2 rooms', async () => {
-//     await createComputer({ identification: 'PC020' });
-//     await createComputer({ identification: 'PC030' });
-
-//     const response = await request(App).get('/computers');
-
-//     expect(response.status).toBe(200);
-//     expect(response.body.length).toBe(2);
-//   });
-
-//   it('should have correct fields on room index', async () => {
-//     const computer = await createComputer();
-
-//     const response = await request(App).get('/computers');
-//     const computerCreated = response.body[0];
-
-//     expect(computerCreated.id).toBe(computer.local);
-//     expect(computerCreated.initials).toBe(computer.identification);
-//     expect(computerCreated.initials).toBe(computer.status);
-//   });
-// });
+  //   expect(computerCreated.id).toBe(computer.local);
+  //   expect(computerCreated.initials).toBe(computer.identification);
+  //   expect(computerCreated.initials).toBe(computer.status);
+  // });
+});
 
 // describe('Computer Update', () => {
 //   beforeEach(async () => {

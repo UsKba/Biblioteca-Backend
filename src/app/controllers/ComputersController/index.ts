@@ -25,31 +25,28 @@ class ComputerController {
   async store(req: StoreRequest, res: Response) {
     const { identification, local, status } = req.body;
 
-    const computer = await prisma.computers.create({
+    const computer = await prisma.computer.create({
       data: {
         identification,
         local,
         status,
       },
     });
+
     return res.json(computer);
   }
 
   async index(req: IndexRequest, res: Response) {
-    const { id } = req.body;
+    const computers = await prisma.computer.findMany({});
 
-    const computer = await prisma.computers.findOne({
-      where: { id: Number(id) },
-    });
-
-    return res.json(computer);
+    return res.json(computers);
   }
 
   async update(req: UpdateRequest, res: Response) {
     const id = Number(req.params.id);
     const { identification, status, local } = req.body;
 
-    const computer = await prisma.computers.update({
+    const computer = await prisma.computer.update({
       data: {
         identification,
         status,
@@ -64,7 +61,7 @@ class ComputerController {
   async delete(req: RequestParamsId, res: Response) {
     const id = Number(req.params.id);
 
-    await prisma.computers.delete({
+    await prisma.computer.delete({
       where: { id },
     });
 

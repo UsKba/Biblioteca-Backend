@@ -33,7 +33,7 @@ routes.put('/users/:id', validateParamsId, validateUserUpdate, UserController.up
 routes.get('/rooms', RoomController.index);
 routes.get('/schedules', ScheduleController.index);
 routes.get('/periods', PeriodController.index);
-routes.get('/computers/:id', ComputersController.index);
+routes.get('/computers', ComputersController.index);
 
 routes.get('/reserves/all', AllReserves.index);
 routes.get('/notices', NoticeController.index);
