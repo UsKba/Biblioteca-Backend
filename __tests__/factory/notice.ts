@@ -10,11 +10,13 @@ import App from '~/App';
 import { generateDate } from '../utils/date';
 
 interface GenerateNoticeParams {
-  adminUser: User;
-
   title?: string;
   content?: string;
   expiredAt?: Date;
+}
+
+interface CreateNoticeParams extends GenerateNoticeParams {
+  adminUser: User;
 }
 
 type NoticeResponse = Notice & {
@@ -29,7 +31,8 @@ export function generateNotice(params: GenerateNoticeParams) {
   };
 }
 
-export async function createNotice(params: GenerateNoticeParams) {
+export async function createNotice(params: CreateNoticeParams) {
+  const { adminUser } = params;
   const date = params.expiredAt || new Date();
 
   function generateDefaultDate() {
@@ -40,7 +43,7 @@ export async function createNotice(params: GenerateNoticeParams) {
   }
 
   async function create() {
-    const { title, content, expiredAt, adminUser } = generateNotice(params);
+    const { title, content, expiredAt } = generateNotice(params);
     const expiredAtDate = expiredAt || generateDefaultDate();
 
     const noticeData = {

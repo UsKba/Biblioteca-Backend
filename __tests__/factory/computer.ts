@@ -5,14 +5,17 @@ import { encodeToken } from '~/app/utils/auth';
 
 import App from '~/App';
 
-interface GenerateaComputerParams {
-  adminUser: User;
+interface GenerateComputerParams {
   identification?: string;
   local?: string;
   status?: number;
 }
 
-export function generateComputer(params?: GenerateaComputerParams) {
+interface CreateComputerParams extends GenerateComputerParams {
+  adminUser: User;
+}
+
+export function generateComputer(params?: GenerateComputerParams) {
   return {
     identification: 'F1-1',
     local: 'Sala B2',
@@ -21,10 +24,11 @@ export function generateComputer(params?: GenerateaComputerParams) {
   };
 }
 
-export async function createComputer(params: GenerateaComputerParams) {
+export async function createComputer(params: CreateComputerParams) {
+  const { adminUser } = params;
   const computerData = generateComputer(params);
 
-  const adminToken = encodeToken(params.adminUser);
+  const adminToken = encodeToken(adminUser);
 
   const response = await request(App)
     .post('/computers')

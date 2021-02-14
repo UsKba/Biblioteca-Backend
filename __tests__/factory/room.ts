@@ -6,8 +6,11 @@ import { encodeToken } from '~/app/utils/auth';
 import App from '~/App';
 
 interface GenerateRoomParams {
-  adminUser: User;
   initials?: string;
+}
+
+interface CreateRoomParams extends GenerateRoomParams {
+  adminUser: User;
 }
 
 export function generateRoom(params?: GenerateRoomParams) {
@@ -17,9 +20,11 @@ export function generateRoom(params?: GenerateRoomParams) {
   };
 }
 
-export async function createRoom(params: GenerateRoomParams) {
+export async function createRoom(params: CreateRoomParams) {
+  const { adminUser } = params;
   const roomData = generateRoom(params);
-  const adminToken = encodeToken(params.adminUser);
+
+  const adminToken = encodeToken(adminUser);
 
   const response = await request(App)
     .post('/rooms')
