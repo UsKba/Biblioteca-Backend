@@ -65,6 +65,7 @@ export async function createNotice(params: CreateNoticeParams) {
   }
 
   async function createOld() {
+    // need to create before expire date
     const newSystemDate = subDays(date, 1);
 
     MockDate.set(newSystemDate);

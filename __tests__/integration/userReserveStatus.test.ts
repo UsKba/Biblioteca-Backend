@@ -7,8 +7,9 @@ import reserveConfig from '~/config/reserve';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createOldReserve, createPeriod, createReserve, createRoom, createSchedule, createUser } from '../factory';
+import { createPeriod, createReserve, createRoom, createSchedule, createUser } from '../factory';
 import { cleanDatabase } from '../utils/database';
+import { generateDate } from '../utils/date';
 
 describe('userReserveStatus accept', () => {
   beforeEach(async () => {
@@ -59,11 +60,14 @@ describe('userReserveStatus accept', () => {
     const period = await createPeriod({ adminUser: admin });
     const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
-    const reserve = await createOldReserve({
+    const oldReserveDate = generateDate({ sumDay: -1 });
+
+    const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
       room,
       schedule,
+      date: oldReserveDate,
     });
 
     const memberToken = encodeToken(user2);
@@ -260,11 +264,14 @@ describe('userReserveStatus refuse', () => {
     const period = await createPeriod({ adminUser: admin });
     const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
-    const reserve = await createOldReserve({
+    const oldReserveDate = generateDate({ sumDay: -1 });
+
+    const reserve = await createReserve({
       leader: user1,
       users: [user1, user2, user3],
       room,
       schedule,
+      date: oldReserveDate,
     });
 
     const memberToken = encodeToken(user2);

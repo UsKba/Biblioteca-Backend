@@ -1,4 +1,5 @@
 import { Reserve, Room, Schedule, User } from '@prisma/client';
+import { isBefore, subDays } from 'date-fns';
 import MockDate from 'mockdate';
 import request from 'supertest';
 
@@ -8,6 +9,12 @@ import App from '~/App';
 
 import { generateDate } from '../utils/date';
 
+interface ReserveDateFormat {
+  year: number;
+  month: number;
+  day: number;
+}
+
 interface GenerateReserveParams {
   leader: User;
   users: User[];
@@ -15,11 +22,7 @@ interface GenerateReserveParams {
   room: Room;
 
   name?: string;
-  date?: {
-    year: number;
-    month: number;
-    day: number;
-  };
+  date?: ReserveDateFormat;
 }
 
 export async function createReserve(params: GenerateReserveParams) {
@@ -28,35 +31,51 @@ export async function createReserve(params: GenerateReserveParams) {
   const classmatesEnrollments = users.map((user) => user.enrollment);
 
   const targetName = name || 'ReserveName';
-  const tomorrowDate = date || generateDate({ sumDay: 1 });
+  const requestReserveDate = date || generateDate({ sumDay: 1 });
+  const reserveDate = new Date(requestReserveDate.year, requestReserveDate.month, requestReserveDate.day);
 
   const reserve = {
     name: targetName,
     roomId: room.id,
     scheduleId: schedule.id,
     classmatesEnrollments,
-    ...tomorrowDate,
   };
 
   const leaderToken = encodeToken(leader);
 
-  const response = await request(App)
-    .post('/reserves')
-    .send(reserve)
-    .set({
-      authorization: `Bearer ${leaderToken}`,
-    });
+  async function create() {
+    const reserveData = {
+      ...reserve,
+      ...requestReserveDate,
+    };
 
-  return response.body as Reserve;
-}
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserveData)
+      .set({
+        authorization: `Bearer ${leaderToken}`,
+      });
 
-export async function createOldReserve(params: GenerateReserveParams) {
-  // 2019.03.22
-  MockDate.set(1555902000000);
+    return response.body as Reserve;
+  }
 
-  const oldReserve = await createReserve(params);
+  async function createOld() {
+    const newSystemDate = subDays(reserveDate, 1);
 
-  MockDate.reset();
+    MockDate.set(newSystemDate);
 
-  return oldReserve;
+    const notice = await create();
+
+    MockDate.reset();
+
+    return notice;
+  }
+
+  const isOld = isBefore(reserveDate, new Date());
+
+  if (isOld) {
+    return createOld();
+  }
+
+  return create();
 }

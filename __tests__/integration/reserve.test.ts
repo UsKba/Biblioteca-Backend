@@ -10,7 +10,7 @@ import userConfig from '~/config/user';
 import App from '~/App';
 import prisma from '~/prisma';
 
-import { createUser, createRoom, createSchedule, createReserve, createPeriod, createOldReserve } from '../factory';
+import { createUser, createRoom, createSchedule, createReserve, createPeriod } from '../factory';
 import { cleanDatabase } from '../utils/database';
 import { generateDate, generateDateList } from '../utils/date';
 
@@ -969,12 +969,12 @@ describe('Reserve Delete', () => {
   });
 });
 
-describe('Reserve Index (old reserves - that alreadt past of date)', () => {
+describe('Reserve Index (old reserves - that already past)', () => {
   beforeEach(async () => {
     await cleanDatabase();
   });
 
-  it('should be able index the one reserve linked with user', async () => {
+  it('should be able index the one reserve', async () => {
     const admin = await createUser({ isAdmin: true });
 
     const user1 = await createUser({ enrollment: '20181104010011' });
@@ -985,11 +985,14 @@ describe('Reserve Index (old reserves - that alreadt past of date)', () => {
     const period = await createPeriod({ adminUser: admin });
     const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
 
-    await createOldReserve({
+    const oldReserveDate = generateDate({ sumDay: -1 });
+
+    await createReserve({
       schedule,
       room,
       leader: user1,
       users: [user1, user2, user3],
+      date: oldReserveDate,
     });
 
     const reserve = await createReserve({
