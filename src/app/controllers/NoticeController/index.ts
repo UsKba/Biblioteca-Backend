@@ -47,8 +47,8 @@ class NoticeController {
     try {
       assertNoticeExpiredDateIsNotBeforeOfNow(expiredAt);
     } catch (e) {
-      const { message, statusCode } = e as RequestError;
-      return res.status(statusCode).json({ error: message });
+      const { message, statusCode, errorCode } = e as RequestError;
+      return res.status(statusCode).json({ error: message, errorCode });
     }
 
     const notice = await prisma.notice.create({
