@@ -1,5 +1,7 @@
 import { Response } from 'express';
 
+import { ScheduleUpdateInput } from '@prisma/client';
+
 import { assertInitialDateIsBeforeEndDate, stringsToDateArray } from '~/app/utils/date';
 
 import { RequestError } from '~/app/errors/request';
@@ -20,6 +22,7 @@ interface StoreSchedule {
 interface UpdateSchedule {
   initialHour: string;
   endHour: string;
+  periodId?: number;
 }
 
 type IndexRequest = RequestAuth;
@@ -59,11 +62,9 @@ class ScheduleController {
   }
 
   async update(req: UpdateRequest, res: Response) {
-    // nn pode atualizar o periodId
-
     const id = Number(req.params.id);
 
-    const { initialHour, endHour } = req.body;
+    const { initialHour, endHour, periodId } = req.body;
     const [initialDate, endDate] = stringsToDateArray(initialHour, endHour);
 
     try {
@@ -71,16 +72,35 @@ class ScheduleController {
       await assertIfScheduleExists(id);
 
       await assertScheduleIsNotOverlappingOnDatabase(initialDate, endDate, id);
+
+      if (periodId) {
+        await assertPeriodExists({ id: periodId });
+      }
     } catch (e) {
       const { statusCode, message } = e as RequestError;
       return res.status(statusCode).json({ error: message });
     }
 
-    const newSchudule = await prisma.schedule.update({
-      data: {
+    function getUpdateData() {
+      let updateData: ScheduleUpdateInput = {
         initialHour,
         endHour,
-      },
+      };
+
+      if (periodId) {
+        updateData = {
+          ...updateData,
+          period: { connect: { id: periodId } },
+        };
+      }
+
+      return updateData;
+    }
+
+    const updateData = getUpdateData();
+
+    const newSchudule = await prisma.schedule.update({
+      data: updateData,
       where: { id },
     });
 

@@ -15,6 +15,7 @@ const scheduleStoreSchema = Yup.object().shape({
 });
 
 const scheduleUpdateSchema = Yup.object().shape({
+  periodId: Yup.number().typeError('O id do turno é inválido'),
   initialHour: Yup.string()
     .required('Hora inicial é requerida')
     .test('is-hour-valid', 'Hora inicial inválida', validateHourYup),

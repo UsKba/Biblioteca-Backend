@@ -289,20 +289,55 @@ describe('Schedule Update', () => {
     expect(updateResponse.body.endHour).toBe('09:00');
   });
 
-  it('should not be able to update a schedule with invalid id', async () => {
+  it('should be able to update the period of a schedule', async () => {
     const admin = await createUser({ isAdmin: true });
+    const morningPeriod = await createPeriod({ adminUser: admin, name: 'Morning' });
+    const afternoonPeriod = await createPeriod({ adminUser: admin, name: 'Afternoon' });
+
+    const schedule = await createSchedule({
+      adminUser: admin,
+      periodId: morningPeriod.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const scheduleData = { initialHour: '13:00', endHour: '14:00', periodId: afternoonPeriod.id };
     const adminToken = encodeToken(admin);
 
-    const scheduleData = { initialHour: '08:00', endHour: '09:00' };
-
-    const response = await request(App)
-      .put(`/schedules/invalidId`)
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule.id}`)
       .send(scheduleData)
       .set({
         authorization: `Bearer ${adminToken}`,
       });
 
-    expect(response.status).toBe(400);
+    expect(updateResponse.body.id).toBe(schedule.id);
+    expect(updateResponse.body.periodId).toBe(afternoonPeriod.id);
+  });
+
+  it('should not be able to update the period of a schedule to one that not exists', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const period = await createPeriod({ adminUser: admin });
+    const nextPeriodId = period.id + 1;
+
+    const schedule = await createSchedule({
+      adminUser: admin,
+      periodId: period.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const scheduleData = { initialHour: '08:00', endHour: '09:00', periodId: nextPeriodId };
+    const adminToken = encodeToken(admin);
+
+    const updateResponse = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(updateResponse.status).toBe(400);
   });
 
   it('should not be able to update a schedule wihout initialHour or endHour', async () => {
@@ -317,12 +352,10 @@ describe('Schedule Update', () => {
     });
 
     const scheduleData = {};
-    const nextScheduleId = schedule.id + 1;
-
     const adminToken = encodeToken(admin);
 
     const response = await request(App)
-      .put(`/schedules/${nextScheduleId}`)
+      .put(`/schedules/${schedule.id}`)
       .send(scheduleData)
       .set({
         authorization: `Bearer ${adminToken}`,
@@ -436,5 +469,102 @@ describe('Schedule Update', () => {
     expect(updateResponse.body.periodId).toBe(period.id);
     expect(updateResponse.body.initialHour).toBe('07:00');
     expect(updateResponse.body.endHour).toBe('09:00');
+  });
+});
+
+describe('Schedule Update - validate data', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('should not be able to update a schedule with invalid id', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const scheduleData = { initialHour: '08:00', endHour: '09:00' };
+
+    const response = await request(App)
+      .put(`/schedules/invalidId`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule with invalid `initialHour`', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const period = await createPeriod({ adminUser: admin });
+
+    const schedule = await createSchedule({
+      adminUser: admin,
+      periodId: period.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const scheduleData = { initialHour: 'invalidHour', endHour: '09:00' };
+
+    const response = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule with invalid `endHour`', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const period = await createPeriod({ adminUser: admin });
+
+    const schedule = await createSchedule({
+      adminUser: admin,
+      periodId: period.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const scheduleData = { initialHour: '07:00', endHour: 'invalidHour' };
+
+    const response = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not be able to update a schedule with invalid `periodId`', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const adminToken = encodeToken(admin);
+
+    const period = await createPeriod({ adminUser: admin });
+
+    const schedule = await createSchedule({
+      adminUser: admin,
+      periodId: period.id,
+      initialHour: '07:00',
+      endHour: '08:00',
+    });
+
+    const scheduleData = { initialHour: '07:00', endHour: '09:00', periodId: 'invalidPeriodId' };
+
+    const response = await request(App)
+      .put(`/schedules/${schedule.id}`)
+      .send(scheduleData)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(response.status).toBe(400);
   });
 });
