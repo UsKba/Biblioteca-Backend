@@ -1,9 +1,13 @@
 import { Response } from 'express';
 
+import { RequestError } from '~/app/errors/request';
+
 import { RequestParamsId } from '~/types/request';
 import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
+
+import { assertComputerNotExists, assertComputerExists, assertIsValidComputerStatus } from './tradingRules';
 
 interface StoreBody {
   identification: string;
@@ -25,6 +29,13 @@ class ComputerController {
   async store(req: StoreRequest, res: Response) {
     const { identification, local, status } = req.body;
 
+    try {
+      await assertComputerNotExists({ identification });
+    } catch (e) {
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
+    }
+
     const computer = await prisma.computer.create({
       data: {
         identification,
@@ -45,6 +56,13 @@ class ComputerController {
   async update(req: UpdateRequest, res: Response) {
     const id = Number(req.params.id);
     const { identification, status, local } = req.body;
+
+    try {
+      await assertComputerExists({ id });
+    } catch (e) {
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
+    }
 
     const computer = await prisma.computer.update({
       data: {
