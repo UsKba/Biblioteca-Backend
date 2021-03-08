@@ -1,0 +1,62 @@
+1. Dar o commit com as alterações
+  - git add .
+  - git commit -m "mensagem"
+  - git push
+
+2. Ir para a branch main
+  - git checkout main
+
+3. Merge na branch main (pegar as alterações e passar pra branch main)
+  - git merge dev
+
+4. Dar o push da branch main (upar no github)
+  - git push
+
+
+------ HEROKU TERMINAL ------
+
+1. Alterar o banco de dados para postgres (alterar a seguinte linha no primsa/schema.prisma, no inicio do arquivo)
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+2. Criar um commit para a alteração do tipo de banco
+  - git add .
+  - git commit -m "temp heroku"
+
+3. Upar no heroku
+  - git push heroku main -f
+
+
+------ HEROKU SITE ------
+https://dashboard.heroku.com/apps/smart-library-6
+
+Obs: Só fazer isso quando o push do Heroku finalizar
+
+Login está em nas mensagens pinadas de #anotações no discord
+
+
+1. Clicar em 'Heroku Postgres' na parte de 'Installed add-ons'
+2. Na aba que abriu, vá em 'Settings' e clique em 'Reset Database', pode fechar a aba.
+3. Na página do Heroku, clique em 'More' (canto superior direito) e 'Run Console'. e digite 'bash'.
+
+4. Rode as migrações
+  - yarn migrate:production
+  -> Digite 'temp heroku', no nome
+
+5. Rodar as seed's
+  - yarn seed:production
+
+6. Abrir 'https://smart-library-6.herokuapp.com/users' e garantir que estão aparecendo os dados
+
+
+------ TERMINAL ------
+Abra o terminal e faça as etapas a seguir
+
+1. Desfazer o commit 'temp heroku'
+  - git reset --soft Head~1
+
+2. Apagar as alterações do commit 'temp heroku'
+  - git reset --hard
