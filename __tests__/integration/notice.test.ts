@@ -2,7 +2,6 @@ import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
-import errorConfig from '~/config/error';
 import userConfig from '~/config/user';
 
 import App from '~/App';
@@ -74,7 +73,6 @@ describe('notice store', () => {
       });
 
     expect(response.status).toBe(400);
-    expect(response.body.errorCode).toBe(errorConfig.expiredDateBeforeOfNow);
   });
 
   it('should not be able to create an notice with invalid `expiredAt`', async () => {

@@ -84,12 +84,7 @@ async function createTags() {
 }
 
 async function createUsers(roles: Role[], colors: Color[]) {
-  const users = [
-    {
-      name: 'Idaslon Garcia',
-      enrollment: '20181104010048',
-      email: 'idaslon.g@academico.ifrn.edu.br',
-    },
+  const adminUsers = [
     {
       name: 'Fellipe Souza',
       enrollment: '20181104010027',
@@ -100,6 +95,20 @@ async function createUsers(roles: Role[], colors: Color[]) {
       enrollment: '20181104010009',
       email: 'nathan.araujo@academico.ifrn.edu.br',
     },
+  ];
+
+  const studentUsers = [
+    {
+      name: 'Idaslon Garcia',
+      enrollment: '20181104010048',
+      email: 'idaslon.g@academico.ifrn.edu.br',
+    },
+    {
+      name: 'Carlos Couto',
+      enrollment: '20181104010087',
+      email: 'castro.carlos@academico.ifrn.edu.br',
+    },
+
     {
       name: 'Alceu Nascimento',
       enrollment: '20181104010039',
@@ -107,9 +116,22 @@ async function createUsers(roles: Role[], colors: Color[]) {
     },
   ];
 
+  const adminRole = roles.find((role) => role.slug === userConfig.role.admin.slug) as Role;
   const studentRole = roles.find((role) => role.slug === userConfig.role.student.slug) as Role;
 
-  for (const userData of users) {
+  for (const userData of adminUsers) {
+    const randomColor = getRandomItem(colors);
+
+    await prisma.user.create({
+      data: {
+        ...userData,
+        role: { connect: { id: adminRole.id } },
+        color: { connect: { id: randomColor.id } },
+      },
+    });
+  }
+
+  for (const userData of studentUsers) {
     const randomColor = getRandomItem(colors);
 
     await prisma.user.create({

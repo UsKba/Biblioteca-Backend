@@ -17,7 +17,7 @@ interface ComputerExistsParams {
 export async function assertComputerNotExists(params: ComputerNotExistsParams) {
   const { identification } = params;
 
-  const computer = await prisma.computers.findOne({
+  const computer = await prisma.computer.findOne({
     where: { identification },
   });
 
@@ -31,7 +31,7 @@ export async function assertComputerNotExists(params: ComputerNotExistsParams) {
 export async function assertComputerExists(params: ComputerExistsParams) {
   const { id } = params;
 
-  const computer = await prisma.computers.findOne({
+  const computer = await prisma.computer.findOne({
     where: { id },
   });
 

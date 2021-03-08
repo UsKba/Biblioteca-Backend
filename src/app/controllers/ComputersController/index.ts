@@ -59,6 +59,10 @@ class ComputerController {
 
     try {
       await assertComputerExists({ id });
+
+      if (identification) {
+        await assertComputerNotExists({ identification });
+      }
     } catch (e) {
       const { statusCode, message } = e as RequestError;
       return res.status(statusCode).json({ error: message });
@@ -78,6 +82,13 @@ class ComputerController {
 
   async delete(req: RequestParamsId, res: Response) {
     const id = Number(req.params.id);
+
+    try {
+      await assertComputerExists({ id });
+    } catch (e) {
+      const { statusCode, message } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
+    }
 
     await prisma.computer.delete({
       where: { id },
