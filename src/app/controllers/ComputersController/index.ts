@@ -11,14 +11,14 @@ import { assertComputerNotExists, assertComputerExists, assertIsValidComputerSta
 
 interface StoreBody {
   identification: string;
-  local: string;
   status: number;
+  localId: number;
 }
 
 interface UpdateBody {
   identification?: string;
-  local?: string;
   status?: number;
+  localId?: number;
 }
 
 type IndexRequest = RequestAuth;
@@ -27,7 +27,7 @@ type UpdateRequest = RequestAuthBodyParamsId<UpdateBody>;
 
 class ComputerController {
   async store(req: StoreRequest, res: Response) {
-    const { identification, local, status } = req.body;
+    const { identification, localId, status } = req.body;
 
     try {
       await assertComputerNotExists({ identification });
@@ -39,8 +39,8 @@ class ComputerController {
     const computer = await prisma.computer.create({
       data: {
         identification,
-        local,
         status,
+        local: { connect: { id: localId } },
       },
     });
 
@@ -55,10 +55,14 @@ class ComputerController {
 
   async update(req: UpdateRequest, res: Response) {
     const id = Number(req.params.id);
-    const { identification, status, local } = req.body;
+    const { identification, status, localId } = req.body;
 
     try {
       await assertComputerExists({ id });
+
+      if (status) {
+        assertIsValidComputerStatus(status);
+      }
 
       if (identification) {
         await assertComputerNotExists({ identification });
@@ -72,7 +76,7 @@ class ComputerController {
       data: {
         identification,
         status,
-        local,
+        local: { connect: { id: localId } },
       },
       where: { id },
     });

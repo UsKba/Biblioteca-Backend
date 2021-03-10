@@ -20,3 +20,9 @@ export async function cleanDatabase() {
 
   // await prisma.userColor.deleteMany({});
 }
+
+export async function getComputerLocals() {
+  const computersLocals = await prisma.computerLocal.findMany({});
+
+  return computersLocals;
+}

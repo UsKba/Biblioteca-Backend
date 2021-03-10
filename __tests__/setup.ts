@@ -56,11 +56,35 @@ async function createColors() {
   return colorsDatabase;
 }
 
+async function createComputerLocals() {
+  const computerLocalsDatabase = [];
+
+  const locals = [
+    {
+      name: 'Laboratório',
+    },
+    {
+      name: 'Biblioteca',
+    },
+  ];
+
+  for (const localData of locals) {
+    const computerLocalCreated = await prisma.computerLocal.create({
+      data: localData,
+    });
+
+    computerLocalsDatabase.push(computerLocalCreated);
+  }
+
+  return computerLocalsDatabase;
+}
+
 async function cleanAllDatabase() {
   await cleanDatabase();
 
   await prisma.role.deleteMany({});
   await prisma.color.deleteMany({});
+  await prisma.computerLocal.deleteMany({});
 }
 
 beforeAll(async () => {
@@ -68,6 +92,7 @@ beforeAll(async () => {
 
   await createRoles();
   await createColors();
+  await createComputerLocals();
 });
 
 afterAll(async () => {
