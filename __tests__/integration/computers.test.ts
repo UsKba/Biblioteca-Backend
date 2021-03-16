@@ -1,5 +1,11 @@
 import request from 'supertest';
 
+// COMENTARIO
+// Toda vez que o ComputerLocals[0].id é lido ele tem um id diferente
+// ele cresce de 2 em 2 como se toda vez que ele chamasse getComputerLocal
+// ele criasse os 2 dnv então eu coloquei no cleandatabase mas agr ele nao
+// reconhece nem o setup entao mudei pra manual inves de pegar no banco de dados
+// e mesmo assim n foi
 import { encodeToken } from '~/app/utils/auth';
 
 import computerConfig from '~/config/computer';
@@ -35,51 +41,53 @@ describe('Computer store', () => {
     expect(response.body).toHaveProperty('id');
   });
 
-  // it('should not be able to create other computer with the `identification` that already exists', async () => {
-  //   const admin = await createUser({ isAdmin: true });
+  it('should not be able to create other computer with the `identification` that already exists', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const computerLocals = await getComputerLocals();
 
-  //   const computer = {
-  //     identification: 'PC030',
-  //     local: 'Sala B2',
-  //     status: 1,
-  //   };
+    const computer = {
+      identification: 'PC030',
+      localId: computerLocals[0].id,
+      status: 1,
+    };
 
-  //   const adminToken = encodeToken(admin);
+    const adminToken = encodeToken(admin);
 
-  //   const response = await request(App)
-  //     .post('/computers')
-  //     .send(computer)
-  //     .set({ authorization: `Bearer ${adminToken}` });
+    const response = await request(App)
+      .post('/computers')
+      .send(computer)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-  //   const response2 = await request(App)
-  //     .post('/computers')
-  //     .send(computer)
-  //     .set({ authorization: `Bearer ${adminToken}` });
+    const response2 = await request(App)
+      .post('/computers')
+      .send(computer)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-  //   expect(response.status).toBe(200);
-  //   expect(response2.status).toBe(400);
-  // });
+    expect(response.status).toBe(200);
+    expect(response2.status).toBe(400);
+  });
 
-  // it('should have correct fields on computer store', async () => {
-  //   const admin = await createUser({ isAdmin: true });
+  it('should have correct fields on computer store', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const computerLocals = await getComputerLocals();
 
-  //   const computer = {
-  //     identification: 'PC030',
-  //     local: 'Sala B2',
-  //     status: 1,
-  //   };
+    const computer = {
+      identification: 'PC030',
+      localId: computerLocals[0].id,
+      status: 1,
+    };
 
-  //   const adminToken = encodeToken(admin);
+    const adminToken = encodeToken(admin);
 
-  //   const response = await request(App)
-  //     .post('/computers')
-  //     .send(computer)
-  //     .set({ authorization: `Bearer ${adminToken}` });
+    const response = await request(App)
+      .post('/computers')
+      .send(computer)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-  //   expect(response.body.identification).toBe('PC030');
-  //   expect(response.body.local).toBe('Sala B2');
-  //   expect(response.body.status).toBe(1);
-  // });
+    expect(response.body.identification).toBe('PC030');
+    expect(response.body.localId).toBe(1);
+    expect(response.body.status).toBe(1);
+  });
 });
 
 // describe('Computer index', () => {
