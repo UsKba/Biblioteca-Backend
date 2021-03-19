@@ -27,7 +27,7 @@ describe('Computer store', () => {
     const computer = {
       identification: 'PC030',
       localId: computerLocals[0].id,
-      status: 1,
+      status: computerConfig.disponible,
     };
 
     const adminToken = encodeToken(admin);
@@ -48,7 +48,7 @@ describe('Computer store', () => {
     const computer = {
       identification: 'PC030',
       localId: computerLocals[0].id,
-      status: 1,
+      status: computerConfig.disponible,
     };
 
     const adminToken = encodeToken(admin);
@@ -74,7 +74,7 @@ describe('Computer store', () => {
     const computer = {
       identification: 'PC030',
       localId: computerLocals[0].id,
-      status: 1,
+      status: computerConfig.disponible,
     };
 
     const adminToken = encodeToken(admin);
@@ -90,232 +90,239 @@ describe('Computer store', () => {
   });
 });
 
-// describe('Computer index', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
+describe('Computer index', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
 
-//   it('should be able to index the 1 computer', async () => {
-//     const admin = await createUser({ isAdmin: true });
-//     await createComputer({ adminUser: admin });
+  it('should be able to index the 1 computer', async () => {
+    const admin = await createUser({ isAdmin: true });
+    await createComputer({ adminUser: admin });
 
-//     const response = await request(App).get('/computers');
+    const response = await request(App)
+      .get('/computers')
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//     expect(response.status).toBe(200);
-//   });
+    expect(response.status).toBe(200);
+  });
 
-//   it('should be able to index the 2 computers', async () => {
-//     const admin = await createUser({ isAdmin: true });
+  it('should be able to index the 2 computers', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     await createComputer({ identification: 'PC020', adminUser: admin });
-//     await createComputer({ identification: 'PC030', adminUser: admin });
+    await createComputer({ identification: 'PC020', adminUser: admin });
+    await createComputer({ identification: 'PC030', adminUser: admin });
 
-//     const response = await request(App).get('/computers');
+    const response = await request(App)
+      .get('/computers')
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//     expect(response.status).toBe(200);
-//     expect(response.body.length).toBe(2);
-//   });
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+  });
 
-//   it('should have correct fields on room index', async () => {
-//     const admin = await createUser({ isAdmin: true });
-//     const computer = await createComputer({ adminUser: admin });
+  it('should have correct fields on room index', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const computer = await createComputer({ adminUser: admin });
 
-//     const response = await request(App).get('/computers');
-//     const computerCreated = response.body[0];
+    const response = await request(App)
+      .get('/computers')
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//     expect(computerCreated.id).toBe(computer.id);
-//     expect(computerCreated.local).toBe(computer.local);
-//     expect(computerCreated.identification).toBe(computer.identification);
-//     expect(computerCreated.status).toBe(computer.status);
-//   });
-// });
+    const computerCreated = response.body[0];
 
-// describe('Computer Update', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
+    expect(computerCreated.id).toBe(computer.id);
+    expect(computerCreated.local).toBe(computer.local);
+    expect(computerCreated.identification).toBe(computer.identification);
+    expect(computerCreated.status).toBe(computer.status);
+  });
+});
 
-//   it('should be able to update a computer', async () => {
-//     const admin = await createUser({ isAdmin: true });
-//     const computer = await createComputer({ adminUser: admin, status: computerConfig.disponible });
+describe('Computer Update', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should be able to update a computer', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const computer = await createComputer({ adminUser: admin, status: computerConfig.disponible });
 
-//     const response = await request(App)
-//       .put(`/computers/${computer.id}`)
-//       .send({
-//         status: computerConfig.indisponible,
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const adminToken = encodeToken(admin);
 
-//     expect(response.status).toBe(200);
-//     expect(response.body.status).toBe(computerConfig.indisponible);
-//   });
+    const response = await request(App)
+      .put(`/computers/${computer.id}`)
+      .send({
+        status: computerConfig.indisponible,
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to update the `status` of a computer to other that is not accepted', async () => {
-//     const admin = await createUser({ isAdmin: true });
-//     const computer = await createComputer({ identification: 'PC010', adminUser: admin });
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe(computerConfig.indisponible);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to update the `status` of a computer to other that is not accepted', async () => {
+    const admin = await createUser({ isAdmin: true });
+    const computer = await createComputer({ identification: 'PC010', adminUser: admin });
 
-//     const response = await request(App)
-//       .put(`/computers/${computer.id}`)
-//       .send({
-//         status: -1,
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const adminToken = encodeToken(admin);
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .put(`/computers/${computer.id}`)
+      .send({
+        status: -1,
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to update the `identification` of a computer to another that already exists', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     await createComputer({ identification: 'PC020', adminUser: admin });
-//     const computer2 = await createComputer({ identification: 'PC010', adminUser: admin });
+  it('should not be able to update the `identification` of a computer to another that already exists', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const adminToken = encodeToken(admin);
+    await createComputer({ identification: 'PC020', adminUser: admin });
+    const computer2 = await createComputer({ identification: 'PC010', adminUser: admin });
 
-//     const response = await request(App)
-//       .put(`/computers/${computer2.id}`)
-//       .send({
-//         identification: 'PC020',
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const adminToken = encodeToken(admin);
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .put(`/computers/${computer2.id}`)
+      .send({
+        identification: 'PC020',
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to update a computer with incorrect id format', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to update a computer with incorrect id format', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const response = await request(App)
-//       .put(`/computers/incorrectId`)
-//       .send({
-//         initials: 'F1-2',
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const adminToken = encodeToken(admin);
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .put(`/computers/incorrectId`)
+      .send({
+        initials: 'F1-2',
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to update a computer with invalid `status` format', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to update a computer with invalid `status` format', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ identification: 'PC020', adminUser: admin });
-//     const nextComputerId = computer.id + 1;
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .put(`/computers/${nextComputerId}`)
-//       .send({
-//         status: 'invalidStatus',
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ identification: 'PC020', adminUser: admin });
+    const nextComputerId = computer.id + 1;
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .put(`/computers/${nextComputerId}`)
+      .send({
+        status: 'invalidStatus',
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to update a computer with id that not exists', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to update a computer with id that not exists', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ identification: 'PC020', adminUser: admin });
-//     const nextComputerId = computer.id + 1;
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .put(`/computers/${nextComputerId}`)
-//       .send({
-//         identification: 'PC010',
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ identification: 'PC020', adminUser: admin });
+    const nextComputerId = computer.id + 1;
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .put(`/computers/${nextComputerId}`)
+      .send({
+        identification: 'PC010',
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should have correct fields on computer update', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should have correct fields on computer update', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ identification: 'PC010', adminUser: admin });
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .put(`/computers/${computer.id}`)
-//       .send({
-//         identification: 'PC000',
-//       })
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ identification: 'PC010', adminUser: admin });
 
-//     expect(response.body.id).toBe(computer.id);
-//     expect(response.body.identification).toBe('PC000');
-//     expect(response.body.local).toBe(computer.local);
-//     expect(response.body.status).toBe(computer.status);
-//   });
-// });
+    const response = await request(App)
+      .put(`/computers/${computer.id}`)
+      .send({
+        identification: 'PC000',
+      })
+      .set({ authorization: `Bearer ${adminToken}` });
 
-// describe('Computer Delete', () => {
-//   beforeEach(async () => {
-//     await cleanDatabase();
-//   });
+    expect(response.body.id).toBe(computer.id);
+    expect(response.body.identification).toBe('PC000');
+    expect(response.body.local).toBe(computer.local);
+    expect(response.body.status).toBe(computer.status);
+  });
+});
 
-//   it('should be able to delete a computer', async () => {
-//     const admin = await createUser({ isAdmin: true });
+describe('Computer Delete', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should be able to delete a computer', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ adminUser: admin });
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .delete(`/computers/${computer.id}`)
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ adminUser: admin });
 
-//     expect(response.status).toBe(200);
-//     expect(response.body.id).toBe(computer.id);
-//   });
+    const response = await request(App)
+      .delete(`/computers/${computer.id}`)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to delete a computer with incorrect id format', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(200);
+    expect(response.body.id).toBe(computer.id);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to delete a computer with incorrect id format', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const response = await request(App)
-//       .delete(`/computers/incorrectId`)
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const adminToken = encodeToken(admin);
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .delete(`/computers/incorrectId`)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should not be able to delete a computer with id that not exists', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should not be able to delete a computer with id that not exists', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ adminUser: admin });
-//     const nextComputerId = computer.id + 1;
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .delete(`/rooms/${nextComputerId}`)
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ adminUser: admin });
+    const nextComputerId = computer.id + 1;
 
-//     expect(response.status).toBe(400);
-//   });
+    const response = await request(App)
+      .delete(`/rooms/${nextComputerId}`)
+      .set({ authorization: `Bearer ${adminToken}` });
 
-//   it('should have correct fields on computer delete', async () => {
-//     const admin = await createUser({ isAdmin: true });
+    expect(response.status).toBe(400);
+  });
 
-//     const adminToken = encodeToken(admin);
+  it('should have correct fields on computer delete', async () => {
+    const admin = await createUser({ isAdmin: true });
 
-//     const computer = await createComputer({ adminUser: admin });
+    const adminToken = encodeToken(admin);
 
-//     const response = await request(App)
-//       .delete(`/computers/${computer.id}`)
-//       .set({ authorization: `Bearer ${adminToken}` });
+    const computer = await createComputer({ adminUser: admin });
 
-//     expect(response.body.id).toBe(computer.id);
-//   });
-// });
+    const response = await request(App)
+      .delete(`/computers/${computer.id}`)
+      .set({ authorization: `Bearer ${adminToken}` });
+
+    expect(response.body.id).toBe(computer.id);
+  });
+});
