@@ -7,7 +7,7 @@ import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/r
 
 import prisma from '~/prisma';
 
-import { assertComputerNotExists, assertComputerExists, assertIsValidComputerStatus } from './tradingRules';
+import { assertComputerExists, assertIsValidComputerStatus } from './tradingRules';
 import { formatComputerToResponse } from './utils';
 
 interface StoreBody {
@@ -42,22 +42,20 @@ class ComputerController {
   async store(req: StoreRequest, res: Response) {
     const { identification, localId, status } = req.body;
 
-    try {
-      await assertComputerNotExists({ identification });
-    } catch (e) {
-      const { statusCode, message } = e as RequestError;
-      return res.status(statusCode).json({ error: message });
-    }
-
     const computer = await prisma.computer.create({
       data: {
         identification,
         status,
         local: { connect: { id: localId } },
       },
+      include: {
+        local: true,
+      },
     });
 
-    return res.json(computer);
+    const computerFormatted = formatComputerToResponse(computer);
+
+    return res.json(computerFormatted);
   }
 
   async update(req: UpdateRequest, res: Response) {
@@ -69,10 +67,6 @@ class ComputerController {
 
       if (status) {
         assertIsValidComputerStatus(status);
-      }
-
-      if (identification) {
-        await assertComputerNotExists({ identification });
       }
     } catch (e) {
       const { statusCode, message } = e as RequestError;
@@ -86,9 +80,14 @@ class ComputerController {
         local: { connect: { id: localId } },
       },
       where: { id },
+      include: {
+        local: true,
+      },
     });
 
-    return res.json(computer);
+    const computerFormatted = formatComputerToResponse(computer);
+
+    return res.json(computerFormatted);
   }
 
   async delete(req: RequestParamsId, res: Response) {

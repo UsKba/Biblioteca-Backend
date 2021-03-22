@@ -6,26 +6,8 @@ import computerConfig from '~/config/computer';
 
 import prisma from '~/prisma';
 
-interface ComputerNotExistsParams {
-  identification?: string;
-}
-
 interface ComputerExistsParams {
   id?: number;
-}
-
-export async function assertComputerNotExists(params: ComputerNotExistsParams) {
-  const { identification } = params;
-
-  const computer = await prisma.computer.findOne({
-    where: { identification },
-  });
-
-  if (computer !== null) {
-    throw new RequestError(`${identification} já existe`);
-  }
-
-  return computer;
 }
 
 export async function assertComputerExists(params: ComputerExistsParams) {

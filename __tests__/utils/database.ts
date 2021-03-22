@@ -13,21 +13,14 @@ export async function cleanDatabase() {
   await prisma.tag.deleteMany({});
   await prisma.message.deleteMany({});
 
-  // await prisma.computerLocal.deleteMany({});
   await prisma.computer.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.room.deleteMany({});
   await prisma.period.deleteMany({});
-
-  // await prisma.userColor.deleteMany({});
 }
 
 export async function getComputerLocals() {
-  // const computersLocals = await prisma.computerLocal.findMany({});
-  const computersLocals = [
-    { id: 1, name: 'Laboratório' },
-    { id: 2, name: 'Biblioteca' },
-  ];
+  const computersLocals = await prisma.computerLocal.findMany({});
 
   return computersLocals;
 }
