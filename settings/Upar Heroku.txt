@@ -60,3 +60,6 @@ Abra o terminal e faça as etapas a seguir
 
 2. Apagar as alterações do commit 'temp heroku'
   - git reset --hard
+
+3. Voltar para branch dev
+  - git checkout dev
