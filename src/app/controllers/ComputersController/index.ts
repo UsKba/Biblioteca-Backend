@@ -8,6 +8,7 @@ import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/r
 import prisma from '~/prisma';
 
 import { assertComputerNotExists, assertComputerExists, assertIsValidComputerStatus } from './tradingRules';
+import { formatComputerToResponse } from './utils';
 
 interface StoreBody {
   identification: string;
@@ -26,6 +27,18 @@ type StoreRequest = RequestAuthBody<StoreBody>;
 type UpdateRequest = RequestAuthBodyParamsId<UpdateBody>;
 
 class ComputerController {
+  async index(req: IndexRequest, res: Response) {
+    const computers = await prisma.computer.findMany({
+      include: {
+        local: true,
+      },
+    });
+
+    const computersFomatted = computers.map(formatComputerToResponse);
+
+    return res.json(computersFomatted);
+  }
+
   async store(req: StoreRequest, res: Response) {
     const { identification, localId, status } = req.body;
 
@@ -45,12 +58,6 @@ class ComputerController {
     });
 
     return res.json(computer);
-  }
-
-  async index(req: IndexRequest, res: Response) {
-    const computers = await prisma.computer.findMany({});
-
-    return res.json(computers);
   }
 
   async update(req: UpdateRequest, res: Response) {
