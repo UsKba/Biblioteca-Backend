@@ -166,7 +166,7 @@ model ComputerLocal {
 model Computer {
   id Int @id @default(autoincrement())
 
-  identification String @unique
+  identification String
   status         Int
 
   local   ComputerLocal @relation(fields: [localId], references: [id])
