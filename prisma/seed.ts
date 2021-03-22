@@ -1,8 +1,7 @@
 import { Color, PrismaClient, Role } from '@prisma/client';
 
-import computerConfig from '~/config/computer';
-
 import { getRandomItem } from '../src/app/utils/array';
+import computerConfig from '../src/config/computer';
 import roomConfig from '../src/config/room';
 import userConfig from '../src/config/user';
 
