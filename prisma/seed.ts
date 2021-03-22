@@ -1,5 +1,7 @@
 import { Color, PrismaClient, Role } from '@prisma/client';
 
+import computerConfig from '~/config/computer';
+
 import { getRandomItem } from '../src/app/utils/array';
 import roomConfig from '../src/config/room';
 import userConfig from '../src/config/user';
@@ -60,28 +62,28 @@ async function createColors() {
   return colorsDatabase;
 }
 
-async function createTags() {
-  const tags = [
-    {
-      name: 'Sala com defeito',
-    },
-    {
-      name: 'Problema no site',
-    },
-    {
-      name: 'Dúvida',
-    },
-    {
-      name: 'Outro',
-    },
-  ];
+// async function createTags() {
+//   const tags = [
+//     {
+//       name: 'Sala com defeito',
+//     },
+//     {
+//       name: 'Problema no site',
+//     },
+//     {
+//       name: 'Dúvida',
+//     },
+//     {
+//       name: 'Outro',
+//     },
+//   ];
 
-  for (const tagData of tags) {
-    await prisma.tag.create({
-      data: tagData,
-    });
-  }
-}
+//   for (const tagData of tags) {
+//     await prisma.tag.create({
+//       data: tagData,
+//     });
+//   }
+// }
 
 async function createUsers(roles: Role[], colors: Color[]) {
   const adminUsers = [
@@ -267,8 +269,90 @@ async function createRooms() {
   }
 }
 
+async function createComputerLocalsAndComputers() {
+  const laboratoryLocal = await prisma.computerLocal.create({
+    data: { name: 'Laboratório' },
+  });
+
+  const libraryLocal = await prisma.computerLocal.create({
+    data: { name: 'Biblioteca' },
+  });
+
+  const laboratoryComputers = [
+    {
+      identification: '01',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '02',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '03',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '04',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '05',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '06',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '07',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '08',
+      status: computerConfig.disponible,
+    },
+  ];
+
+  const libraryComputers = [
+    {
+      identification: '01',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '02',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '03',
+      status: computerConfig.disponible,
+    },
+    {
+      identification: '04',
+      status: computerConfig.disponible,
+    },
+  ];
+
+  for (const laboratoryComputer of laboratoryComputers) {
+    await prisma.computer.create({
+      data: {
+        ...laboratoryComputer,
+        local: { connect: { id: laboratoryLocal.id } },
+      },
+    });
+  }
+
+  for (const libraryComputer of libraryComputers) {
+    await prisma.computer.create({
+      data: {
+        ...libraryComputer,
+        local: { connect: { id: libraryLocal.id } },
+      },
+    });
+  }
+}
+
 async function run() {
-  await createTags();
+  // await createTags();
 
   const roles = await createRoles();
   const colors = await createColors();
@@ -277,6 +361,8 @@ async function run() {
 
   await createPeriodsAndSchedules();
   await createRooms();
+
+  await createComputerLocalsAndComputers();
 
   await prisma.disconnect();
 }
