@@ -63,31 +63,31 @@ class ComputerController {
     const { identification, status, localId } = req.body;
 
     try {
-      await assertComputerExists({ id });
+      const computer = await assertComputerExists({ id });
 
       if (status) {
         assertIsValidComputerStatus(status);
       }
+
+      const computerUpdated = await prisma.computer.update({
+        data: {
+          identification,
+          status,
+          local: { connect: { id: localId || computer.localId } },
+        },
+        where: { id },
+        include: {
+          local: true,
+        },
+      });
+
+      const computerFormatted = formatComputerToResponse(computerUpdated);
+
+      return res.json(computerFormatted);
     } catch (e) {
       const { statusCode, message } = e as RequestError;
       return res.status(statusCode).json({ error: message });
     }
-
-    const computer = await prisma.computer.update({
-      data: {
-        identification,
-        status,
-        local: { connect: { id: localId } },
-      },
-      where: { id },
-      include: {
-        local: true,
-      },
-    });
-
-    const computerFormatted = formatComputerToResponse(computer);
-
-    return res.json(computerFormatted);
   }
 
   async delete(req: RequestParamsId, res: Response) {

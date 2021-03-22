@@ -1,13 +1,15 @@
-import { Computer, User } from '@prisma/client';
+import { Computer, ComputerLocal, User } from '@prisma/client';
 import request from 'supertest';
 
 import { encodeToken } from '~/app/utils/auth';
 
+import computerConfig from '~/config/computer';
+
 import App from '~/App';
 
 interface GenerateComputerParams {
+  localId: number;
   identification?: string;
-  local?: string;
   status?: number;
 }
 
@@ -15,11 +17,14 @@ interface CreateComputerParams extends GenerateComputerParams {
   adminUser: User;
 }
 
+interface ComputerResponse extends Omit<Computer, 'localId'> {
+  local: ComputerLocal;
+}
+
 export function generateComputer(params?: GenerateComputerParams) {
   return {
     identification: 'F1-1',
-    local: 'Sala B2',
-    status: 1,
+    status: computerConfig.disponible,
     ...params,
   };
 }
@@ -35,5 +40,5 @@ export async function createComputer(params: CreateComputerParams) {
     .send(computerData)
     .set({ authorization: `Bearer ${adminToken}` });
 
-  return response.body as Computer;
+  return response.body as ComputerResponse;
 }
