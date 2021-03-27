@@ -13,6 +13,7 @@ interface StoreData {
   title: string;
   content: string;
   expiredAt: string;
+  imageCode: number;
 }
 
 type IndexRequest = RequestAuth;
@@ -40,21 +41,22 @@ class NoticeController {
 
   async store(req: StoreRequest, res: Response) {
     const adminId = req.userId as number;
-    const { title, content, expiredAt: expiredAtString } = req.body;
+    const { title, content, imageCode, expiredAt: expiredAtString } = req.body;
 
     const expiredAt = new Date(expiredAtString);
 
     try {
       assertNoticeExpiredDateIsNotBeforeOfNow(expiredAt);
     } catch (e) {
-      const { message, statusCode, errorCode } = e as RequestError;
-      return res.status(statusCode).json({ error: message, errorCode });
+      const { message, statusCode } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
     }
 
     const notice = await prisma.notice.create({
       data: {
         title,
         content,
+        imageCode,
         expiredAt,
         userCreator: { connect: { id: adminId } },
       },

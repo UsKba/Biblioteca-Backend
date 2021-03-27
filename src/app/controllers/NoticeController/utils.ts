@@ -12,6 +12,7 @@ export function formatNoticeToResponse(notice: NoticeToFormat) {
   return {
     title: notice.title,
     content: notice.content,
+    imageCode: notice.imageCode,
     createdAt: notice.createdAt,
     expiredAt: notice.expiredAt,
 

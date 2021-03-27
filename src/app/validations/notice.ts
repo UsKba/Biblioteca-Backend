@@ -6,6 +6,7 @@ import { validateSchema } from '~/app/utils/yup';
 
 const NoticeSchema = Yup.object().shape({
   title: Yup.string().required('O título é requerido'),
+  imageCode: Yup.number().required('A imagem é requerida').typeError('imagem inválida'),
   content: Yup.string().required('O conteudo é requerido'),
   expiredAt: Yup.date().required('A data de expiração é requerida').typeError('data de expiração inválida'),
 });
