@@ -5,6 +5,7 @@ import { setScheduleHoursAndMinutes, getDateOnBrazilTimezone } from '~/app/utils
 import { RequestError } from '~/app/errors/request';
 
 import reserveConfig from '~/config/reserve';
+import userConfig from '~/config/user';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/requestAuth';
 
@@ -93,8 +94,8 @@ class ReserveController {
   }
 
   async store(req: StoreRequest, res: Response) {
-    const userId = req.userId as number;
     const userEnrollment = req.userEnrollment as string;
+    const userRoleSlug = req.userRoleSlug as string;
 
     const { roomId, scheduleId, year, month, day, classmatesEnrollments, name } = req.body;
 
@@ -102,7 +103,10 @@ class ReserveController {
     let dateWithScheduleHours: Date;
 
     try {
-      assertUserIsOnClassmatesEnrollments(userEnrollment, classmatesEnrollments);
+      if (userRoleSlug === userConfig.role.student.slug) {
+        assertUserIsOnClassmatesEnrollments(userEnrollment, classmatesEnrollments);
+      }
+
       assertIfHaveTheMinimunClassmatesRequired(classmatesEnrollments);
       assertIfHaveTheMaximumClassmatesRequired(classmatesEnrollments);
       assertClassmatesEnrollmentsAreDiferent(classmatesEnrollments);
@@ -127,7 +131,7 @@ class ReserveController {
       data: {
         name,
         date: dateWithScheduleHours,
-        admin: { connect: { id: userId } },
+        admin: { connect: { enrollment: classmatesEnrollments[0] } },
         room: { connect: { id: roomId } },
         schedule: { connect: { id: scheduleId } },
       },
@@ -153,7 +157,7 @@ class ReserveController {
     const reserveUsers = await createRelationsBetweenUsersAndReserve({
       classmatesEnrollments,
       reserveId: reserve.id,
-      loggedUserEnrollment: userEnrollment,
+      leaderEnrollment: classmatesEnrollments[0],
     });
 
     const reserveFormatted = {

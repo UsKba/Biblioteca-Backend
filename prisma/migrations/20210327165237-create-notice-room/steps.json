@@ -1,0 +1,159 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateModel",
+      "model": "NoticeRoom"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "notice",
+      "type": "Notice",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "notice"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "notice"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[noticeId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "notice"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "noticeId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "room",
+      "type": "Room",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "room"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "room"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[roomId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeRoom",
+          "field": "room"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "roomId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "status",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "NoticeRoom"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "NoticeRoom"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[noticeId]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Room",
+      "field": "NoticeRoom",
+      "type": "NoticeRoom",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Notice",
+      "field": "NoticeRoom",
+      "type": "NoticeRoom",
+      "arity": "List"
+    }
+  ]
+}

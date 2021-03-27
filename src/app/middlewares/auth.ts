@@ -7,6 +7,7 @@ import { decodeToken } from '../utils/auth';
 export interface AuthRequest extends Request {
   userId?: number;
   userEnrollment?: string;
+  userRoleSlug?: string;
 }
 
 async function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
@@ -25,7 +26,7 @@ async function authMiddleware(req: AuthRequest, res: Response, next: NextFunctio
   }
 
   const { id } = tokenDecoded;
-  const user = await prisma.user.findOne({ where: { id } });
+  const user = await prisma.user.findOne({ where: { id }, include: { role: true } });
 
   if (!user) {
     return res.status(401).json({ error: 'Usuário não encontrado' });
@@ -33,6 +34,8 @@ async function authMiddleware(req: AuthRequest, res: Response, next: NextFunctio
 
   req.userId = user.id;
   req.userEnrollment = user.enrollment;
+  req.userRoleSlug = user.role.slug;
+
   return next();
 }
 

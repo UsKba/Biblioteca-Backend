@@ -1,0 +1,159 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateModel",
+      "model": "NoticeComputer"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "notice",
+      "type": "Notice",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "notice"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "notice"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[noticeId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "notice"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "noticeId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "computer",
+      "type": "Computer",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "computer"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "computer"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[computerId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "NoticeComputer",
+          "field": "computer"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "computerId",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "status",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "NoticeComputer"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "NoticeComputer"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[noticeId]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Notice",
+      "field": "NoticeComputer",
+      "type": "NoticeComputer",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Computer",
+      "field": "NoticeComputer",
+      "type": "NoticeComputer",
+      "arity": "List"
+    }
+  ]
+}

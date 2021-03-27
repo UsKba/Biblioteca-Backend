@@ -1,4 +1,4 @@
-import { Color, PrismaClient, Role } from '@prisma/client';
+import { Color, PrismaClient, Role, User } from '@prisma/client';
 
 import { getRandomItem } from '../src/app/utils/array';
 import computerConfig from '../src/config/computer';
@@ -109,7 +109,6 @@ async function createUsers(roles: Role[], colors: Color[]) {
       enrollment: '20181104010087',
       email: 'castro.carlos@academico.ifrn.edu.br',
     },
-
     {
       name: 'Alceu Nascimento',
       enrollment: '20181104010039',
@@ -117,31 +116,61 @@ async function createUsers(roles: Role[], colors: Color[]) {
     },
   ];
 
+  const databaseUsers = [];
+
   const adminRole = roles.find((role) => role.slug === userConfig.role.admin.slug) as Role;
   const studentRole = roles.find((role) => role.slug === userConfig.role.student.slug) as Role;
 
   for (const userData of adminUsers) {
     const randomColor = getRandomItem(colors);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         ...userData,
         role: { connect: { id: adminRole.id } },
         color: { connect: { id: randomColor.id } },
       },
     });
+
+    databaseUsers.push(user);
   }
 
   for (const userData of studentUsers) {
     const randomColor = getRandomItem(colors);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         ...userData,
         role: { connect: { id: studentRole.id } },
         color: { connect: { id: randomColor.id } },
       },
     });
+
+    databaseUsers.push(user);
+  }
+
+  return databaseUsers;
+}
+
+async function createFriendsRelation(usersDatabase: User[]) {
+  async function createRelation(currentUser: User, users: User[]) {
+    for (let i = 0; i < users.length; i += 1) {
+      await prisma.friend.create({
+        data: {
+          user1: { connect: { id: currentUser.id } },
+          user2: { connect: { id: users[i].id } },
+        },
+      });
+    }
+  }
+
+  const users = usersDatabase;
+
+  while (users.length > 1) {
+    const currentUser = users[0];
+    users.shift();
+
+    await createRelation(currentUser, users);
   }
 }
 
@@ -356,7 +385,8 @@ async function run() {
   const roles = await createRoles();
   const colors = await createColors();
 
-  await createUsers(roles, colors);
+  const users = await createUsers(roles, colors);
+  await createFriendsRelation(users);
 
   await createPeriodsAndSchedules();
   await createRooms();

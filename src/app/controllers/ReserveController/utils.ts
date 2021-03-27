@@ -11,7 +11,7 @@ import prisma from '~/prisma';
 import { formatUserToResponse } from '../UserController/utils';
 
 interface CreateRelationsBetweenUsersAndReserveParams {
-  loggedUserEnrollment: string;
+  leaderEnrollment: string;
   reserveId: number;
   classmatesEnrollments: string[];
 }
@@ -96,13 +96,13 @@ export async function createUserReserve(params: CreateUserReserveParams) {
 }
 
 export async function createRelationsBetweenUsersAndReserve(params: CreateRelationsBetweenUsersAndReserveParams) {
-  const { loggedUserEnrollment, reserveId, classmatesEnrollments } = params;
+  const { leaderEnrollment, reserveId, classmatesEnrollments } = params;
 
   const users = [];
   const userColors = await getRandomColorList(classmatesEnrollments.length);
 
   for (let i = 0; i < classmatesEnrollments.length; i += 1) {
-    const isAdmin = classmatesEnrollments[i] === loggedUserEnrollment;
+    const isAdmin = classmatesEnrollments[i] === leaderEnrollment;
     const status = isAdmin ? reserveConfig.userReserve.statusAccepted : reserveConfig.userReserve.statusPending;
 
     const userReserve = await createUserReserve({

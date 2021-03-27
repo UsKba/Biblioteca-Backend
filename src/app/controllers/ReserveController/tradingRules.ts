@@ -63,7 +63,7 @@ export function assertIfTheReserveIsNotBeforeOfNow(date: Date) {
   const dateOnBrazilTimezone = getDateOnBrazilTimezone(now);
 
   if (isBefore(date, dateOnBrazilTimezone)) {
-    throw new RequestError('A data não pode ser anterior a atual');
+    throw new RequestError('Essa data já passou');
   }
 }
 

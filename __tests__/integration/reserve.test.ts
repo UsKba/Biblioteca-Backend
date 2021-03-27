@@ -290,6 +290,39 @@ describe('Reserve Store', () => {
     expect(response.body.schedule.id).toBe(reserve.scheduleId);
   });
 
+  it('should be able to create a reserve without the logged user be on classmates if its the admin', async () => {
+    const admin = await createUser({ isAdmin: true });
+
+    const user1 = await createUser({ enrollment: '20181104010011' });
+    const user2 = await createUser({ enrollment: '20181104010022' });
+    const user3 = await createUser({ enrollment: '20181104010033' });
+
+    const room = await createRoom({ adminUser: admin });
+    const period = await createPeriod({ adminUser: admin });
+    const schedule = await createSchedule({ adminUser: admin, periodId: period.id });
+
+    const tomorrowDate = generateDate({ sumDay: 1 });
+
+    const reserve = {
+      name: 'Trabalho de portugues',
+      roomId: room.id,
+      scheduleId: schedule.id,
+      classmatesEnrollments: [user1.enrollment, user2.enrollment, user3.enrollment],
+      ...tomorrowDate,
+    };
+
+    const adminToken = encodeToken(admin);
+
+    const response = await request(App)
+      .post('/reserves')
+      .send(reserve)
+      .set({
+        authorization: `Bearer ${adminToken}`,
+      });
+
+    expect(response.status).toBe(200);
+  });
+
   it('should be able to create various reserves on the same room on diferents days', async () => {
     const admin = await createUser({ isAdmin: true });
 
