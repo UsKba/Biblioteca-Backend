@@ -29,6 +29,7 @@ adminRoutes.delete('/computers/:id', validateParamsId, ComputersController.delet
 adminRoutes.put('/computers/:id', validateParamsId, validateComputersUpdate, ComputersController.update);
 
 adminRoutes.post('/notices', validateNoticeStore, NoticeController.store);
+adminRoutes.delete('/notices/:id', validateParamsId, NoticeController.delete);
 
 // adminRoutes.post('/messages', validateMessageStore, MessagesController.store);
 

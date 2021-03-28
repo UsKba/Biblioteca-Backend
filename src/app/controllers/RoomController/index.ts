@@ -8,6 +8,7 @@ import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId, RequestAuthParam
 
 import prisma from '~/prisma';
 
+import { updateRoom } from './functions';
 import { assertRoomNotExists, assertRoomExists, assertIsValidRoomStatus } from './tradingRules';
 
 interface StoreRoom {
@@ -56,29 +57,12 @@ class RoomController {
     const { status, initials } = req.body;
 
     try {
-      await assertRoomExists({ id });
-
-      if (status) {
-        assertIsValidRoomStatus(status);
-      }
-
-      if (initials) {
-        await assertRoomNotExists({ initials });
-      }
+      const roomUpdated = await updateRoom({ id, status, initials });
+      return res.json(roomUpdated);
     } catch (e) {
       const { statusCode, message } = e as RequestError;
       return res.status(statusCode).json({ error: message });
     }
-
-    const room = await prisma.room.update({
-      where: { id },
-      data: {
-        status,
-        initials,
-      },
-    });
-
-    return res.json(room);
   }
 
   async delete(req: DeleteRequest, res: Response) {

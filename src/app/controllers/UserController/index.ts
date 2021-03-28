@@ -62,6 +62,7 @@ class UserController {
 
     try {
       const user = await createUser({ enrollment, email, name });
+
       const userFormatted = formatUserToResponse(user);
 
       return res.json(userFormatted);

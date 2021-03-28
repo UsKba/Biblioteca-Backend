@@ -8,14 +8,30 @@ import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/reque
 
 import prisma from '~/prisma';
 
-import { assertNoticeExists, assertNoticeExpiredDateIsNotBeforeOfNow } from './tradingRules';
+import { updateComputer } from '../ComputersController/functions';
+import { updateRoom } from '../RoomController/functions';
+import { assertNoticeExists, assertNoticeExpiredDateIsNotBeforeOfNow, assertNoticeIsActive } from './tradingRules';
 import { formatNoticeToResponse } from './utils';
+
+interface RoomData {
+  id: number;
+  status: number;
+}
+
+interface ComputerData {
+  id: number;
+  status: number;
+}
 
 interface StoreData {
   title: string;
   content: string;
   expiredAt: string;
   imageCode: number;
+  type: number;
+
+  roomData?: RoomData;
+  computerData?: ComputerData;
 }
 
 type IndexRequest = RequestAuth;
@@ -42,7 +58,7 @@ class NoticeController {
 
   async store(req: StoreRequest, res: Response) {
     const adminId = req.userId as number;
-    const { title, content, imageCode, expiredAt: expiredAtString } = req.body;
+    const { title, content, imageCode, type, expiredAt: expiredAtString } = req.body;
 
     const expiredAt = new Date(expiredAtString);
 
@@ -70,6 +86,50 @@ class NoticeController {
       },
     });
 
+    // try-catch
+    if (type === noticeConfig.types.room) {
+      const { roomData } = req.body;
+
+      if (!roomData) {
+        // MUDAR DEPOIS
+        // ganrantir que o status é valido
+        // garantir que a sala existe
+        return res.status(400).send();
+      }
+
+      await updateRoom({ id: roomData.id, status: roomData.status });
+
+      await prisma.noticeRoom.create({
+        data: {
+          notice: { connect: { id: notice.id } },
+          room: { connect: { id: roomData.id } },
+          roomStatus: roomData.status,
+        },
+      });
+    }
+
+    // try-catch
+    if (type === noticeConfig.types.computer) {
+      const { computerData } = req.body;
+
+      if (!computerData) {
+        // MUDAR DEPOIS
+        // ganrantir que o status é valido
+        // garantir que o computador existe
+        return res.status(400).send();
+      }
+
+      await updateComputer({ id: computerData.id, status: computerData.status });
+
+      await prisma.noticeComputer.create({
+        data: {
+          notice: { connect: { id: notice.id } },
+          computer: { connect: { id: computerData.id } },
+          computerStatus: computerData.status,
+        },
+      });
+    }
+
     const noticeFormatted = formatNoticeToResponse(notice);
 
     return res.json(noticeFormatted);
@@ -79,7 +139,8 @@ class NoticeController {
     const noticeId = Number(req.params.id);
 
     try {
-      assertNoticeExists({ id: noticeId });
+      const notice = await assertNoticeExists({ id: noticeId });
+      assertNoticeIsActive(notice);
     } catch (e) {
       const { message, statusCode } = e as RequestError;
       return res.status(statusCode).json({ error: message });
@@ -99,9 +160,7 @@ class NoticeController {
       },
     });
 
-    const noticeFormatted = formatNoticeToResponse(noticeUpdated);
-
-    return res.json(noticeFormatted);
+    return res.json({ id: noticeUpdated.id });
   }
 }
 

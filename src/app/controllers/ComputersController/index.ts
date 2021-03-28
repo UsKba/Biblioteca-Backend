@@ -7,6 +7,7 @@ import { RequestAuth, RequestAuthBody, RequestAuthBodyParamsId } from '~/types/r
 
 import prisma from '~/prisma';
 
+import { updateComputer } from './functions';
 import { assertComputerExists, assertIsValidComputerStatus } from './tradingRules';
 import { formatComputerToResponse } from './utils';
 
@@ -63,24 +64,7 @@ class ComputerController {
     const { identification, status, localId } = req.body;
 
     try {
-      const computer = await assertComputerExists({ id });
-
-      if (status) {
-        assertIsValidComputerStatus(status);
-      }
-
-      const computerUpdated = await prisma.computer.update({
-        data: {
-          identification,
-          status,
-          local: { connect: { id: localId || computer.localId } },
-        },
-        where: { id },
-        include: {
-          local: true,
-        },
-      });
-
+      const computerUpdated = await updateComputer({ id, identification, status, localId });
       const computerFormatted = formatComputerToResponse(computerUpdated);
 
       return res.json(computerFormatted);

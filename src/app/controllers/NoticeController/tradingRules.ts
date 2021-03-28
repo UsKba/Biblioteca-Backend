@@ -4,7 +4,9 @@ import { getDateOnBrazilTimezone } from '~/app/utils/date';
 
 import { RequestError } from '~/app/errors/request';
 
-import { NoticeWhereUniqueInput } from '.prisma/client';
+import { Notice, NoticeWhereUniqueInput } from '.prisma/client';
+
+import noticeConfig from '~/config/notice';
 
 import prisma from '~/prisma';
 
@@ -29,4 +31,10 @@ export async function assertNoticeExists(noticeParams: FindNotice) {
   }
 
   return notice;
+}
+
+export function assertNoticeIsActive(notice: Notice) {
+  if (notice.status !== noticeConfig.statusActive) {
+    throw new RequestError('Aviso não está ativo');
+  }
 }
