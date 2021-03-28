@@ -2,7 +2,9 @@ import { Response } from 'express';
 
 import { RequestError } from '~/app/errors/request';
 
+import computerConfig from '~/config/computer';
 import noticeConfig from '~/config/notice';
+import roomConfig from '~/config/room';
 
 import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/requestAuth';
 
@@ -30,8 +32,7 @@ interface StoreData {
   imageCode: number;
   type: number;
 
-  roomData?: RoomData;
-  computerData?: ComputerData;
+  data?: RoomData | ComputerData;
 }
 
 type IndexRequest = RequestAuth;
@@ -48,6 +49,8 @@ class NoticeController {
         userCreator: {
           include: { color: true, role: true },
         },
+        NoticeComputer: true,
+        NoticeRoom: true,
       },
     });
 
@@ -88,44 +91,44 @@ class NoticeController {
 
     // try-catch
     if (type === noticeConfig.types.room) {
-      const { roomData } = req.body;
+      const data = req.body.data as RoomData | undefined;
 
-      if (!roomData) {
+      if (!data) {
         // MUDAR DEPOIS
         // ganrantir que o status é valido
         // garantir que a sala existe
         return res.status(400).send();
       }
 
-      await updateRoom({ id: roomData.id, status: roomData.status });
+      await updateRoom({ id: data.id, status: data.status });
 
       await prisma.noticeRoom.create({
         data: {
           notice: { connect: { id: notice.id } },
-          room: { connect: { id: roomData.id } },
-          roomStatus: roomData.status,
+          room: { connect: { id: data.id } },
+          roomStatus: data.status,
         },
       });
     }
 
     // try-catch
     if (type === noticeConfig.types.computer) {
-      const { computerData } = req.body;
+      const data = req.body.data as ComputerData | undefined;
 
-      if (!computerData) {
+      if (!data) {
         // MUDAR DEPOIS
         // ganrantir que o status é valido
         // garantir que o computador existe
         return res.status(400).send();
       }
 
-      await updateComputer({ id: computerData.id, status: computerData.status });
+      await updateComputer({ id: data.id, status: data.status });
 
       await prisma.noticeComputer.create({
         data: {
           notice: { connect: { id: notice.id } },
-          computer: { connect: { id: computerData.id } },
-          computerStatus: computerData.status,
+          computer: { connect: { id: data.id } },
+          computerStatus: data.status,
         },
       });
     }
@@ -157,8 +160,22 @@ class NoticeController {
         userCreator: {
           include: { color: true, role: true },
         },
+        NoticeComputer: true,
+        NoticeRoom: true,
       },
     });
+
+    if (noticeUpdated.NoticeComputer.length > 0) {
+      const computerData = noticeUpdated.NoticeComputer[0];
+
+      await updateComputer({ id: computerData.computerId, status: computerConfig.disponible });
+    }
+
+    if (noticeUpdated.NoticeRoom.length > 0) {
+      const roomData = noticeUpdated.NoticeRoom[0];
+
+      await updateRoom({ id: roomData.roomId, status: roomConfig.disponible });
+    }
 
     return res.json({ id: noticeUpdated.id });
   }
