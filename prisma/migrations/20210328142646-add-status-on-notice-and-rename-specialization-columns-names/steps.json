@@ -1,0 +1,36 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Notice",
+      "field": "status",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeRoom",
+      "field": "roomStatus",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "NoticeRoom",
+      "field": "status"
+    },
+    {
+      "tag": "CreateField",
+      "model": "NoticeComputer",
+      "field": "computerStatus",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "NoticeComputer",
+      "field": "status"
+    }
+  ]
+}

@@ -2,11 +2,13 @@ import { Response } from 'express';
 
 import { RequestError } from '~/app/errors/request';
 
-import { RequestAuth, RequestAuthBody } from '~/types/requestAuth';
+import noticeConfig from '~/config/notice';
+
+import { RequestAuth, RequestAuthBody, RequestAuthParamsId } from '~/types/requestAuth';
 
 import prisma from '~/prisma';
 
-import { assertNoticeExpiredDateIsNotBeforeOfNow } from './tradingRules';
+import { assertNoticeExists, assertNoticeExpiredDateIsNotBeforeOfNow } from './tradingRules';
 import { formatNoticeToResponse } from './utils';
 
 interface StoreData {
@@ -18,14 +20,13 @@ interface StoreData {
 
 type IndexRequest = RequestAuth;
 type StoreRequest = RequestAuthBody<StoreData>;
+type DeleteRequest = RequestAuthParamsId;
 
 class NoticeController {
   async index(req: IndexRequest, res: Response) {
     const notices = await prisma.notice.findMany({
       where: {
-        expiredAt: {
-          gte: new Date(),
-        },
+        status: noticeConfig.statusActive,
       },
       include: {
         userCreator: {
@@ -58,6 +59,8 @@ class NoticeController {
         content,
         imageCode,
         expiredAt,
+
+        status: noticeConfig.statusActive,
         userCreator: { connect: { id: adminId } },
       },
       include: {
@@ -68,6 +71,35 @@ class NoticeController {
     });
 
     const noticeFormatted = formatNoticeToResponse(notice);
+
+    return res.json(noticeFormatted);
+  }
+
+  async delete(req: DeleteRequest, res: Response) {
+    const noticeId = Number(req.params.id);
+
+    try {
+      assertNoticeExists({ id: noticeId });
+    } catch (e) {
+      const { message, statusCode } = e as RequestError;
+      return res.status(statusCode).json({ error: message });
+    }
+
+    const noticeUpdated = await prisma.notice.update({
+      data: {
+        status: noticeConfig.statusInactive,
+      },
+      where: {
+        id: noticeId,
+      },
+      include: {
+        userCreator: {
+          include: { color: true, role: true },
+        },
+      },
+    });
+
+    const noticeFormatted = formatNoticeToResponse(noticeUpdated);
 
     return res.json(noticeFormatted);
   }
