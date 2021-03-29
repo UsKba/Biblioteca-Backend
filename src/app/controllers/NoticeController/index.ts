@@ -78,6 +78,7 @@ class NoticeController {
         content,
         imageCode,
         expiredAt,
+        type,
 
         status: noticeConfig.statusActive,
         userCreator: { connect: { id: adminId } },
@@ -133,6 +134,15 @@ class NoticeController {
       });
     }
 
+    // try-catch
+    if (type === noticeConfig.types.library) {
+      await prisma.room.updateMany({
+        data: {
+          status: roomConfig.indisponible,
+        },
+      });
+    }
+
     const noticeFormatted = formatNoticeToResponse(notice);
 
     return res.json(noticeFormatted);
@@ -165,16 +175,24 @@ class NoticeController {
       },
     });
 
-    if (noticeUpdated.NoticeComputer.length > 0) {
+    if (noticeUpdated.type === noticeConfig.types.room) {
+      const roomData = noticeUpdated.NoticeRoom[0];
+
+      await updateRoom({ id: roomData.roomId, status: roomConfig.disponible });
+    }
+
+    if (noticeUpdated.type === noticeConfig.types.computer) {
       const computerData = noticeUpdated.NoticeComputer[0];
 
       await updateComputer({ id: computerData.computerId, status: computerConfig.disponible });
     }
 
-    if (noticeUpdated.NoticeRoom.length > 0) {
-      const roomData = noticeUpdated.NoticeRoom[0];
-
-      await updateRoom({ id: roomData.roomId, status: roomConfig.disponible });
+    if (noticeUpdated.type === noticeConfig.types.library) {
+      await prisma.room.updateMany({
+        data: {
+          status: roomConfig.disponible,
+        },
+      });
     }
 
     return res.json({ id: noticeUpdated.id });

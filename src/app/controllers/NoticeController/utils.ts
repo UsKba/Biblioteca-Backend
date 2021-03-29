@@ -43,6 +43,8 @@ export function formatNoticeToResponse(notice: NoticeToFormat) {
     content: notice.content,
     imageCode: notice.imageCode,
     status: notice.status,
+    type: notice.type,
+
     createdAt: notice.createdAt,
     expiredAt: notice.expiredAt,
 
